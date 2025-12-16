@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
-import ReactTooltip from 'react-tooltip';
+import React, { Component } from "react";
+import ReactTooltip from "react-tooltip";
 
 class FloatingSideHeader extends Component {
-
   render() {
     const params = this.props.params;
     const config = params.config;
@@ -13,7 +12,7 @@ class FloatingSideHeader extends Component {
       cls += item.rows ? " clickable" : "";
       let style = {
         height: sideHeader[idx],
-        width: config.first_column_width + "px"
+        width: config.first_column_width + "px",
       };
       if (item.type !== "block" && !item.cls) {
         style.display = "none";
@@ -24,36 +23,43 @@ class FloatingSideHeader extends Component {
         span = (
           <span>
             {item.name}&nbsp;
-            <a data-tip={item.title} className="reactTooltip">&#9432;</a>
-            <ReactTooltip class='customeTheme' effect='solid' />
+            <a data-tip={item.title} className="reactTooltip">
+              &#9432;
+            </a>
+            <ReactTooltip className="customeTheme" effect="solid" />
           </span>
         );
-      }
-      else {
-        span = (<span>{item.name}</span>);
+      } else {
+        span = <span>{item.name}</span>;
       }
       let expand = "";
       if (item.type == "data" && item.rows) {
         let icon = values[idx + 1].cls ? "section-expand active" : "section-expand";
-        let s = { marginTop: ((sideHeader[idx] / 2) - 15 + 2) + "px" };
-        expand = (<a className={icon} style={s}></a>);
+        let s = { marginTop: sideHeader[idx] / 2 - 15 + 2 + "px" };
+        expand = <a className={icon} style={s}></a>;
       }
       if (item.rows) {
         return (
-          <div key={key} className={cls} style={style} onClick={() => this.props.expand(idx + 1, item.rows)}>{span}{expand}</div>
+          <div key={key} className={cls} style={style} onClick={() => this.props.expand(idx + 1, item.rows)}>
+            {span}
+            {expand}
+          </div>
         );
-      }
-      else {
+      } else {
         return (
-          <div key={key} className={cls} style={style}>{span}{expand}</div>
+          <div key={key} className={cls} style={style}>
+            {span}
+            {expand}
+          </div>
         );
       }
-
     });
     const first_column_style = { height: "37px", width: config.first_column_width + "px" };
     return (
       <div className="inner-fixed-header-column">
-        <div className="table-header" style={first_column_style}>Data Collected</div>
+        <div className="table-header" style={first_column_style}>
+          Data Collected
+        </div>
         {content}
       </div>
     );

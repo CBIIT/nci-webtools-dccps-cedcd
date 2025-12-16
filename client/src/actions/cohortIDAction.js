@@ -1,4 +1,4 @@
-import t from '../actionTypes'
+import t from "../actionTypes";
 /*
 const setSpecimenCounts = (countsObj) => ({
     type: t.setSpecimenCounts,
@@ -6,11 +6,11 @@ const setSpecimenCounts = (countsObj) => ({
 })
 */
 const setCohortId = (id) => ({
-    type: t.setCohortId,
-    value: id
-})
+  type: t.setCohortId,
+  value: id,
+});
 
 export default {
-   // setSpecimenCounts,
-    setCohortId
-}
+  // setSpecimenCounts,
+  setCohortId,
+};

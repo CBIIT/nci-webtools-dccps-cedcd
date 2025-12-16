@@ -88,7 +88,7 @@ DROP PROCEDURE IF EXISTS `SELECT_advanced_cohort` //
 
 CREATE PROCEDURE `SELECT_advanced_cohort`(
 		in `@gender` varchar(100),in `@age_info` varchar(100), in `@study_population` varchar(1000), 
-		in `@race` varchar(1000), in `@ethnicity` varchar(1000), 
+		in `@race` varchar(1000), in `@ethnicity` varchar(1000), in `@type` varchar(1000),
 		in `@category` varchar(1000),in `@collected_specimen` varchar(2000),in `@cancer` varchar(2000),
 		in booleanOperationBetweenField varchar(200), in booleanOperationWithInField varchar(200),
 		in columnName varchar(40), in columnOrder varchar(10),
@@ -103,6 +103,7 @@ BEGIN
     DECLARE len_study INT DEFAULT 0;
     DECLARE len_race INT DEFAULT 0;
     DECLARE len_ethnicity INT DEFAULT 0;
+	DECLARE len_type INT DEFAULT 0;
     DECLARE len_category INT DEFAULT 0;
     DECLARE len_specimen INT DEFAULT 0;
     DECLARE len_cancer INT DEFAULT 0;
@@ -119,6 +120,8 @@ BEGIN
     create temporary table IF not exists temp_race( val int );
     drop temporary table IF exists temp_ethnicity;
     create temporary table IF not exists temp_ethnicity( val int );
+	drop temporary table IF exists temp_type;
+    create temporary table IF not exists temp_type( val int );
     drop temporary table IF exists temp_category;
     create temporary table IF not exists temp_category( val int );
 	drop temporary table IF exists temp_cancer;
@@ -131,6 +134,7 @@ BEGIN
     set @cancer_info_null = 1;
     set @category_null = 1;
     set @ethnicity_null = 1;
+	set @type_null = 1;
 	set @race_null = 1;
     set @specimen_null = 1;
   
@@ -168,6 +172,21 @@ BEGIN
 		INSERT into temp_gender 
         SELECT cohort_id FROM cohort_basic gendercs WHERE gendercs.eligible_gender_id in (SELECT val FROM tempIntTable);
         -- assume OR and skip AND for gender/sex option (not applicable for male and female, 'All'(id 4) is being applied )
+	END IF;
+	
+    IF `@type` != "" then
+		set @type_null = 0;
+        call ConvertStrToTable(`@type`);
+		set @len_type = 1+length(`@type`) - length(replace(`@type`,',','')); 
+        set @andor = trim(reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',6)),',',1)));
+        IF @andor = "AND" then
+			INSERT into temp_type
+			SELECT id FROM cohort WHERE `type` in (SELECT val FROM tempStrTable)
+            GROUP BY id having sum(1) >= @len_type;
+		else
+			INSERT into temp_type
+			SELECT id FROM cohort WHERE `type` in (SELECT val FROM tempStrTable);
+        END IF;
 	END IF;
     
     set i = 0;
@@ -285,7 +304,7 @@ BEGIN
 			WHERE ld.category=vld.data_category and vld.id in (SELECT val FROM tempIntTable);
             SELECT count(distinct val) into @len_category  FROM temp_category_id;
 			-- set @len_category = 1+length(`@category`) - length(replace(`@category`,',','')); 
-			set @andor = trim(reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',6)),',',1)));
+			set @andor = trim(reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',7)),',',1)));
             IF locate("99", `@category`) > 0 then
 				set @cancer_info_null = 0;
             END IF;
@@ -322,7 +341,7 @@ BEGIN
     IF `@collected_specimen` != "" AND `@collected_specimen` REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$' then
         set @specimen_null = 0;
         -- set @len_specimen = 1+length(`@collected_specimen`) - length(replace(`@collected_specimen`,',','')); 
-        set @andor = trim(reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',7)),',',1)));
+        set @andor = trim(reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',8)),',',1)));
 		call ConvertIntToTable(`@collected_specimen`);
         drop temporary table IF exists temp_specimen_id;
 		create temporary table IF not exists temp_specimen_id( val int );
@@ -352,7 +371,7 @@ BEGIN
 		set @cancer_null = 0;
         call ConvertIntToTable(`@cancer`);
         set @len_cancer = 1+length(`@cancer`) - length(replace(`@cancer`,',','')); 
-        set @andor = trim(reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',8)),',',1)));
+        set @andor = trim(reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',9)),',',1)));
         IF @andor  = "OR" then
 			INSERT into temp_cancer 
             SELECT distinct cohort_id FROM cancer_count WHERE cancer_id in (SELECT distinct val FROM tempIntTable) and cancer_counts > 0 ;
@@ -372,7 +391,7 @@ BEGIN
     END IF;
     
     IF @globalANDOR = 'AND' THEN 
-		SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,ch.publish_time AS update_time,
+		SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym, ch.type, ch.outdated, cs.cohort_web_site,ch.publish_time,
 			sum(ec.enrollment_counts) AS enrollment_total 
 		FROM cohort_basic cs 
 		JOIN enrollment_count ec ON cs.cohort_id = ec.cohort_id  
@@ -382,14 +401,17 @@ BEGIN
 		and ( @ageinfo_null = 1 OR cs.cohort_id in ( SELECT val FROM temp_ageinfo) )
 		and ( @race_null = 1 OR cs.cohort_id in (SELECT val FROM temp_race) )
 		and ( @ethnicity_null = 1 OR cs.cohort_id in (SELECT val FROM temp_ethnicity) )
+		and ( @type_null = 1 OR cs.cohort_id in (SELECT val FROM temp_type) )
 		and ( @category_null = 1 OR cs.cohort_id in (SELECT val FROM temp_category) )
 		and ( @specimen_null = 1 OR cs.cohort_id in ( SELECT val FROM temp_specimen) )
 		and ( @cancer_null = 1 OR cs.cohort_id in ( SELECT val FROM temp_cancer  ) )
-		group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,ch.publish_time 
+		group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,ch.type, ch.outdated, ch.publish_time 
 		order by CASE WHEN lower(columnOrder) = 'asc' then
 			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
-				 WHEN columnName = 'update_time' THEN  ch.publish_time
+				 WHEN columnName = 'cohort_type' THEN ch.type
+				 WHEN columnName = 'outdated' THEN ch.outdated
+				 WHEN columnName = 'publish_time' THEN  ch.publish_time
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
 				ELSE cs.cohort_name  END 
 			 END ASC,
@@ -400,7 +422,9 @@ BEGIN
 			 CASE  WHEN lower(columnOrder) = 'desc' then
 				 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
-				 WHEN columnName = 'update_time' THEN  ch.publish_time
+				 WHEN columnName = 'cohort_type' THEN ch.type
+				 WHEN columnName = 'outdated' THEN ch.outdated
+				 WHEN columnName = 'publish_time' THEN  ch.publish_time
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
 				ELSE cs.cohort_name  END 
 			 END DESC,
@@ -411,7 +435,7 @@ BEGIN
         cs.cohort_name
     limit page_index, page_size;
     ELSE 
-        SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,ch.publish_time AS update_time,
+        SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym, ch.type, ch.outdated, cs.cohort_web_site,ch.publish_time,
 		sum(ec.enrollment_counts) AS enrollment_total 
 		FROM cohort_basic cs 
 		JOIN enrollment_count ec ON cs.cohort_id = ec.cohort_id  
@@ -421,14 +445,17 @@ BEGIN
 			OR ( @ageinfo_null = 1 OR cs.cohort_id in ( SELECT val FROM temp_ageinfo) )
 			OR ( @race_null = 1 OR cs.cohort_id in (SELECT val FROM temp_race) )
 			OR ( @ethnicity_null = 1 OR cs.cohort_id in (SELECT val FROM temp_ethnicity) )
+			OR ( @type_null = 1 OR cs.cohort_id in (SELECT val FROM temp_type) )
 			OR ( @category_null = 1 OR cs.cohort_id in (SELECT val FROM temp_category) )
 			OR ( @specimen_null = 1 OR cs.cohort_id in ( SELECT val FROM temp_specimen) )
 			OR ( @cancer_null = 1 OR cs.cohort_id in ( SELECT val FROM temp_cancer  ) ) )
-		group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym, cs.cohort_web_site, ch.publish_time 
+		group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym, cs.cohort_web_site, ch.type, ch.outdated, ch.publish_time 
 		order by CASE WHEN lower(columnOrder) = 'asc' then
 			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
-				 WHEN columnName = 'update_time' THEN  ch.publish_time
+				 WHEN columnName = 'cohort_type' THEN ch.type
+				 WHEN columnName = 'outdated' THEN ch.outdated
+				 WHEN columnName = 'publish_time' THEN  ch.publish_time
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
 				ELSE cs.cohort_name  END 
 			 END ASC,
@@ -439,7 +466,9 @@ BEGIN
 			 CASE  WHEN lower(columnOrder) = 'desc' then
 			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
-				 WHEN columnName = 'update_time' THEN  ch.publish_time
+				 WHEN columnName = 'cohort_type' THEN ch.type
+				 WHEN columnName = 'outdated' THEN ch.outdated
+				 WHEN columnName = 'publish_time' THEN  ch.publish_time
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
 				ELSE cs.cohort_name  END 
 			 END DESC,
@@ -494,7 +523,7 @@ BEGIN
 		call ConvertIntToTable (cohort_info);
     END IF;
     
-	SELECT cs.*,lg.gender, ci.ci_confirmed_cancer_year,m.mort_year_mortality_followup 
+	SELECT cs.*,lg.gender, ci.ci_confirmed_cancer_year,m.mort_year_mortality_followup, ch.type
 	FROM cohort_basic cs 
     JOIN cancer_info ci ON cs.cohort_id = ci.cohort_id 
     JOIN mortality m ON cs.cohort_id = m.cohort_id
@@ -612,7 +641,7 @@ DROP PROCEDURE IF EXISTS `SELECT_cohort_list` //
 
 CREATE PROCEDURE `SELECT_cohort_list`()
 BEGIN
-	SELECT cs.cohort_id AS id, cs.cohort_name, cs.cohort_acronym, cs.cohort_type FROM cohort_basic cs 
+	SELECT cs.cohort_id AS id, cs.cohort_name, cs.cohort_acronym, ch.type, ch.outdated FROM cohort_basic cs 
 	JOIN cohort ch ON ch.id = cs.cohort_id
 	WHERE lower(ch.status)='published' ORDER BY cs.cohort_acronym;
 END //
@@ -625,7 +654,22 @@ DROP PROCEDURE IF EXISTS `SELECT_all_cohort` //
 
 CREATE PROCEDURE `SELECT_all_cohort`()
 BEGIN
-	SELECT id, name, type, acronym AS cohort_acronym FROM cohort ORDER BY acronym;
+	SELECT id, name, type, status, acronym AS cohort_acronym FROM cohort ORDER BY acronym;
+END //
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: SELECT_all_cohort_edit
+-- -----------------------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS `SELECT_all_cohort_edit` //
+
+CREATE PROCEDURE `SELECT_all_cohort_edit`()
+BEGIN
+	SELECT distinct ch.id, name, type, status, ch.outdated, cum.user_id, acronym AS cohort_acronym, cal.notes
+	FROM cohort ch 
+	LEFT JOIN cohort_user_mapping cum ON cum.cohort_acronym = ch.acronym
+	JOIN cohort_activity_log cal on cal.cohort_id = ch.id
+	ORDER BY cohort_acronym;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -654,7 +698,7 @@ DROP PROCEDURE IF EXISTS `SELECT_admin_info` //
 CREATE PROCEDURE `SELECT_admin_info`(in targetID int)
 BEGIN
 	set @cohort_id = targetID;
-    SELECT distinct first_name, last_name, email, name, acronym 
+    SELECT distinct first_name, last_name, email, name, type, acronym 
 	FROM user x
     JOIN cohort y 
     WHERE access_level='SystemAdmin' and x.active_status='Y' and y.id= @cohort_id and x.id >1 ;
@@ -718,7 +762,7 @@ END //
 DROP PROCEDURE IF EXISTS `SELECT_cohort` //
 
 CREATE PROCEDURE `SELECT_cohort`(in `@gender` varchar(100),in `@age_info` varchar(100), in `@study_population` varchar(1000), 
-									in `@race` varchar(1000), in `@ethnicity` varchar(1000), 
+									in `@race` varchar(1000), in `@ethnicity` varchar(1000), in `@type` varchar(1000),
 									in `@category` varchar(1000),in `@collected_specimen` varchar(2000),in `@cancer` varchar(2000),
                                     in columnName varchar(40), in columnOrder varchar(10),
 									in pageIndex int, in pageSize int)
@@ -740,6 +784,8 @@ BEGIN
     create temporary table IF not exists temp_race( val int );
     drop temporary table IF exists temp_ethnicity;
     create temporary table IF not exists temp_ethnicity( val int );
+	drop temporary table IF exists temp_type;
+    create temporary table IF not exists temp_type( val VARCHAR(200) );
     drop temporary table IF exists temp_category;
     create temporary table IF not exists temp_category( val int );
 	drop temporary table IF exists temp_cancer;
@@ -753,6 +799,7 @@ BEGIN
     set @category_null = 1;
     set @ethnicity_null = 1;
 	set @race_null = 1;
+	set @type_null = 1;
     set @specimen_null = 1;
    
     -- expected input is '' or looks like '1,2,3' (foreign key id)
@@ -770,6 +817,12 @@ BEGIN
 		set @race_null = 0 ;
 		call ConvertIntToTable(`@race`);
         INSERT into temp_race SELECT distinct val FROM tempIntTable;
+	END IF;
+
+	IF `@type` != "" then
+		set @type_null = 0 ;
+		call ConvertStrToTable(`@type`);
+        INSERT into temp_type SELECT distinct val FROM tempStrTable;
 	END IF;
     
     IF `@ethnicity` != "" AND `@ethnicity` REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'  then
@@ -869,7 +922,7 @@ BEGIN
 			DEALLOCATE PREPARE stmt;
         END IF;
     END IF;
-    
+
     IF pageIndex > -1 THEN 
         set page_size = IFNULL(pageSize,50);
         set page_index = pageIndex;
@@ -878,13 +931,14 @@ BEGIN
         set page_index = 0;
     END IF;
  
-	SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site, ch.publish_time AS update_time, 
+	SELECT sql_calc_found_rows cs.cohort_id AS id, cs.cohort_name, cs.cohort_acronym, ch.type, cs.cohort_web_site, ch.outdated, ch.publish_time, 
 	 sum(ec.enrollment_counts) AS enrollment_total 
 	FROM cohort_basic cs 
     JOIN enrollment_count ec ON cs.cohort_id = ec.cohort_id
     JOIN cohort ch ON ch.id = cs.cohort_id
 	WHERE lower(ch.status)='published' 
     and ( @gender_null = 1 OR cs.eligible_gender_id in (SELECT val FROM temp_gender) )
+	and ( @type_null = 1 OR ( ch.type in (SELECT val FROM temp_type )) )
     and  cs.cohort_id in (
 			SELECT cohort_id FROM enrollment_count WHERE 
             ( @race_null = 1 OR ( enrollment_counts > 0  and race_id in (SELECT val FROM temp_race )) )
@@ -903,11 +957,13 @@ BEGIN
 	and ( @ageinfo_null = 1 OR cs.cohort_id in (SELECT val FROM temp_ageinfo) )
 	and ( @specimen_null = 1 OR cs.cohort_id in (SELECT val FROM temp_specimen) )
     and ( @cancer_null = 1 OR cs.cohort_id in (SELECT cohort_id FROM cancer_count WHERE cancer_id in (SELECT val FROM temp_cancer ) and cancer_counts > 0 ) )
-	group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym, cs.cohort_web_site, ch.publish_time  
+	group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym, ch.type, cs.cohort_web_site, ch.publish_time, ch.outdated
     ORDER BY CASE WHEN lower(columnOrder) = 'asc' then
 			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
-				 WHEN columnName = 'update_time' THEN  ch.publish_time
+				 WHEN columnName = 'cohort_type' THEN ch.type
+				 WHEN columnName = 'publish_time' THEN  ch.publish_time
+				 WHEN columnName = 'outdated' THEN  ch.outdated
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
 				ELSE cs.cohort_name  END 
 			 END ASC,
@@ -918,7 +974,9 @@ BEGIN
         CASE WHEN lower(columnOrder) = 'desc' then
 			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
-				 WHEN columnName = 'update_time' THEN  ch.publish_time 
+				 WHEN columnName = 'cohort_type' THEN ch.type
+				 WHEN columnName = 'publish_time' THEN  ch.publish_time 
+				 WHEN columnName = 'outdated' THEN  ch.outdated
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
 				ELSE cs.cohort_name  END 
 		 END DESC,
@@ -1939,7 +1997,7 @@ BEGIN
     END IF;
     
 	SELECT sql_calc_found_rows r.* FROM (
-    SELECT ch.id, ch.name, ch.acronym,ch.status,l_status.id AS status_id, ch.document_ver as ver,
+    SELECT ch.id, ch.name, ch.acronym, ch.type, ch.outdated, ch.status,l_status.id AS status_id, ch.document_ver as ver,
 		concat(u1.first_name, ' ', u1.last_name) create_by, 
 		(	case
 			 WHEN lower(ch.status) in ('submitted', 'in review','published', 'rejected') and submit_by =1 THEN 'SystemAdmin'
@@ -1961,10 +2019,12 @@ BEGIN
 	CASE WHEN lower(columnOrder) = 'asc' then
 		CASE WHEN columnName = 'name' THEN  r.name
 			 WHEN columnName = 'acronym' THEN r.acronym
+			 WHEN columnName = 'type' THEN r.type
 			 WHEN columnName = 'status' THEN  r.status
 			 WHEN columnName = 'ver' THEN  cast(r.ver as signed)
 			 WHEN columnName = 'publish_by' THEN r.submit_by
              WHEN columnName = 'update_time' THEN STR_TO_DATE(r.update_time, '%m/%d/%Y') 
+			 WHEN columnName = 'outdated' then r.outdated
 			 WHEN columnName = 'action' THEN r.action
 			ELSE r.name 
 		END 
@@ -1972,10 +2032,12 @@ BEGIN
     CASE WHEN lower(columnOrder) = 'desc' then
 		CASE WHEN columnName = 'name' THEN  r.name
 			 WHEN columnName = 'acronym' THEN r.acronym
+			 WHEN columnName = 'type' THEN r.type
 			 WHEN columnName = 'status' THEN  r.status
 			 WHEN columnName = 'ver' THEN  cast(r.ver as signed)
 			 WHEN columnName = 'publish_by' THEN r.submit_by
              WHEN columnName = 'update_time' THEN STR_TO_DATE(r.update_time, '%m/%d/%Y') 
+			 WHEN columnName = 'outdated' then r.outdated
              WHEN columnName = 'action' THEN r.action
 			ELSE r.name 
 		END 
@@ -2000,7 +2062,6 @@ BEGIN
 		-- cohort_id
         cohort_name
         ,cohort_acronym
-		,cohort_type
         ,coalesce(cohort_web_site, '') AS cohort_web_site
         -- ,date_format(date_completed, '%Y-%m-%dT%H:%i:%s.000Z') AS completionDate
         ,clarification_contact
@@ -3425,6 +3486,70 @@ BEGIN
  END //
 
 -- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: update_cohort
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `update_cohort` //
+
+CREATE PROCEDURE `update_cohort`(in info JSON)
+BEGIN
+	DECLARE i INT DEFAULT 0;
+	DECLARE flag INT DEFAULT 1;
+
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+	BEGIN
+		SET flag = 0;
+		GET STACKED DIAGNOSTICS CONDITION 1
+			@p1 = RETURNED_SQLSTATE, @p2 = MESSAGE_TEXT;
+		ROLLBACK;
+		SELECT flag AS success, @p1, @p2;
+	END;
+
+	START TRANSACTION;
+		BEGIN
+			SET @id = JSON_UNQUOTE(JSON_EXTRACT(info, '$.id'));
+			SET @cohortName = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName'));
+			SET @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
+			SET @cohortType = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortType'));
+			SET @outdated = JSON_EXTRACT(info, '$.outdated')=true;
+			SET @notes = JSON_UNQUOTE(JSON_EXTRACT(info, '$.notes'));
+			SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
+
+			SELECT value into @latest_ver FROM lu_config WHERE type = 'questionnaire ver' and active = 1 order by id desc LIMIT 1;
+			IF (@latest_ver IS NULL or @latest_status = '') THEN SET @latest_status='1.0'; END IF;
+
+			SELECT acronym INTO @oldAcronym FROM cohort WHERE id = @id;
+			DELETE FROM cohort_user_mapping
+			WHERE cohort_acronym = @oldAcronym;
+
+			UPDATE cohort
+			SET name = @cohortName,
+				acronym = @cohortAcronym,
+				type = @cohortType,
+				document_ver = @latest_ver, 
+				update_time = now(), 
+				outdated = @outdated
+			WHERE id = @id;
+
+			UPDATE cohort_activity_log
+			SET notes = @notes
+            WHERE cohort_id = @id;
+
+			UPDATE cohort_basic 
+			SET cohort_name = @cohortName, 
+				cohort_acronym = @cohortAcronym
+			WHERE cohort_id = @id;
+
+			WHILE i < JSON_LENGTH(@owners) DO
+			INSERT into cohort_user_mapping (cohort_acronym, user_id,active,update_time) 
+				values(@cohortAcronym,JSON_EXTRACT(@owners,concat('$[',i,']')),'Y',NOW());
+			SELECT i + 1 INTO i;	
+			END WHILE;
+		END;
+	COMMIT;
+	SELECT flag AS success;
+END //
+
+-- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: insert_new_cohort
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `insert_new_cohort` //
@@ -3438,28 +3563,35 @@ BEGIN
     
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
-      SET flag = 0;
-      ROLLBACK;
-      SELECT flag AS success;
+		SET flag = 0;
+		GET STACKED DIAGNOSTICS CONDITION 1
+			@p1 = RETURNED_SQLSTATE, @p2 = MESSAGE_TEXT;
+		ROLLBACK;
+		SELECT flag AS success, @p1, @p2;
 	END;
 
     START TRANSACTION;
 		BEGIN
 			set @cohortName = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName'));
 			set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
+			set @cohortType = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortType'));
             set @createBy = JSON_UNQUOTE(JSON_EXTRACT(info, '$.createBy'));
 			set @notes = JSON_UNQUOTE(JSON_EXTRACT(info, '$.notes'));
+			SET @outdated = JSON_EXTRACT(info, '$.outdated')=true;
+			SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
 
 			SELECT value into @latest_ver FROM lu_config WHERE type = 'questionnaire ver' and active = 1 order by id desc LIMIT 1;
 			
 			IF (@latest_ver IS NULL or @latest_status = '') THEN set @latest_status='1.0'; END IF;
 			
-			INSERT into cohort (name,acronym,type,status,document_ver,create_by,update_time) values(@cohortName,@cohortAcronym,"test","new",@latest_ver, @createBy,now());
+			INSERT into cohort 
+				(name, acronym, type, status, document_ver, submit_by, create_by, update_time, outdated) 
+				values(@cohortName, @cohortAcronym, @cohortType, "new", @latest_ver, @createBy, @createBy, now(), @outdated);
             set new_id = last_insert_id();
-			INSERT into cohort_activity_log (cohort_id, user_id, activity, notes ) values(new_id, @createBy, 'new', @notes);
+			INSERT into cohort_activity_log 
+				(cohort_id, user_id, activity, notes ) 
+				values(new_id, @createBy, 'new', @notes);
             
-			SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
-
 			call populate_cohort_tables(new_id, @cohortName, @cohortAcronym, popSuccess);
             
 			IF popSuccess < 1 THEN
@@ -3470,7 +3602,9 @@ BEGIN
 			END IF;
             
 			WHILE i < JSON_LENGTH(@owners) DO
-				INSERT into cohort_user_mapping (cohort_acronym, user_id,active,update_time) values(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym')),JSON_EXTRACT(@owners,concat('$[',i,']')),'Y',NOW());
+				INSERT into cohort_user_mapping 
+					(cohort_acronym, user_id, active, update_time) 
+					values(@cohortAcronym, JSON_EXTRACT(@owners, concat('$[',i,']')), 'Y', NOW());
 				SELECT i + 1 INTO i;	
 			 END WHILE;
 		END;

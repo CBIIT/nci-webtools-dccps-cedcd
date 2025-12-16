@@ -1,12 +1,9 @@
-import React, { Component } from 'react';
-import Tab from './Tab'
+import React, { Component } from "react";
+import Tab from "./Tab";
 
 class TabBoard extends Component {
-
-  renderTab(i){
-    return (
-      <Tab value={i} currTab={this.props.currTab} onClick={() => this.props.onClick(i)}/>
-    );
+  renderTab(i) {
+    return <Tab value={i} currTab={this.props.currTab} onClick={() => this.props.onClick(i)} />;
   }
 
   render() {

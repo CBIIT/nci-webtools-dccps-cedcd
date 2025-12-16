@@ -23,20 +23,20 @@ const cedcd_settings = {
   sessionTimeoutMinutes: 60,
   maxSessionAge: process.env.SESSION_MAX_AGE || 360000, // convert minutes to ms
 
-  mail: {
-    host: process.env.EMAIL_SMTP_HOST || "mailfwd.nih.gov",
-    port: process.env.EMAIL_SMTP_PORT || 25,
-    from: process.env.EMAIL_SMTP_FROM || "cedcdWebAdmin@nih.gov",
-    to: process.env.EMAIL_SMTP_TO || "chao.zhang3@nih.gov",
-    tls: {
-      // do not fail on invalid certs
-      rejectUnauthorized: false,
+    mail:{
+        host: process.env.EMAIL_SMTP_HOST||'mailfwd.nih.gov',
+        port: process.env.EMAIL_SMTP_PORT||25,
+        from: process.env.EMAIL_SMTP_FROM||'cedcdWebAdmin@nih.gov',
+        to:process.env.EMAIL_SMTP_TO||"chao.zhang3@nih.gov",
+        "tls":{
+            // do not fail on invalid certs
+            "rejectUnauthorized": false
+        },
+        logger:true,
+        debug:true,
     },
-    logger: true,
-    debug: true,
-  },
-  log_level: process.env.LOG_LEVEL || "debug",
-  env: process.env.APP_TIER || "dev",
+    log_level:process.env.LOG_LEVEL||'debug',
+    APP_TIER: process.env.APP_TIER || "dev",
 };
 
 export default cedcd_settings;

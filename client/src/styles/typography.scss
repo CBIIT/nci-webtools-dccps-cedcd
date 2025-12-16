@@ -8,12 +8,15 @@ body {
   line-height: 18px;
 }
 /* Headings */
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
 }
 h1 {
   font-size: 150%;
   line-height: 180%;
-  color: #62269E;
+  color: #62269e;
 }
 #header h1 {
   margin: 0;
@@ -27,10 +30,10 @@ h1 {
 h2 {
   font-size: 130%;
   line-height: 150%;
-  color: #135B5D;
+  color: #135b5d;
 }
 #usr-col-2 h2 {
-  margin-top:0;
+  margin-top: 0;
 }
 #cedcd-home-results h2.col-header {
   font-size: 105%;
@@ -50,7 +53,8 @@ h3 {
 .filter-block h3 {
   margin: 0 0 1rem 0;
 }
-#cedcd-home-filter .w-accordion h3 { /* only on cohortSelect.aspx page, should probably be h4s */
+#cedcd-home-filter .w-accordion h3 {
+  /* only on cohortSelect.aspx page, should probably be h4s */
   font-size: 1.6rem;
   font-weight: 400;
   color: #525349;
@@ -64,7 +68,7 @@ h3 {
 }
 #cedcd-home-filter .w-accordion h3:hover {
   text-decoration: underline;
-  color: #135B5D;
+  color: #135b5d;
 }
 #cedcd-home-filter .w-accordion h3.active {
   background-position: 1% 8px;
@@ -73,7 +77,7 @@ h3 {
   margin-top: 0;
   margin-bottom: 0;
   padding: 0 0 0 0;
-  color: #135B5D;
+  color: #135b5d;
 }
 .cohortInfoBody h3 {
   font-weight: normal;
@@ -83,23 +87,26 @@ h3 {
   margin-top: 30px;
   margin-bottom: 0;
   padding: 0;
-  color: #135B5D;
+  color: #135b5d;
 }
 .dropdown-menu h4 {
   padding-left: 1rem;
 }
-.pg-title { /* typically H1 */
-  color: #62269E;
-  font-size: 3.0rem;
+.pg-title {
+  /* typically H1 */
+  color: #62269e;
+  font-size: 3rem;
   line-height: 1;
   font-weight: bold;
   margin-top: 0;
 }
-.panel-title { /* Typically H2 */
+.panel-title {
+  /* Typically H2 */
   color: #fff;
 }
-.table-title { /* Typically H2, only on compare.aspx) */
-  color: #135B5D;
+.table-title {
+  /* Typically H2, only on compare.aspx) */
+  color: #135b5d;
   font-size: 1.6rem;
   font-weight: bold;
   margin-top: 0;
@@ -138,10 +145,10 @@ li {
   background: none;
 }
 
-#footer .footer-nav li a{
-  color:white;
+#footer .footer-nav li a {
+  color: white;
   text-decoration: none;
-  border-bottom:none;
+  border-bottom: none;
 }
 #cedcd-home-filter .w-accordion ul {
   list-style: none;
@@ -151,8 +158,8 @@ li {
   display: none;
 }
 #cedcd-home-filter .w-accordion ul.picked-options {
-    display: block;
-    padding-left: 3rem;
+  display: block;
+  padding-left: 3rem;
 }
 #cedcd-home-filter .w-accordion ul li {
   line-height: 118%;
@@ -176,10 +183,10 @@ li {
   padding: 0 0 0 0;
   margin: -3px 0 0 4px;
   vertical-align: top;
-  background: rgba(100,200,100,0);
+  background: rgba(100, 200, 100, 0);
 }
 ul.table-controls {
-  padding:0;
+  padding: 0;
   margin: 0;
 }
 .table-controls li {
@@ -200,15 +207,17 @@ ul.results-nav li {
   line-height: 125%;
   margin-bottom: 8px;
 }
-#mainNavBar li .arrow.down, ul#mainNav li .arrow.down {
-  border-top:0px solid transparent;
+#mainNavBar li .arrow.down,
+ul#mainNav li .arrow.down {
+  border-top: 0px solid transparent;
   position: absolute;
-  top:21px;
+  top: 21px;
   transition: all 0.4s ease-in-out;
 }
 
-
-#mainNavBar li:hover .arrow.down, #mainNavBar li.active .arrow.down, ul#mainNav li.valid .arrow.down{
+#mainNavBar li:hover .arrow.down,
+#mainNavBar li.active .arrow.down,
+ul#mainNav li.valid .arrow.down {
   width: 0;
   height: 0;
   border-left: 10px solid transparent;
@@ -218,13 +227,13 @@ ul.results-nav li {
   top: 31px;
 }
 ul#mainNav {
-  margin:0;
-  padding:0;
+  margin: 0;
+  padding: 0;
   list-style: none;
   display: flex;
   justify-content: center;
   align-items: stretch;
-  height:35px;
+  height: 35px;
 }
 
 .loggedin ul#mainNav {
@@ -235,10 +244,10 @@ ul#mainNav li {
   display: flex;
   justify-content: center;
   align-items: stretch;
-  position: relative; 
+  position: relative;
 }
 
-ul#mainNave li.icon{
+ul#mainNave li.icon {
   padding: 0;
   margin: 0;
 }
@@ -246,20 +255,23 @@ ul#mainNave li.icon{
 .loggedin ul#mainNav li {
   display: none;
 }
-.loggedin ul#mainNav li#liLogin,.loggedin ul#mainNav li#liHelp {
+.loggedin ul#mainNav li#liLogin,
+.loggedin ul#mainNav li#liHelp {
   display: flex;
   flex-grow: 0;
 }
-li#liLogin, a#user_profile, a#user_logout {
+li#liLogin,
+a#user_profile,
+a#user_logout {
   cursor: pointer;
 }
-.filter-component-block{
-  width:100%;
+.filter-component-block {
+  width: 100%;
 }
-.filter-component-div{
-  width:100%;
+.filter-component-div {
+  width: 100%;
 }
-.filter-component:focus{
+.filter-component:focus {
   outline: none;
 }
 .filter-component ul {
@@ -278,16 +290,18 @@ li#liLogin, a#user_profile, a#user_logout {
   list-style-type: none;
 }
 .filter-component ul.picked-options {
-  padding-left:1rem;
+  padding-left: 1rem;
 }
 .filter-component ul.picked-options li {
-  text-indent:-1rem;
+  text-indent: -1rem;
 }
-#cohort_list_container ul, #cancer_options_list ul, #specimen_options_list ul {
+#cohort_list_container ul,
+#cancer_options_list ul,
+#specimen_options_list ul {
   display: inline-block;
   vertical-align: top;
   margin: 0px 5px 0px 10px;
-  padding:0 0 0 3rem;
+  padding: 0 0 0 3rem;
   list-style-type: none;
 }
 
@@ -307,7 +321,7 @@ p.welcome {
   font-style: italic;
 }
 #footer p {
-  color: #135B5D;
+  color: #135b5d;
   text-align: center;
   width: 100%;
 }
@@ -324,7 +338,7 @@ p.text-req-citation {
   text-align: center;
   vertical-align: bottom;
   color: White;
-  border-top: 1px #65CBC9 solid;
+  border-top: 1px #65cbc9 solid;
 }
 #table-intro p {
   font-size: 100%;
@@ -370,26 +384,26 @@ a:hover {
 .table-pager a {
   font-size: 90%;
   color: #525349;
-  background-color: rgba(255,255,255,1);
+  background-color: rgba(255, 255, 255, 1);
   display: inline-block;
   margin: 0 2px 4px 2px;
   padding: 2px 6px;
   border-radius: 4px 4px 4px 4px;
-  border: 1px solid #66665D;
+  border: 1px solid #66665d;
   overflow: hidden;
   cursor: pointer;
   transition: background-color 400ms ease-out;
 }
 .table-pager a:hover {
-  background-color: rgba(255,255,255,0);
-  border: 1px solid #E8E6E4;
+  background-color: rgba(255, 255, 255, 0);
+  border: 1px solid #e8e6e4;
 }
 .table-pager a.arrow {
   padding: 4px 6px;
   border-radius: none;
   border: none;
   transition: opacity 300ms ease-out;
-  color: rgba(0,0,0,0);
+  color: rgba(0, 0, 0, 0);
 }
 .table-pager a.arrow.prev {
   background: url(/assets/img/bg_arrow_prev.png) no-repeat 95%;
@@ -398,8 +412,8 @@ a:hover {
 }
 
 .table-pager a.arrow.prev-gray {
-  cursor:none !important;
-  color:gray !important;
+  cursor: none !important;
+  color: gray !important;
 }
 .table-pager a.arrow.next {
   background: url(/assets/img/bg_arrow_next.png) no-repeat;
@@ -408,21 +422,21 @@ a:hover {
 }
 
 .table-pager a.arrow.next-gray {
-  cursor:none !important;
-  color:gray !important;
+  cursor: none !important;
+  color: gray !important;
 }
 .table-pager a.arrow:hover {
-  opacity: .4;
+  opacity: 0.4;
 }
 .table-pager a.active {
   color: #fff;
-  background-color: rgba(103,102,93,1);
+  background-color: rgba(103, 102, 93, 1);
 }
 .table-pager a.active:hover {
-  background-color: rgba(103,102,93,.5);
+  background-color: rgba(103, 102, 93, 0.5);
 }
 .cedcd-table a.cohort-profile {
-  color: #135B5D;
+  color: #135b5d;
   font-size: 80%;
   line-height: 130%;
   text-align: left;
@@ -435,27 +449,39 @@ a:hover {
   padding: 6px 2px 3px 32px;
   display: block;
   border-radius: 8px 8px 8px 8px;
-  border: #A1B0B3 1px solid;
+  border: #a1b0b3 1px solid;
   transition: background-color 200ms ease-out;
 }
 .cedcd-table a:hover.cohort-profile {
   color: #ffffff;
-  background: #135B5D url(/assets/img/bg_cohort_profile.png) no-repeat 8px center;
-  border: #135B5D 1px solid;
+  background: #135b5d url(/assets/img/bg_cohort_profile.png) no-repeat 8px center;
+  border: #135b5d 1px solid;
 }
-.cedcd-table th.sortable a, #cohort_name a, #cohort_acronym a, #date_form_completed a, #status_timestamp a, #status a, th.sortable a {
+.cedcd-table th.sortable a,
+#cohort_name a,
+#cohort_acronym a,
+#date_form_completed a,
+#status_timestamp a,
+#status a,
+th.sortable a {
   display: block;
   padding: 1.5rem;
 }
-.cedcd-table th.sortable a .glyphicon, #cohort_name a .glyphicon, #cohort_acronym a .glyphicon, #date_form_completed a .glyphicon,  #status_timestamp a .glyphicon, #status a .glyphicon, th.sortable a .glyphicon {
+.cedcd-table th.sortable a .glyphicon,
+#cohort_name a .glyphicon,
+#cohort_acronym a .glyphicon,
+#date_form_completed a .glyphicon,
+#status_timestamp a .glyphicon,
+#status a .glyphicon,
+th.sortable a .glyphicon {
   float: right;
 }
 .cedcd-table th.sortable a .glyphicon-active {
-  color:rgba(103,102,93,1);
+  color: rgba(103, 102, 93, 1);
 }
 #prof-main a {
   display: block;
-  color: #62269E;
+  color: #62269e;
   text-decoration: underline;
 }
 
@@ -475,11 +501,11 @@ a:hover {
 }
 #prof-header a .glyphicon {
   padding-right: 0.5rem;
-  font-size:13px;
+  font-size: 13px;
 }
 .content-nav a {
   display: block;
-  color: #62269E;
+  color: #62269e;
   text-decoration: underline;
 }
 .content-nav a:hover {
@@ -497,11 +523,11 @@ a:hover {
 }
 .content-nav a .glyphicon {
   padding-right: 0.5rem;
-  font-size:13px;
+  font-size: 13px;
 }
 .links-list li a {
   font-size: 98%;
-  color: #62269E;
+  color: #62269e;
   text-decoration: underline;
   background: none;
   transition: all 200ms ease-out;
@@ -513,7 +539,7 @@ a:hover {
   font-size: 90%;
   letter-spacing: 1px;
   text-decoration: none !important;
-  background: rgba(98,52,148,1.00);
+  background: rgba(98, 52, 148, 1);
   color: #fff !important;
   margin: 10px 0 0 0;
   display: inline-block;
@@ -523,13 +549,13 @@ a:hover {
 }
 .cohortWebsite a:hover {
   text-decoration: none !important;
-  background: rgba(98,52,148,.7);
+  background: rgba(98, 52, 148, 0.7);
 }
 #piList a {
   padding-left: 25px;
 }
 #about-main #about-col-1 a {
-  color: #135B5D;
+  color: #135b5d;
   text-decoration: none;
 }
 #about-main #about-col-1 a:hover {
@@ -554,8 +580,9 @@ ul#mainNav li a {
   align-items: center;
   transition: all 0.4s ease-in-out;
 }
-.loggedin ul#mainNav li#liLogin a, .loggedin ul#mainNav li#liHelp a {
-  padding:0 3rem;
+.loggedin ul#mainNav li#liLogin a,
+.loggedin ul#mainNav li#liHelp a {
+  padding: 0 3rem;
   background-color: #01857b;
 }
 ul#mainNav li a:hover {
@@ -584,24 +611,24 @@ ul#mainNav li#MainNav1_liHelp a:hover {
   border-radius: 0.5rem 0 0 0.5rem;
 }
 #helpFlag a:hover {
-  background-color: rgba(0, 134, 183, .5);
+  background-color: rgba(0, 134, 183, 0.5);
 }
 ul.results-nav li a {
   color: #ffffff;
   font-size: 100%;
   font-weight: 400;
-  letter-spacing: .5px;
+  letter-spacing: 0.5px;
   text-align: left;
   background: url(/assets/img/bg_results_nav.png) no-repeat 100% center;
   margin: 0 6% 2px 6%;
   padding: 8px 15% 8px 0;
-  border-bottom: #457F7F 1px solid;
+  border-bottom: #457f7f 1px solid;
   display: block;
   list-style: none;
   transition: all 200ms ease-in;
 }
 ul.results-nav li.last-item a {
-  border-bottom: #135B5D 1px solid;
+  border-bottom: #135b5d 1px solid;
 }
 ul.results-nav li a:hover {
   background: url(/assets/img/bg_results_nav_hover.png) no-repeat 115% center;
@@ -613,13 +640,13 @@ ul.results-nav li.active a {
 }
 ul.results-nav li a.inactive {
   font-weight: 700;
-  color: #66665D;
+  color: #66665d;
   background: #e7e7e5 no-repeat;
-  border: #91908A 1px solid;
+  border: #91908a 1px solid;
 }
 ul.results-nav li a.inactive:hover {
   background: #e7e7e5;
-  border: #91908A 1px solid;
+  border: #91908a 1px solid;
   padding: 12px 10%;
   cursor: default;
 }
@@ -652,9 +679,9 @@ a:hover.expand-link {
 }
 #contactFlag a {
   display: block;
-  color:#fff;
-  padding:1rem;
-  background-color:#135B5D;
+  color: #fff;
+  padding: 1rem;
+  background-color: #135b5d;
 }
 #contactFlag a:hover {
   background-color: #01857b;
@@ -662,34 +689,37 @@ a:hover.expand-link {
 }
 
 thead th a:hover {
-  color:inherit;
+  color: inherit;
   text-decoration: underline;
 }
 /*** nav tab links ***/
 .nav-tabs > li > a {
-  background-color: #eee;  
+  background-color: #eee;
 }
-.nav > li > a:hover, .nav > li > a:focus {
+.nav > li > a:hover,
+.nav > li > a:focus {
   background-color: #009589;
   color: #fff;
 }
-.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
-  color:#fff;
-  background-color: #135B5D;
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  color: #fff;
+  background-color: #135b5d;
 }
 /*** end nav tab link **/
 /* End Links */
 /* Bootstrap Button Overrides */
 .btn-default {
   border-color: #1c8282;
-  text-align:left;
-  width:100%;
+  text-align: left;
+  width: 100%;
 }
 .btn-default .badge {
-    color: #fff;
-    background-color: #1c8282;
-    float:right;
-    top:0px;
+  color: #fff;
+  background-color: #1c8282;
+  float: right;
+  top: 0px;
 }
 .btn-primary {
   background-color: #1c8282;
@@ -699,12 +729,34 @@ thead th a:hover {
   padding-right: 2rem;
   transition: all 300ms ease-out;
 }
-.btn-primary:hover, .btn-primary:focus, .btn-primary.focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary.focus,
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
   color: #fff;
-  background-color: #135B5D;
-  border-color: #135B5D;
+  background-color: #135b5d;
+  border-color: #135b5d;
 }
-.btn-primary.disabled, .btn-primary[disabled], fieldset[disabled] .btn-primary, .btn-primary.disabled:hover, .btn-primary[disabled]:hover, fieldset[disabled] .btn-primary:hover, .btn-primary.disabled:focus, .btn-primary[disabled]:focus, fieldset[disabled] .btn-primary:focus, .btn-primary.disabled.focus, .btn-primary[disabled].focus, fieldset[disabled] .btn-primary.focus, .btn-primary.disabled:active, .btn-primary[disabled]:active, fieldset[disabled] .btn-primary:active, .btn-primary.disabled.active, .btn-primary[disabled].active, fieldset[disabled] .btn-primary.active {
+.btn-primary.disabled,
+.btn-primary[disabled],
+fieldset[disabled] .btn-primary,
+.btn-primary.disabled:hover,
+.btn-primary[disabled]:hover,
+fieldset[disabled] .btn-primary:hover,
+.btn-primary.disabled:focus,
+.btn-primary[disabled]:focus,
+fieldset[disabled] .btn-primary:focus,
+.btn-primary.disabled.focus,
+.btn-primary[disabled].focus,
+fieldset[disabled] .btn-primary.focus,
+.btn-primary.disabled:active,
+.btn-primary[disabled]:active,
+fieldset[disabled] .btn-primary:active,
+.btn-primary.disabled.active,
+.btn-primary[disabled].active,
+fieldset[disabled] .btn-primary.active {
   background: #fff;
   color: #777;
   border-color: #777;
@@ -717,8 +769,8 @@ thead th a:hover {
   min-width: 1rem;
   margin-right: 0.5rem;
   position: absolute;
-  top:1rem;
-  right:1rem;
+  top: 1rem;
+  right: 1rem;
 }
 .btn-secondary {
   background-color: #73a4a4;
@@ -728,12 +780,34 @@ thead th a:hover {
   padding-right: 2rem;
   transition: all 300ms ease-out;
 }
-.btn-secondary:hover, .btn-secondary:focus, .btn-secondary.focus, .btn-secondary:active, .btn-secondary.active, .open > .dropdown-toggle.btn-secondary {
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary.focus,
+.btn-secondary:active,
+.btn-secondary.active,
+.open > .dropdown-toggle.btn-secondary {
   color: #fff;
   background-color: #507272;
   border-color: #507272;
 }
-.btn-secondary.disabled, .btn-secondary[disabled], fieldset[disabled] .btn-secondary, .btn-secondary.disabled:hover, .btn-secondary[disabled]:hover, fieldset[disabled] .btn-secondary:hover, .btn-secondary.disabled:focus, .btn-secondary[disabled]:focus, fieldset[disabled] .btn-secondary:focus, .btn-secondary.disabled.focus, .btn-secondary[disabled].focus, fieldset[disabled] .btn-secondary.focus, .btn-secondary.disabled:active, .btn-secondary[disabled]:active, fieldset[disabled] .btn-secondary:active, .btn-secondary.disabled.active, .btn-secondary[disabled].active, fieldset[disabled] .btn-secondary.active {
+.btn-secondary.disabled,
+.btn-secondary[disabled],
+fieldset[disabled] .btn-secondary,
+.btn-secondary.disabled:hover,
+.btn-secondary[disabled]:hover,
+fieldset[disabled] .btn-secondary:hover,
+.btn-secondary.disabled:focus,
+.btn-secondary[disabled]:focus,
+fieldset[disabled] .btn-secondary:focus,
+.btn-secondary.disabled.focus,
+.btn-secondary[disabled].focus,
+fieldset[disabled] .btn-secondary.focus,
+.btn-secondary.disabled:active,
+.btn-secondary[disabled]:active,
+fieldset[disabled] .btn-secondary:active,
+.btn-secondary.disabled.active,
+.btn-secondary[disabled].active,
+fieldset[disabled] .btn-secondary.active {
   background: #fff;
   color: #777;
   border-color: #777;
@@ -746,10 +820,11 @@ thead th a:hover {
   min-width: 1rem;
   margin-right: 0.5rem;
   position: absolute;
-  top:1rem;
-  right:1rem;
+  top: 1rem;
+  right: 1rem;
 }
-#addUserBtn.btn, #add.btn {
+#addUserBtn.btn,
+#add.btn {
   margin-bottom: 1rem;
 }
 /****/
@@ -763,8 +838,8 @@ thead th a:hover {
   height: 29px;
   width: 100%;
   display: inline-block;
-  background: rgba(19,91,91,1);
-  border: 1px #DDF1F1 solid;
+  background: rgba(19, 91, 91, 1);
+  border: 1px #ddf1f1 solid;
   border-radius: 10px;
   overflow: hidden;
   transition: all 0.4s ease-in-out;
@@ -784,11 +859,11 @@ thead th a:hover {
   margin: 0 8px 1px 2px;
   border-style: solid;
   border-width: 5px 0 5px 8px;
-  border-color: transparent transparent transparent rgba(184,226,266,1);
+  border-color: transparent transparent transparent rgba(184, 226, 266, 1);
   transition: all 0.5s ease-in;
 }
 .bttn.filter:hover .triangle {
-  border-color: transparent transparent transparent rgba(255,255,255,1);
+  border-color: transparent transparent transparent rgba(255, 255, 255, 1);
 }
 .bttn.filter.active .triangle {
   transform: rotate(90deg);
@@ -797,7 +872,7 @@ thead th a:hover {
 }
 .filter-clear {
   font-size: 95%;
-  color: #62269E;
+  color: #62269e;
   margin: 0;
   padding: 10px 10px 0 10px;
   display: block;
@@ -812,7 +887,7 @@ input.bttn_submit {
   text-align: center;
   text-decoration: none;
   font-weight: 700;
-  letter-spacing: .5px;
+  letter-spacing: 0.5px;
   background: #1c8282;
   width: 80px;
   display: inline-block;
@@ -823,8 +898,8 @@ input.bttn_submit {
   transition: all 300ms ease-out;
 }
 input.bttn_submit:hover {
-  background: #135B5D;
-  border: 1px #135B5D solid;
+  background: #135b5d;
+  border: 1px #135b5d solid;
   cursor: pointer;
   color: #fff;
   text-decoration: none;
@@ -832,7 +907,8 @@ input.bttn_submit:hover {
 input.bttn_submit:focus {
   background: #1c8282 !important;
 }
-input.bttn_submit.disabled, input.bttn_submit.dabled:hover {
+input.bttn_submit.disabled,
+input.bttn_submit.dabled:hover {
   background: #fff;
   color: #777;
   border-color: #777;
@@ -845,7 +921,7 @@ a.bttn_cancel {
   text-align: center;
   text-decoration: none;
   font-weight: 400;
-  letter-spacing: .5px;
+  letter-spacing: 0.5px;
   background: #cfcecb;
   width: 80px;
   display: inline-block;
@@ -865,22 +941,23 @@ a.bttn_cancel:hover {
   margin: 20px 0 0 0;
   padding: 0 0 15px 0;
 }
-.bttn-group .bttn-submit, .bttn-group .bttn_submit {
+.bttn-group .bttn-submit,
+.bttn-group .bttn_submit {
   margin-right: 25px;
 }
 .table-controls .button-white {
   width: 80px;
   font-size: 11px;
   height: 26px;
-  color: #66665D;
+  color: #66665d;
   background: #fff;
   border-radius: 6px 6px 6px 6px;
-  border: 2px solid #91908A;
+  border: 2px solid #91908a;
   transition: all 200ms ease-out;
 }
 .table-controls .button-white:hover {
   cursor: pointer;
-  border: 2px solid #66665D;
+  border: 2px solid #66665d;
 }
 a#contactButton {
   width: auto;
@@ -901,7 +978,7 @@ a#cd_website {
   text-align: center;
   text-decoration: none;
   font-weight: 700;
-  letter-spacing: .5px;
+  letter-spacing: 0.5px;
   display: inline-block;
   padding: 6px 10px;
   border-radius: 8px 8px 8px 8px;
@@ -920,16 +997,16 @@ a#cd_website:hover {
   text-align: center;
   display: inline-block;
   padding: 6px 1% 5px 1%;
-  background: #135B5D;
+  background: #135b5d;
   border-radius: 0 10px 10px 0;
   transition: all 0.4s ease-in-out;
 }
-.searchBttn .searchIcon{
-  -webkit-transform: rotate(-45deg); 
-  -moz-transform: rotate(-45deg); 
+.searchBttn .searchIcon {
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
   -o-transform: rotate(-45deg);
   transform: rotate(-45deg);
-  font-size:18px;
+  font-size: 18px;
 }
 .search-wrapper .searchBttn a:hover {
   background: #01857b;
@@ -943,7 +1020,8 @@ a#cd_website:hover {
   font-size: 90%;
   line-height: 90%;
 }
-.btn-popover-close:hover, .btn-popover-close:focus {
+.btn-popover-close:hover,
+.btn-popover-close:focus {
   color: #616051;
 }
 .btn-popover {
@@ -954,7 +1032,7 @@ a#cd_website:hover {
   color: #616051;
 }
 .popover[class*="tour-"] .popover-navigation *[data-role="end"].btn-popover.next.popover-last:hover {
-    color: #616051;
+  color: #616051;
 }
 .back-to-top {
   cursor: pointer;
@@ -973,7 +1051,7 @@ a#cd_website:hover {
 /* End Button Links */
 /* Button Elements */
 #prof-main .cohortInfo .cedcd-btn.active:hover {
-  color: #135B5D;
+  color: #135b5d;
 }
 .triangle {
   width: 0;
@@ -982,7 +1060,7 @@ a#cd_website:hover {
   margin: 0 10px 1px 0;
   border-style: solid;
   border-width: 5px 0 5px 8px;
-  border-color: transparent transparent transparent #135B5D;
+  border-color: transparent transparent transparent #135b5d;
   transition: all 0.5s ease-in;
 }
 /*
@@ -1047,7 +1125,7 @@ a#cd_website:hover {
   color: #525349;
   text-align: right;
   line-height: 190%;
-  background: #E8E3F0;
+  background: #e8e3f0;
 }
 .level2 .table-export span:hover {
   text-decoration: underline;
@@ -1057,7 +1135,7 @@ a#cd_website:hover {
 }
 .enrollTbl caption {
   font-weight: bold;
-  color: #62269E;
+  color: #62269e;
   font-size: 2rem;
 }
 .enrollTbl .table-subtitle {
@@ -1109,12 +1187,12 @@ a#cd_website:hover {
   line-height: 140%;
 }*/
 .invisibleLabel {
-  display:none !important;
+  display: none !important;
 }
 .table-legend {
   font-size: 14px;
   color: #525349;
-  background: #E8E3F0;
+  background: #e8e3f0;
   text-align: left;
   font-weight: bold;
 }
@@ -1125,7 +1203,7 @@ a#cd_website:hover {
   border: 1px solid red;
 }
 #floatingSubmitButtonContainer .floatingSubmisText {
-  color:#fff;
+  color: #fff;
   font-weight: bold;
   padding-right: 1rem;
 }

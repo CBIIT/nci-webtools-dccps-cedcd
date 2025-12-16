@@ -1,25 +1,30 @@
-
-
-import React from 'react'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import classNames from 'classnames';
-import './Tooltip.scss';
+import React from "react";
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
+import classNames from "classnames";
+import "./Tooltip.scss";
 
 export default function Reminder(props) {
-    return <OverlayTrigger
-        trigger={props.trigger}
-        overlay={
-            <Tooltip
-                className={classNames(!props.info && "tooltip-danger", props.viewCohort && "tooltip-viewcohort",props.cancerCounts && "tooltip-cancercounts", props.disabled && "tooltip-disabled", props.info && 'tooltip-info')}
-                id="tooltip"
-                placement={props.placement || 'top'}>
-                {props.message}
-            </Tooltip>
-        }>
-        {props.addspan ? <span className='p-0 m-0'>{props.children}</span> : props.children}
+  return (
+    <OverlayTrigger
+      trigger={props.trigger}
+      overlay={
+        <Tooltip
+          className={classNames(
+            !props.info && "tooltip-danger",
+            props.viewCohort && "tooltip-viewcohort",
+            props.cancerCounts && "tooltip-cancercounts",
+            props.disabled && "tooltip-disabled",
+            props.info && "tooltip-info",
+          )}
+          id="tooltip"
+          placement={props.placement || "top"}>
+          {props.message}
+        </Tooltip>
+      }>
+      {props.addspan ? <span className="p-0 m-0">{props.children}</span> : props.children}
     </OverlayTrigger>
+  );
 }
-
 
 /*
 

@@ -1,10 +1,9 @@
-.miniCountsTable{
-    box-sizing: border-box;
-    width: 100%;
+.miniCountsTable {
+  box-sizing: border-box;
+  width: 100%;
 }
-.miniCountsTable > tbody > tr >th{
-    background-color: #01857b;
-    color: white;
-    text-align: center;
+.miniCountsTable > tbody > tr > th {
+  background-color: #01857b;
+  color: white;
+  text-align: center;
 }
-

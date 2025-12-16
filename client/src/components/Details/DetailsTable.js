@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 class DetailsTable extends Component {
-
   render() {
     const params = this.props.params;
     const values = params.values;
@@ -19,7 +18,10 @@ class DetailsTable extends Component {
       let url = "./cohort?id=" + item.cohort_id;
       return (
         <th style={style} key={key}>
-          <Link to={url} onClick={this.props.saveHistory} > {item.cohort_acronym} </Link>
+          <Link to={url} onClick={this.props.saveHistory}>
+            {" "}
+            {item.cohort_acronym}{" "}
+          </Link>
         </th>
       );
     });
@@ -30,31 +32,34 @@ class DetailsTable extends Component {
       if (item.type === "block") {
         let cls = values[idx + 1].cls ? "section-expand active" : "section-expand";
         let style = {
-          height: (sideHeader[idx]) + "px"
+          height: sideHeader[idx] + "px",
         };
         return (
           <tr key={key} style={style}>
-            <th className="compareGroup-header" colSpan={column_count} onClick={() => this.props.expand(idx + 1, item.rows)}>{item.name}
-              <a className={cls} ></a>
+            <th
+              className="compareGroup-header"
+              colSpan={column_count}
+              onClick={() => this.props.expand(idx + 1, item.rows)}>
+              {item.name}
+              <a className={cls}></a>
             </th>
           </tr>
-        )
-      }
-      else if (item.type === "array") {
-        let row = (
-          <th>{item.name}</th>
         );
+      } else if (item.type === "array") {
+        let row = <th>{item.name}</th>;
         const cohort_row = data_columns.map((item_1, idx_1) => {
           const ckey = "c_" + idx + "_" + idx_1;
-          const array = item[item_1].join('; ');
-          const array_title = item[item_1].join('\n');
+          const array = item[item_1].join("; ");
+          const array_title = item[item_1].join("\n");
           return (
-            <td key={ckey} title={array_title}>{array}</td>
+            <td key={ckey} title={array_title}>
+              {array}
+            </td>
           );
         });
         let cls = item.cls ? "compare-row" : "compare-row compare-section-hidden";
         let style = {
-          height: sideHeader[idx] + "px"
+          height: sideHeader[idx] + "px",
         };
         return (
           <tr key={key} className={cls} style={style}>
@@ -62,18 +67,17 @@ class DetailsTable extends Component {
             {cohort_row}
           </tr>
         );
-      }
-      else {
+      } else {
         let style = {
-          height: sideHeader[idx] + "px"
+          height: sideHeader[idx] + "px",
         };
-        let row = (
-          <th style={style}>{item.name}</th>
-        );
+        let row = <th style={style}>{item.name}</th>;
         const cohort_row = data_columns.map((item_1, idx_1) => {
           const ckey = "c_" + idx + "_" + idx_1;
           return (
-            <td key={ckey} style={style} title={item[item_1]}>{item[item_1]}</td>
+            <td key={ckey} style={style} title={item[item_1]}>
+              {item[item_1]}
+            </td>
           );
         });
         let cls = item.cls ? "compare-row" : "compare-row compare-section-hidden";
@@ -85,34 +89,37 @@ class DetailsTable extends Component {
               {cohort_row}
             </tr>
           );
-        }
-        else {
+        } else {
           return (
-            <tr key={key} className={cls} style={style} >
+            <tr key={key} className={cls} style={style}>
               {row}
               {cohort_row}
             </tr>
           );
         }
-
       }
-
     });
 
     let cname = "table-col-" + config.first_column_width;
 
     return (
       <div>
-        <table cellSpacing="0" rules="all" has_results="true" border="1" id="compareGridView" style={{ borderCollapse: "collapse", borderLeft: "0px", tableLayout: "fixed" }}>
+        <table
+          cellSpacing="0"
+          rules="all"
+          has_results="true"
+          border="1"
+          id="compareGridView"
+          style={{ borderCollapse: "collapse", borderLeft: "0px", tableLayout: "fixed" }}>
           <thead>
             <tr id="sticker" className="col-header">
-              <th id="DataCollected" className={cname}>Data Collected</th>
+              <th id="DataCollected" className={cname}>
+                Data Collected
+              </th>
               {cohort_columns}
             </tr>
           </thead>
-          <tbody>
-            {content}
-          </tbody>
+          <tbody>{content}</tbody>
         </table>
       </div>
     );

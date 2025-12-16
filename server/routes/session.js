@@ -17,9 +17,8 @@ router.get(
     request.session.expires = request.session.cookie.expires;
     const destination = await getDestLink(request);
     response.redirect(destination);
-  }
+  },
 );
-
 
 router.get("/api/logout", (request, response) => {
   request.logout(() => response.redirect("/"));
@@ -57,13 +56,15 @@ router.get("/api/user-session", (request, response) => {
   const { session } = request;
 
   if (session.passport?.user) {
-    let user = {...request?.user};
-    if(user.expires) {user.expires = new Date(session.expires).getTime();}
-    
+    let user = { ...request?.user };
+    if (user.expires) {
+      user.expires = new Date(session.expires).getTime();
+    }
+
     response.json({
       authenticated: true,
-      expires: user.expires? user.expires : session.expires,
-      user: user||null,
+      expires: user.expires ? user.expires : session.expires,
+      user: user || null,
     });
   } else {
     response.json(null);
@@ -71,14 +72,13 @@ router.get("/api/user-session", (request, response) => {
 });
 
 router.get("/api/update-session", async (request, response) => {
-
   if (request?.user == undefined || request?.user == null) {
     console.log(" undefined user ");
     response.json(null);
   } else {
     const { userManager } = request.app.locals;
     const user = await userManager.updateUserSession(request.user);
-    if(user){
+    if (user) {
       user.expires = new Date().getTime() + parseInt(cedcd_settings.maxSessionAge);
     }
 
@@ -98,16 +98,15 @@ export async function getDestLink(request) {
   let destination = request.query.state || "/";
 
   if (!request.user || !request.user.email) {
-    destination = '/unauthorized';
+    destination = "/unauthorized";
   } else {
     const loginDomain = (request.user.preferred_username || "").split("@").pop();
     const accountType = loginDomain.endsWith("login.gov") ? "Login.gov" : "NIH";
     const { userManager } = request.app.locals;
     let userobj = await userManager.getUserForLogin(request.user.email, accountType);
-    if (userobj && userobj.role ) {
+    if (userobj && userobj.role) {
       if (/SystemAdmin/.test(userobj.role)) {
-        destination = '/admin/managecohort';
-
+        destination = "/admin/managecohort";
       } else if (/CohortAdmin/.test(userobj.role)) {
         if (userobj.cohorts.length === 1) {
           destination = `/cohort/questionnaire/${userobj.cohorts[0].id}`;
@@ -115,8 +114,8 @@ export async function getDestLink(request) {
           destination = `/cohort/questionnaire`;
         }
       }
-    }else{
-      destination = '/unauthorized';
+    } else {
+      destination = "/unauthorized";
     }
   }
   return destination;

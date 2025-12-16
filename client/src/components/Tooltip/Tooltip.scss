@@ -1,59 +1,56 @@
 .tooltip-disabled {
-    .arrow {
-        display: none !important;
-    }
-    
-    .tooltip-inner {
-        display: none !important;
-    }
-}
+  .arrow {
+    display: none !important;
+  }
 
+  .tooltip-inner {
+    display: none !important;
+  }
+}
 
 .tooltip-danger {
-    .arrow::before {
-        border-top-color: red !important;
-    }
+  .arrow::before {
+    border-top-color: red !important;
+  }
 
-    .tooltip-inner {
-        background-color: red;
-    }
+  .tooltip-inner {
+    background-color: red;
+  }
 }
 
-.tooltip-info{
-    .arrow::before{
-        border-top-color: black !important;
-    }    
-    .tooltip-inner {
-        background-color: black;
-    }
+.tooltip-info {
+  .arrow::before {
+    border-top-color: black !important;
+  }
+  .tooltip-inner {
+    background-color: black;
+  }
 }
 
 .tooltip-viewcohort {
-    .arrow::before{
-        border-top-color: black !important;
-    }    
-    .tooltip-inner {
-        background-color: white;
-        width: 300px;
-        font-size: 12px;
-        color: black;
-        border:1px solid black;
-    }
+  .arrow::before {
+    border-top-color: black !important;
   }
-  
+  .tooltip-inner {
+    background-color: white;
+    width: 300px;
+    font-size: 12px;
+    color: black;
+    border: 1px solid black;
+  }
+}
 
-  .tooltip-cancercounts {
-    .arrow::before{
-        border-top-color: black !important;
-    }    
-    .tooltip-inner {
-        background-color: white;
-        font-size: 11px;
-        text-align: left;
-        white-space: nowrap;
-        min-width: max-content; 
-        color: black;
-        border:1px solid lightgray;
-    }
+.tooltip-cancercounts {
+  .arrow::before {
+    border-top-color: black !important;
   }
-  
+  .tooltip-inner {
+    background-color: white;
+    font-size: 11px;
+    text-align: left;
+    white-space: nowrap;
+    min-width: max-content;
+    color: black;
+    border: 1px solid lightgray;
+  }
+}

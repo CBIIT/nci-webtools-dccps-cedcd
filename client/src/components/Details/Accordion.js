@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-
-import AccordionSection from './AccordionSection';
+import AccordionSection from "./AccordionSection";
 
 class Accordion extends Component {
   static propTypes = {
@@ -17,7 +16,7 @@ class Accordion extends Component {
     this.state = { openSections };
   }
 
-  onClick = label => {
+  onClick = (label) => {
     const {
       state: { openSections },
     } = this;
@@ -26,8 +25,8 @@ class Accordion extends Component {
 
     this.setState({
       openSections: {
-        [label]: !isOpen
-      }
+        [label]: !isOpen,
+      },
     });
   };
 
@@ -39,13 +38,9 @@ class Accordion extends Component {
     } = this;
 
     return (
-      <div style={{ border: '2px solid #008f68' }}>
-        {children.map(child => (
-          <AccordionSection
-            isOpen={!!openSections[child.props.label]}
-            label={child.props.label}
-            onClick={onClick}
-          >
+      <div style={{ border: "2px solid #008f68" }}>
+        {children.map((child) => (
+          <AccordionSection isOpen={!!openSections[child.props.label]} label={child.props.label} onClick={onClick}>
             {child.props.children}
           </AccordionSection>
         ))}

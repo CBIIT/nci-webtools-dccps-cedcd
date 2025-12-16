@@ -1,5 +1,5 @@
 import { createOAuthStrategy } from "./passportStrategies.js";
-import cedcd_settings from  "../../config/cedcd_settings.js";
+import cedcd_settings from "../../config/cedcd_settings.js";
 
 export function getAccountType({ preferred_username }) {
   const loginDomain = (preferred_username || "").split("@").pop();
@@ -14,16 +14,15 @@ export function createUserDeserializer(userManager) {
   return async ({ email, preferred_username }, done) => {
     const accountType = getAccountType({ preferred_username });
     const user = await userManager.getUserForLogin(email, accountType);
-    if(user){
+    if (user) {
       const expires = new Date().getTime() + cedcd_settings.maxSessionAge * 1;
       user.expires = expires;
-    } 
+    }
     done(null, user || {});
-   
   };
 }
 
-export async function createDefaultAuthStrategy(config = config) {   
+export async function createDefaultAuthStrategy(config = config) {
   return await createOAuthStrategy({
     name: "default",
     clientId: config.oauth2_client_id,
