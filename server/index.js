@@ -7,7 +7,7 @@ import {
   createUserSerializer,
   createUserDeserializer,
   createDefaultAuthStrategy,
-} from "./server/service/auth/passportUtils.js";
+} from "./service/auth/passportUtils.js";
 import compression from "compression";
 import bodyParser from "body-parser";
 import methodOverride from "method-override";
@@ -21,12 +21,12 @@ import fileUpload from "express-fileupload";
 import session from "./service/session.js";
 import UserManager from "./service/auth/userManager.js";
 
-import config from "./server/config/index.js";
-import * as mysql from "./server/components/mysql.js";
-import { setValue as cache_setValue } from "./server/components/cache.js";
-import routes from "./server/routes/routes.js";
-import { startReminderService } from "./server/service/emailReminder.js";
-import { startCohortStatusService } from "./server/service/markOutdated.js";
+import config from "./config/index.js";
+import * as mysql from "./components/mysql.js";
+import { setValue as cache_setValue } from "./components/cache.js";
+import routes from "./routes/routes.js";
+import { startReminderService } from "./service/emailReminder.js";
+import { startCohortStatusService } from "./service/markOutdated.js";
 
 try {
   await startApp();
@@ -157,4 +157,3 @@ process.on("SIGINT", function () {
   mysql.close();
   process.exit();
 });
-
