@@ -13,23 +13,19 @@ on:
                     - stage
                     - prod
 
-env:
-    APP: cedcd
-    TZ: America/New_York
-    AWS_REGION: us-east-1
-    TASK_DEFINITION_TEMPLATE_PATH: aws
-    DOCKER_BUILDKIT: 1
-
 permissions:
-    id-token: write
+    contents: "read"
+    id-token: "write"
+
 jobs:
     Deploy:
-        permissions:
-            contents: "read"
-            id-token: "write"
         runs-on: ubuntu-latest
         environment: ${{ inputs.tier }}
         env:
+            APP: cedcd
+            TZ: America/New_York
+            AWS_REGION: us-east-1
+            TASK_DEFINITION_TEMPLATE_PATH: aws
             FRONTEND_CONTAINER_PORT: 80
             BACKEND_CONTAINER_PORT: 8221
             TIER: ${{ inputs.tier }}
@@ -37,10 +33,10 @@ jobs:
             CICD_ROLE_ARN: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cicd
 
         steps:
-            - uses: "actions/checkout@v5"
+            - uses: "actions/checkout@v6.0.1"
 
             - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v5.1.0
+              uses: aws-actions/configure-aws-credentials@v5.1.1
               with:
                   role-to-assume: ${{ env.CICD_ROLE_ARN }}
                   role-session-name: ${{ env.TIER }}-cedcd-deploy-${{ github.ref_name }}
@@ -64,22 +60,43 @@ jobs:
                   echo "PARAMETER_PATH=/analysistools/${TIER}/${APP}" >> $GITHUB_ENV
                   echo "ENVIRONMENT_TIER=${TIER^^}" >> $GITHUB_ENV
 
-            - uses: dkershner6/aws-ssm-getparameters-action@v2
-              with:
-                  parameterPairs: |
-                      ${{ env.PARAMETER_PATH }}/ecs_cluster = ECS_CLUSTER,
-                      ${{ env.PARAMETER_PATH }}/ecs_web_task = ECS_WEB_TASK,
-                      ${{ env.PARAMETER_PATH }}/ecs_web_task_cpu_units = ECS_WEB_TASK_CPU_UNITS,
-                      ${{ env.PARAMETER_PATH }}/ecs_web_task_memory_units = ECS_WEB_TASK_MEMORY_UNITS,
-                      ${{ env.PARAMETER_PATH }}/ecs_web_service = ECS_WEB_SERVICE,
-                      ${{ env.PARAMETER_PATH }}/role_arn = ROLE_ARN,
-                      ${{ env.PARAMETER_PATH }}/efs_filesystem_id = EFS_FILESYSTEM_ID,
-                      ${{ env.PARAMETER_PATH }}/efs_access_point_id = EFS_ACCESS_POINT_ID
-                  withDecryption: "true"
+                  if [[ "$TIER" == "dev" ]]; then
+                      echo "LOG_LEVEL=debug" >> $GITHUB_ENV
+                  else
+                      echo "LOG_LEVEL=info" >> $GITHUB_ENV
+                  fi
+
+            - name: Retrieve SSM parameters
+              run: |
+                  PARAMETER_PATH="/analysistools/${TIER}/${APP}"
+
+                  # Define parameters to retrieve (SSM name = ENV_VAR_NAME)
+                  declare -A PARAMS=(
+                    ["ecs_cluster"]="ECS_CLUSTER"
+                    ["ecs_web_task"]="ECS_WEB_TASK"
+                    ["ecs_web_task_cpu_units"]="ECS_WEB_TASK_CPU_UNITS"
+                    ["ecs_web_task_memory_units"]="ECS_WEB_TASK_MEMORY_UNITS"
+                    ["ecs_web_service"]="ECS_WEB_SERVICE"
+                    ["role_arn"]="ROLE_ARN"
+                    ["efs_filesystem_id"]="EFS_FILESYSTEM_ID"
+                    ["efs_access_point_id"]="EFS_ACCESS_POINT_ID"
+                  )
+
+                  # Retrieve each parameter and export to environment
+                  for ssm_name in "${!PARAMS[@]}"; do
+                    env_var="${PARAMS[$ssm_name]}"
+                    value=$(aws ssm get-parameter \
+                      --name "${PARAMETER_PATH}/${ssm_name}" \
+                      --with-decryption \
+                      --query "Parameter.Value" \
+                      --output text)
+                    echo "${env_var}=${value}" >> $GITHUB_ENV
+                    echo "Retrieved ${ssm_name} -> ${env_var}"
+                  done
 
             - name: Login to Amazon ECR
               id: login-ecr
-              uses: aws-actions/amazon-ecr-login@v1
+              uses: aws-actions/amazon-ecr-login@v2.0.1
               with:
                   mask-password: true
 
@@ -123,45 +140,36 @@ jobs:
               run: |
                   echo "Substituting web task definition variables"
                   envsubst < $TASK_DEFINITION_TEMPLATE_PATH/web.yml > web.yml
-              env:
-                  ECS_WEB_TASK: ${{ env.ECS_WEB_TASK }}
-                  ECS_WEB_TASK_CPU_UNITS: ${{ env.ECS_WEB_TASK_CPU_UNITS }}
-                  ECS_WEB_TASK_MEMORY_UNITS: ${{ env.ECS_WEB_TASK_MEMORY_UNITS }}
-                  ROLE_ARN: ${{ env.ROLE_ARN }}
-                  EFS_FILESYSTEM_ID: ${{ env.EFS_FILESYSTEM_ID }}
-                  EFS_ACCESS_POINT_ID: ${{ env.EFS_ACCESS_POINT_ID }}
-                  FRONTEND_CONTAINER_PORT: ${{ env.FRONTEND_CONTAINER_PORT }}
-                  BACKEND_CONTAINER_PORT: ${{ env.BACKEND_CONTAINER_PORT }}
-                  FRONTEND_IMAGE_LATEST: ${{ env.FRONTEND_IMAGE_LATEST }}
-                  BACKEND_IMAGE_LATEST: ${{ env.BACKEND_IMAGE_LATEST }}
-                  AWS_REGION: ${{ env.AWS_REGION }}
-                  TIER: ${{ env.TIER }}
-                  APP: ${{ env.APP }}
-                  ENVIRONMENT_TIER: ${{ env.ENVIRONMENT_TIER }}
 
             - name: Print rendered web task definition
               run: |
                   echo "Rendered web Task Definition:"
                   cat web.yml
 
-            - name: Register web task definition
-              id: register-web
+            - name: Register task definitions
               run: |
-                  arn=$(aws ecs register-task-definition --cli-input-yaml file://web.yml --query "taskDefinition.taskDefinitionArn" --output text)
-                  echo "WEB_TASK_DEF_ARN=$arn" >> $GITHUB_ENV
+                  aws ecs register-task-definition --cli-input-yaml file://web.yml
 
             - name: Update web service
               run: |
                   aws ecs update-service \
-                    --cluster ${{ env.ECS_CLUSTER }} \
-                    --service ${{ env.ECS_WEB_SERVICE }} \
-                    --task-definition $WEB_TASK_DEF_ARN \
-                    --desired-count 1 \
-                    --propagate-tags TASK_DEFINITION \
-                    --force-new-deployment
+                      --cluster ${{ env.ECS_CLUSTER }} \
+                      --service ${{ env.ECS_WEB_SERVICE }} \
+                      --task-definition ${{ env.ECS_WEB_TASK }} \
+                      --desired-count 1 \
+                      --propagate-tags TASK_DEFINITION \
+                      --force-new-deployment
 
             # - name: Wait for service stability
             #   run: |
-            #       aws ecs wait services-stable \
+            #     aws ecs wait services-stable \
             #         --cluster ${{ env.ECS_CLUSTER }} \
             #         --services ${{ env.ECS_WEB_SERVICE }}
+
+            - name: Remove old task definitions
+              run: |
+                  for family in "$ECS_WEB_TASK"; do
+                      echo "Pruning old revisions for family: $family"
+                      aws ecs list-task-definitions --family-prefix "$family" --sort DESC --query 'taskDefinitionArns[3:]' --output text \
+                          | xargs -n1 -r aws ecs deregister-task-definition --task-definition
+                  done
