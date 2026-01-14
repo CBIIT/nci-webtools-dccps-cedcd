@@ -1,12 +1,6 @@
-name: Deploy to Environment
+name: Deploy CDK
 
 on:
-  push:
-    branches:
-      - develop
-      - qa
-      - stage
-      - main
   workflow_dispatch:
     inputs:
       environment:

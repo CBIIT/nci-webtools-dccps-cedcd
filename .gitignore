@@ -5,7 +5,6 @@
 /Logs/*
 /Uploads/*
 /deploy/*
-package-lock.json
 yarn.lock
 node_modules*
 .DS_Store
