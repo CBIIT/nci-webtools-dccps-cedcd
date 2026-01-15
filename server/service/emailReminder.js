@@ -84,9 +84,9 @@ async function sendReminder(data) {
   try {
     console.log("sending cohort email reminder");
     await sendMail2({
-      from: process.env.EMAIL_SENDER,
+      from: process.env.EMAIL_SMTP_FROM,
       to: email,
-      cc: process.env.EMAIL_SENDER,
+      cc: process.env.EMAIL_SMTP_FROM,
       subject: "Your CEDCD Cohort(s) are scheduled to be marked outdated",
       html: await readTemplate(templatePath, templateData),
     });
