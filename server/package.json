@@ -38,7 +38,7 @@
     "nodemailer": "^4.6.4",
     "openid-client": "^5.3.1",
     "passport": "^0.6.0",
-    "react-awesome-query-builder": "^0.2.49",
+    "react-awesome-query-builder": "^5.4.0",
     "rotating-file-stream": "^1.2.2",
     "sha1": "^1.1.1",
     "urllib": "^2.25.4",
