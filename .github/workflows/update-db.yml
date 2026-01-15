@@ -1,0 +1,95 @@
+name: Deploy CEDCD
+on:
+    workflow_dispatch:
+        inputs:
+            tier:
+                description: "Deployment Tier"
+                required: true
+                default: "dev"
+                type: choice
+                options:
+                    - dev
+                    - qa
+                    - stage
+                    - prod
+            db_script:
+                description: "db script file name (optional)"
+                required: false
+                default: null
+                type: string
+
+permissions:
+    contents: "read"
+    id-token: "write"
+
+jobs:
+    Deploy:
+        runs-on: ubuntu-latest
+        environment: ${{ inputs.tier }}
+        env:
+            APP: cedcd
+            AWS_REGION: us-east-1
+            TIER: ${{ inputs.tier }}
+            CICD_ROLE_ARN: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cicd
+            DB_SCRIPT: "database/deploy_scripts/${{ inputs.db_script }}"
+
+        steps:
+            - uses: "actions/checkout@v6.0.1"
+
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v5.1.1
+              with:
+                  role-to-assume: ${{ env.CICD_ROLE_ARN }}
+                  role-session-name: ${{ env.TIER }}-cedcd-update-db-${{ github.ref_name }}
+                  aws-region: ${{ env.AWS_REGION }}
+
+            - name: Retrieve SSM parameters
+              run: |
+                  PARAMETER_PATH="/analysistools/${TIER}/${APP}"
+
+                  # Define parameters to retrieve (SSM name = ENV_VAR_NAME)
+                  declare -A PARAMS=(
+                    ["mysql_user"]="MYSQL_USER"
+                    ["mysql_password"]="MYSQL_PASSWORD"
+                    ["mysql_host"]="MYSQL_HOST"
+                    ["mysql_port"]="MYSQL_PORT"
+                    ["mysql_db"]="MYSQL_DB"
+                  )
+
+                  # Retrieve each parameter and export to environment
+                  for ssm_name in "${!PARAMS[@]}"; do
+                    env_var="${PARAMS[$ssm_name]}"
+                    value=$(aws ssm get-parameter \
+                      --name "${PARAMETER_PATH}/${ssm_name}" \
+                      --with-decryption \
+                      --query "Parameter.Value" \
+                      --output text)
+                    echo "${env_var}=${value}" >> $GITHUB_ENV
+                    echo "Retrieved ${ssm_name} -> ${env_var}"
+                  done
+
+            - name: Run ${{ inputs.db_script }}
+              if: ${{ inputs.db_script != null }}
+              run: |
+                  mysql -h ${{ env.MYSQL_HOST }} \
+                  -P ${{ env.MYSQL_PORT }} \
+                  -u ${{ env.MYSQL_USER }} \
+                  -p${{ env.MYSQL_PASSWORD }} \
+                  ${{ env.MYSQL_DB }} \
+                  < ${{ env.DB_SCRIPT }}
+
+            - name: Run cedcd_StoredProcedures.sql and cedcd_Views.sql
+              run: |
+                  mysql -h ${{ env.MYSQL_HOST }} \
+                  -P ${{ env.MYSQL_PORT }} \
+                  -u ${{ env.MYSQL_USER }} \
+                  -p${{ env.MYSQL_PASSWORD }} \
+                  ${{ env.MYSQL_DB }} \
+                  < database/Schema/cedcd_StoredProcedures.sql
+
+                  mysql -h ${{ env.MYSQL_HOST }} \
+                  -P ${{ env.MYSQL_PORT }} \
+                  -u ${{ env.MYSQL_USER }} \
+                  -p${{ env.MYSQL_PASSWORD }} \
+                  ${{ env.MYSQL_DB }} \
+                  < database/Schema/cedcd_Views.sql
