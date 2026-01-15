@@ -1,4 +1,4 @@
-name: Deploy CEDCD
+name: Update DB
 on:
     workflow_dispatch:
         inputs:
