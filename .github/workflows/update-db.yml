@@ -64,6 +64,7 @@ jobs:
                       --with-decryption \
                       --query "Parameter.Value" \
                       --output text)
+                    echo "::add-mask::${value}"
                     echo "${env_var}=${value}" >> $GITHUB_ENV
                     echo "Retrieved ${ssm_name} -> ${env_var}"
                   done
