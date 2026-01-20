@@ -81,6 +81,7 @@ jobs:
             ["ecs_web_task_cpu_units"]="ECS_WEB_TASK_CPU_UNITS"
             ["ecs_web_task_memory_units"]="ECS_WEB_TASK_MEMORY_UNITS"
             ["ecs_web_service"]="ECS_WEB_SERVICE"
+            ["data_import_task"]="ECS_DATA_IMPORT_TASK"
             ["role_arn"]="ROLE_ARN"
             ["efs_filesystem_id"]="EFS_FILESYSTEM_ID"
             ["efs_access_point_id"]="EFS_ACCESS_POINT_ID"
