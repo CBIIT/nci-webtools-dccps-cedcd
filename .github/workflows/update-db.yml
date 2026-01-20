@@ -1,96 +1,97 @@
-name: Update DB
+name: Run Database Update
 on:
-    workflow_dispatch:
-        inputs:
-            tier:
-                description: "Deployment Tier"
-                required: true
-                default: "dev"
-                type: choice
-                options:
-                    - dev
-                    - qa
-                    - stage
-                    - prod
-            db_script:
-                description: "db script file name (optional)"
-                required: false
-                default: null
-                type: string
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: "Deployment Tier"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - qa
+          - stage
+          - prod
+      db_script:
+        description: "db script file name (optional)"
+        required: false
+        default: ""
+        type: string
 
 permissions:
-    contents: "read"
-    id-token: "write"
+  contents: "read"
+  id-token: "write"
 
 jobs:
-    Deploy:
-        runs-on: ubuntu-latest
-        environment: ${{ inputs.tier }}
-        env:
-            APP: cedcd
-            AWS_REGION: us-east-1
-            TIER: ${{ inputs.tier }}
-            CICD_ROLE_ARN: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cicd
-            DB_SCRIPT: "database/deploy_scripts/${{ inputs.db_script }}"
+  update-database:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.tier }}
+    env:
+      APP: cedcd
+      AWS_REGION: us-east-1
+      TIER: ${{ inputs.tier }}
+      CICD_ROLE_ARN: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cicd
 
-        steps:
-            - uses: "actions/checkout@v6.0.1"
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5.1.1
+        with:
+          role-to-assume: ${{ env.CICD_ROLE_ARN }}
+          role-session-name: ${{ env.TIER }}-cedcd-update-db-${{ github.ref_name }}
+          aws-region: ${{ env.AWS_REGION }}
 
-            - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v5.1.1
-              with:
-                  role-to-assume: ${{ env.CICD_ROLE_ARN }}
-                  role-session-name: ${{ env.TIER }}-cedcd-update-db-${{ github.ref_name }}
-                  aws-region: ${{ env.AWS_REGION }}
+      - name: Set dynamic environment variables
+        run: |
+          echo "ECS_DATA_IMPORT_TASK=${TIER}-${APP}-data-import-ecs-task" >> $GITHUB_ENV
 
-            - name: Retrieve SSM parameters
-              run: |
-                  PARAMETER_PATH="/analysistools/${TIER}/${APP}"
+      - name: Retrieve SSM parameters
+        run: |
+          PARAMETER_PATH="/analysistools/${TIER}/${APP}"
 
-                  # Define parameters to retrieve (SSM name = ENV_VAR_NAME)
-                  declare -A PARAMS=(
-                    ["mysql_user"]="MYSQL_USER"
-                    ["mysql_password"]="MYSQL_PASSWORD"
-                    ["mysql_host"]="MYSQL_HOST"
-                    ["mysql_port"]="MYSQL_PORT"
-                    ["mysql_db"]="MYSQL_DB"
-                  )
+          # Define parameters to retrieve (SSM name = ENV_VAR_NAME)
+          declare -A PARAMS=(
+            ["ecs_cluster"]="ECS_CLUSTER"
+            ["subnet_ids"]="SUBNET_IDS"
+            ["security_group_ids"]="SECURITY_GROUP_IDS"
+          )
 
-                  # Retrieve each parameter and export to environment
-                  for ssm_name in "${!PARAMS[@]}"; do
-                    env_var="${PARAMS[$ssm_name]}"
-                    value=$(aws ssm get-parameter \
-                      --name "${PARAMETER_PATH}/${ssm_name}" \
-                      --with-decryption \
-                      --query "Parameter.Value" \
-                      --output text)
-                    echo "::add-mask::${value}"
-                    echo "${env_var}=${value}" >> $GITHUB_ENV
-                    echo "Retrieved ${ssm_name} -> ${env_var}"
-                  done
+          # Retrieve each parameter and export to environment
+          for ssm_name in "${!PARAMS[@]}"; do
+            env_var="${PARAMS[$ssm_name]}"
+            value=$(aws ssm get-parameter \
+              --name "${PARAMETER_PATH}/${ssm_name}" \
+              --with-decryption \
+              --query "Parameter.Value" \
+              --output text 2>/dev/null || echo "")
+            
+            if [ -n "$value" ]; then
+              echo "${env_var}=${value}" >> $GITHUB_ENV
+              echo "Retrieved ${ssm_name} -> ${env_var}"
+            else
+              echo "::warning::Parameter ${PARAMETER_PATH}/${ssm_name} not found, using default or skipping"
+            fi
+          done
 
-            - name: Run ${{ inputs.db_script }}
-              if: ${{ inputs.db_script != null }}
-              run: |
-                  mysql -h ${{ env.MYSQL_HOST }} \
-                  -P ${{ env.MYSQL_PORT }} \
-                  -u ${{ env.MYSQL_USER }} \
-                  -p${{ env.MYSQL_PASSWORD }} \
-                  ${{ env.MYSQL_DB }} \
-                  < ${{ env.DB_SCRIPT }}
+      - name: Run database update task
+        id: run-task
+        run: |
+          # Build the command override if a specific script is provided
+          OVERRIDES='{"containerOverrides":[]}'
+          if [ -n "${{ inputs.db_script }}" ]; then
+            echo "Running with specific script: deploy_scripts/${{ inputs.db_script }}"
+            OVERRIDES='{"containerOverrides":[{"name":"data_import","command":["node","import.js","deploy_scripts/${{ inputs.db_script }}"]}]}'
+          else
+            echo "Running default database update (stored procedures and views only)"
+            OVERRIDES='{"containerOverrides":[{"name":"data_import","command":["node","import.js"]}]}'
+          fi
 
-            - name: Run cedcd_StoredProcedures.sql and cedcd_Views.sql
-              run: |
-                  mysql -h ${{ env.MYSQL_HOST }} \
-                  -P ${{ env.MYSQL_PORT }} \
-                  -u ${{ env.MYSQL_USER }} \
-                  -p${{ env.MYSQL_PASSWORD }} \
-                  ${{ env.MYSQL_DB }} \
-                  < database/Schema/cedcd_StoredProcedures.sql
-
-                  mysql -h ${{ env.MYSQL_HOST }} \
-                  -P ${{ env.MYSQL_PORT }} \
-                  -u ${{ env.MYSQL_USER }} \
-                  -p${{ env.MYSQL_PASSWORD }} \
-                  ${{ env.MYSQL_DB }} \
-                  < database/Schema/cedcd_Views.sql
+          echo "Launching ECS Fargate task..."
+          TASK_ARN=$(aws ecs run-task \
+            --cluster ${ECS_CLUSTER} \
+            --count 1 \
+            --launch-type FARGATE \
+            --network-configuration "awsvpcConfiguration={subnets=[${SUBNET_IDS}],securityGroups=[${SECURITY_GROUP_IDS}]}" \
+            --task-definition ${ECS_DATA_IMPORT_TASK} \
+            --overrides "${OVERRIDES}" \
+            --query 'tasks[0].taskArn' \
+            --output text)

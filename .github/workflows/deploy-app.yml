@@ -31,7 +31,9 @@ jobs:
       TIER: ${{ inputs.tier }}
       IMAGE_TIER: ${{ contains(fromJson('["dev","qa"]'), inputs.tier) && 'development' || 'release' }}
       CICD_ROLE_ARN: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cicd
-
+      ECS_DATA_IMPORT_CPU_UNITS: "1024"
+      ECS_DATA_IMPORT_MEMORY_UNITS: "2048"
+      
     steps:
       - uses: "actions/checkout@v6.0.1"
 
@@ -57,6 +59,8 @@ jobs:
           echo "BACKEND_IMAGE=$REPO:$IMAGE_TIER-backend-${{ github.ref_name }}-$TIMESTAMP" >> $GITHUB_ENV
           echo "FRONTEND_IMAGE_LATEST=$REPO:$IMAGE_TIER-frontend-${{ github.ref_name }}-latest" >> $GITHUB_ENV
           echo "BACKEND_IMAGE_LATEST=$REPO:$IMAGE_TIER-backend-${{ github.ref_name }}-latest" >> $GITHUB_ENV
+          echo "DATA_IMPORT_IMAGE=$REPO:$IMAGE_TIER-data-import-${{ github.ref_name }}-$TIMESTAMP" >> $GITHUB_ENV
+          echo "DATA_IMPORT_IMAGE_LATEST=$REPO:$IMAGE_TIER-data-import-${{ github.ref_name }}-latest" >> $GITHUB_ENV
           echo "PARAMETER_PATH=/analysistools/${TIER}/${APP}" >> $GITHUB_ENV
           echo "ENVIRONMENT_TIER=${TIER^^}" >> $GITHUB_ENV
 
@@ -134,12 +138,31 @@ jobs:
             REACT_APP_VERSION=${{ github.ref_name }}
           cache-from: type=registry,ref=${{ env.IMAGE_REPOSITORY }}:frontend-cache
           cache-to: type=registry,ref=${{ env.IMAGE_REPOSITORY }}:frontend-cache,image-manifest=true,oci-mediatypes=true,mode=max
+          
+      - name: Build data import image ${{ env.DATA_IMPORT_IMAGE }}
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/data-import.dockerfile
+          pull: true
+          push: true
+          tags: |
+            ${{ env.DATA_IMPORT_IMAGE }}
+            ${{ env.DATA_IMPORT_IMAGE_LATEST }}
+          cache-from: type=registry,ref=${{ env.IMAGE_REPOSITORY }}:data-import-cache
+          cache-to: type=registry,ref=${{ env.IMAGE_REPOSITORY }}:data-import-cache,image-manifest=true,oci-mediatypes=true,mode=max
 
       - name: Substitute web task definition variables
         id: substitute-web-task-definition
         run: |
           echo "Substituting web task definition variables"
           envsubst < $TASK_DEFINITION_TEMPLATE_PATH/web.yml > web.yml
+
+      - name: Substitute data import task definition variables
+        id: substitute-data-import-task-definition
+        run: |
+          echo "Substituting data import task definition variables"
+          envsubst < $TASK_DEFINITION_TEMPLATE_PATH/data-import.yml > data-import.yml
 
       - name: Print rendered web task definition
         run: |
@@ -149,6 +172,7 @@ jobs:
       - name: Register task definitions
         run: |
           aws ecs register-task-definition --cli-input-yaml file://web.yml
+          aws ecs register-task-definition --cli-input-yaml file://data-import.yml
 
       - name: Update web service
         run: |
@@ -168,7 +192,7 @@ jobs:
 
       - name: Remove old task definitions
         run: |
-          for family in "$ECS_WEB_TASK"; do
+          for family in "$ECS_WEB_TASK" "$ECS_DATA_IMPORT_TASK"; do
               echo "Pruning old revisions for family: $family"
               aws ecs list-task-definitions --family-prefix "$family" --sort DESC --query 'taskDefinitionArns[3:]' --output text \
                   | xargs -n1 -r aws ecs deregister-task-definition --task-definition

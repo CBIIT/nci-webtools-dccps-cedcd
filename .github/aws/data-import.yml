@@ -1,0 +1,94 @@
+family: "${ECS_DATA_IMPORT_TASK}"
+networkMode: awsvpc
+cpu: "${ECS_DATA_IMPORT_CPU_UNITS}"
+memory: "${ECS_DATA_IMPORT_MEMORY_UNITS}"
+executionRoleArn: "${ROLE_ARN}"
+taskRoleArn: "${ROLE_ARN}"
+requiresCompatibilities:
+  - FARGATE
+containerDefinitions:
+  - name: logs
+    image: public.ecr.aws/aws-observability/aws-for-fluent-bit:stable
+    firelensConfiguration:
+      type: fluentbit
+    memoryReservation: 50
+    logConfiguration:
+      logDriver: awslogs
+      options:
+        awslogs-group: "/analysistools/${TIER}/${APP}"
+        awslogs-region: "${AWS_REGION}"
+        awslogs-stream-prefix: logs
+
+  - name: data_import
+    image: "${DATA_IMPORT_IMAGE_LATEST}"
+    command: ["node", "import.js"]
+    environment:
+      - name: TZ
+        value: "America/New_York"
+      - name: AWS_DEFAULT_REGION
+        value: "${AWS_REGION}"
+    secrets:
+      - name: LOG_LEVEL
+        valueFrom: "/analysistools/${TIER}/datadog/log_level"
+      - name: LOG_DIR
+        valueFrom: "/analysistools/${TIER}/${APP}/log_dir"
+      - name: FILE_PATH
+        valueFrom: "/analysistools/${TIER}/${APP}/file_path"
+      - name: EMAIL_SMTP_FROM
+        valueFrom: "/analysistools/${TIER}/${APP}/email_smtp_from"
+      - name: EMAIL_SMTP_TO
+        valueFrom: "/analysistools/${TIER}/${APP}/email_smtp_to"
+      - name: EMAIL_SMTP_HOST
+        valueFrom: "/analysistools/${TIER}/${APP}/email_smtp_host"
+      - name: EMAIL_SMTP_PORT
+        valueFrom: "/analysistools/${TIER}/${APP}/email_smtp_port"
+      - name: MYSQL_HOST
+        valueFrom: "/analysistools/${TIER}/${APP}/mysql_host"
+      - name: MYSQL_PORT
+        valueFrom: "/analysistools/${TIER}/${APP}/mysql_port"
+      - name: MYSQL_DB
+        valueFrom: "/analysistools/${TIER}/${APP}/mysql_db"
+      - name: MYSQL_CONNECTIONLIMIT
+        valueFrom: "/analysistools/${TIER}/${APP}/mysql_connectionlimit"
+      - name: MYSQL_USER
+        valueFrom: "/analysistools/${TIER}/${APP}/mysql_user"
+      - name: MYSQL_PASSWORD
+        valueFrom: "/analysistools/${TIER}/${APP}/mysql_password"
+      - name: OAUTH2_CLIENT_ID
+        valueFrom: "/analysistools/${TIER}/${APP}/oauth2_client_id"
+      - name: OAUTH2_CLIENT_SECRET
+        valueFrom: "/analysistools/${TIER}/${APP}/oauth2_client_secret"
+      - name: OAUTH2_BASE_URL
+        valueFrom: "/analysistools/${TIER}/${APP}/oauth2_base_url"
+      - name: OAUTH2_REDIRECT_URI
+        valueFrom: "/analysistools/${TIER}/${APP}/oauth2_redirect_uri"
+      - name: SESSION_MAX_AGE
+        valueFrom: "/analysistools/${TIER}/${APP}/session_max_age"
+    logConfiguration:
+      logDriver: awsfirelens
+      options:
+        Name: datadog
+        tls: "on"
+        tls.verify: "off"
+        dd_service: "${TIER}-${APP}-data_import"
+        dd_source: "nodejs"
+        dd_tags: "project:${APP} tier:${TIER}"
+        provider: ecs
+      secretOptions:
+        - name: Host
+          valueFrom: /analysistools/${TIER}/datadog/log_endpoint_host
+        - name: apikey
+          valueFrom: /analysistools/${TIER}/datadog/api_key
+tags:
+  - key: Project
+    value: "${APP}"
+  - key: ApplicationName
+    value: "${APP}"
+  - key: ResourceName
+    value: "${TIER}-${APP}-data-import-ecs-task"
+  - key: ResourceFunction
+    value: compute
+  - key: EnvironmentTier
+    value: "${ENVIRONMENT_TIER}"
+  - key: Creator
+    value: TF

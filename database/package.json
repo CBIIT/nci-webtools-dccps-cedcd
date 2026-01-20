@@ -1,0 +1,14 @@
+{
+  "name": "cedcd-database-import",
+  "version": "1.0.0",
+  "description": "Database update scripts for CEDCD",
+  "type": "module",
+  "main": "import.js",
+  "scripts": {
+    "import": "node import.js"
+  },
+  "dependencies": {
+    "mysql2": "^3.6.5"
+  },
+  "private": true
+}
