@@ -39,6 +39,41 @@ function log(message, level = 'INFO') {
 }
 
 /**
+ * Preprocess SQL content to handle DELIMITER commands
+ * Removes DELIMITER lines and replaces custom delimiters with semicolons
+ */
+function preprocessDelimiters(sqlContent) {
+    const lines = sqlContent.split('\n');
+    const processedLines = [];
+    let currentDelimiter = ';';
+    
+    for (let line of lines) {
+        const trimmedLine = line.trim();
+        
+        if (trimmedLine.startsWith('DELIMITER ')) {
+            currentDelimiter = trimmedLine.substring('DELIMITER '.length).trim();
+            continue;
+        }
+        
+
+        if (currentDelimiter !== ';' && line.includes(currentDelimiter)) {
+            line = line.replace(new RegExp(`\\s*${escapeRegex(currentDelimiter)}\\s*$`), ';');
+        }
+        
+        processedLines.push(line);
+    }
+    
+    return processedLines.join('\n');
+}
+
+/**
+ * Escape special regex characters
+ */
+function escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
  * Execute a SQL file
  */
 async function executeSqlFile(connection, filePath) {
@@ -46,12 +81,14 @@ async function executeSqlFile(connection, filePath) {
         const fullPath = path.resolve(__dirname, filePath);
         log(`Reading SQL file: ${filePath}`);
         
-        const sqlContent = await fs.readFile(fullPath, 'utf8');
+        let sqlContent = await fs.readFile(fullPath, 'utf8');
         
         if (!sqlContent.trim()) {
             log(`Warning: SQL file is empty: ${filePath}`, 'WARN');
             return;
         }
+        
+        sqlContent = preprocessDelimiters(sqlContent);
         
         log(`Executing SQL file: ${filePath}`);
         await connection.query(sqlContent);
