@@ -7,18 +7,6 @@ taskRoleArn: "${ROLE_ARN}"
 requiresCompatibilities:
   - FARGATE
 containerDefinitions:
-  - name: logs
-    image: public.ecr.aws/aws-observability/aws-for-fluent-bit:stable
-    firelensConfiguration:
-      type: fluentbit
-    memoryReservation: 50
-    logConfiguration:
-      logDriver: awslogs
-      options:
-        awslogs-group: "/analysistools/${TIER}/${APP}/data-import"
-        awslogs-region: "${AWS_REGION}"
-        awslogs-stream-prefix: data-import
-
   - name: data_import
     image: "${DATA_IMPORT_IMAGE_LATEST}"
     command: ["node", "import.js"]
@@ -65,20 +53,11 @@ containerDefinitions:
       - name: SESSION_MAX_AGE
         valueFrom: "/analysistools/${TIER}/${APP}/session_max_age"
     logConfiguration:
-      logDriver: awsfirelens
+      logDriver: awslogs
       options:
-        Name: datadog
-        tls: "on"
-        tls.verify: "off"
-        dd_service: "${TIER}-${APP}-data_import"
-        dd_source: "nodejs"
-        dd_tags: "project:${APP} tier:${TIER}"
-        provider: ecs
-      secretOptions:
-        - name: Host
-          valueFrom: /analysistools/${TIER}/datadog/log_endpoint_host
-        - name: apikey
-          valueFrom: /analysistools/${TIER}/datadog/api_key
+        awslogs-group: "/analysistools/${TIER}/${APP}/data-import"
+        awslogs-region: "${AWS_REGION}"
+        awslogs-stream-prefix: data-import
 tags:
   - key: Project
     value: "${APP}"
