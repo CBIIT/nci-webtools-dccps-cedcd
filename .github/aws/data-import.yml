@@ -15,9 +15,9 @@ containerDefinitions:
     logConfiguration:
       logDriver: awslogs
       options:
-        awslogs-group: "/analysistools/${TIER}/${APP}"
+        awslogs-group: "/analysistools/${TIER}/${APP}/data-import"
         awslogs-region: "${AWS_REGION}"
-        awslogs-stream-prefix: logs
+        awslogs-stream-prefix: data-import
 
   - name: data_import
     image: "${DATA_IMPORT_IMAGE_LATEST}"
