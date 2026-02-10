@@ -24,13 +24,14 @@ permissions:
 
 jobs:
   update-database:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     environment: ${{ inputs.tier }}
     env:
       APP: cedcd
       AWS_REGION: us-east-1
       TIER: ${{ inputs.tier }}
-      CICD_ROLE_ARN: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cicd
+      CICD_ROLE_ARN: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/power-user-github-actions-cicd
 
     steps:
       - name: Configure AWS credentials
