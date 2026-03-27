@@ -31,15 +31,15 @@ jobs:
       BACKEND_CONTAINER_PORT: 8221
       TIER: ${{ inputs.tier }}
       IMAGE_TIER: ${{ contains(fromJson('["dev","qa"]'), inputs.tier) && 'development' || 'release' }}
-      CICD_ROLE_ARN: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/power-user-github-actions-cicd
+      CICD_ROLE_ARN: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/power-user-github-actions-cicd
       ECS_DATA_IMPORT_CPU_UNITS: "1024"
       ECS_DATA_IMPORT_MEMORY_UNITS: "2048"
-      
+
     steps:
-      - uses: "actions/checkout@v6.0.1"
+      - uses: "actions/checkout@v6.0.2"
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v5.1.1
+        uses: aws-actions/configure-aws-credentials@v6.0.0
         with:
           role-to-assume: ${{ env.CICD_ROLE_ARN }}
           role-session-name: ${{ env.TIER }}-cedcd-deploy-${{ github.ref_name }}
@@ -54,7 +54,7 @@ jobs:
           echo "DATE=${DATE:-unknown_date}" >> $GITHUB_ENV
 
           TIMESTAMP=$(date +"%Y%m%d%H%M%S")
-          REPO=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_REGION.amazonaws.com/$APP
+          REPO=${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_REGION.amazonaws.com/$APP
           echo "IMAGE_REPOSITORY=$REPO" >> $GITHUB_ENV
           echo "FRONTEND_IMAGE=$REPO:$IMAGE_TIER-frontend-${{ github.ref_name }}-$TIMESTAMP" >> $GITHUB_ENV
           echo "BACKEND_IMAGE=$REPO:$IMAGE_TIER-backend-${{ github.ref_name }}-$TIMESTAMP" >> $GITHUB_ENV
@@ -102,19 +102,19 @@ jobs:
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2.0.1
+        uses: aws-actions/amazon-ecr-login@v2.1.0
         with:
           mask-password: true
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4.0.0
 
       - name: Create and use a new builder instance
         run: |
           docker buildx create --name mybuilder --use
 
       - name: Build backend image ${{ env.BACKEND_IMAGE }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7.0.0
         with:
           context: .
           file: docker/backend.dockerfile
@@ -127,7 +127,7 @@ jobs:
           cache-to: type=inline
 
       - name: Build frontend image ${{ env.FRONTEND_IMAGE }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7.0.0
         with:
           context: .
           file: docker/frontend.dockerfile
@@ -140,9 +140,9 @@ jobs:
             REACT_APP_VERSION=${{ github.ref_name }}
           cache-from: type=registry,ref=${{ env.FRONTEND_IMAGE_LATEST }}
           cache-to: type=inline
-          
+
       - name: Build data import image ${{ env.DATA_IMPORT_IMAGE }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7.0.0
         with:
           context: .
           file: docker/data-import.dockerfile
@@ -186,12 +186,6 @@ jobs:
               --propagate-tags TASK_DEFINITION \
               --force-new-deployment
 
-      # - name: Wait for service stability
-      #   run: |
-      #     aws ecs wait services-stable \
-      #         --cluster ${{ env.ECS_CLUSTER }} \
-      #         --services ${{ env.ECS_WEB_SERVICE }}
-
       - name: Remove old task definitions
         run: |
           for family in "$ECS_WEB_TASK" "$ECS_DATA_IMPORT_TASK"; do
@@ -199,3 +193,10 @@ jobs:
               aws ecs list-task-definitions --family-prefix "$family" --sort DESC --query 'taskDefinitionArns[3:]' --output text \
                   | xargs -n1 -r aws ecs deregister-task-definition --task-definition
           done
+
+      - name: Deployment summary
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tier:** ${{ env.TIER }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
