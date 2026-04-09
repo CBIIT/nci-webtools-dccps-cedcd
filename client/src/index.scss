@@ -163,7 +163,7 @@ body {
   border-top: none;
   border-left: none;
   border-right: none;
-  border-bottom: 1px solid red;
+  border-bottom: 1px solid #b91c1c;
   outline: none;
   background: transparent;
 }
@@ -1366,7 +1366,7 @@ tr.compare-row--hover,
 }
 
 .input-invalid label {
-  color: orangered;
+  color: #b91c1c;
 }
 
 .input-invalid input {
@@ -1377,7 +1377,7 @@ tr.compare-row--hover,
 // }
 
 .field-required label {
-  color: red;
+  color: #b91c1c;
 }
 
 .field-required label:after {
@@ -1388,7 +1388,7 @@ tr.compare-row--hover,
 // }
 
 .field-invalid label {
-  color: red;
+  color: #b91c1c;
 }
 
 .field-invalid label:after {
@@ -1442,8 +1442,12 @@ tr.compare-row--hover,
 
 .required-label:after {
   content: "*";
-  color: red;
+  color: #b91c1c;
   // margin-left: 0.25rem;
+}
+
+.error-text {
+  color: #b91c1c;
 }
 
 .bg-light-grey {

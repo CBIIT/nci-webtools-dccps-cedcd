@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
-import Select from "react-select";
+import AccessibleSelect from "../controls/AccessibleSelect";
 import { connect } from "react-redux";
 import RequireAuthorization from "../RequireAuthorization/RequireAuthorization";
 import Messenger from "../Snackbar/Snackbar";
@@ -339,10 +339,10 @@ class AddNewCohort extends Component {
                   <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
                   <Form.Group id="ctl11_div_cohortName">
                     <Form.Label className="oneLineLabel" htmlFor="cu_firstName">
-                      Cohort Name<span style={{ color: "red" }}>*</span>
+                      Cohort Name<span className="error-text">*</span>
                     </Form.Label>
                     {this.state.name_error !== "" && (
-                      <Form.Label style={{ color: "red" }}> {this.state.name_error}</Form.Label>
+                      <Form.Label className="error-text"> {this.state.name_error}</Form.Label>
                     )}
                     <input
                       className="form-control"
@@ -356,10 +356,10 @@ class AddNewCohort extends Component {
                   </Form.Group>
                   <Form.Group id="ctl11_div_cohortAcronym">
                     <Form.Label className="oneLineLabel" htmlFor="cu_lastName">
-                      Cohort Acronym<span style={{ color: "red" }}>*</span>
+                      Cohort Acronym<span className="error-text">*</span>
                     </Form.Label>
                     {this.state.acronym_error !== "" && (
-                      <Form.Label style={{ color: "red" }}> {this.state.acronym_error}</Form.Label>
+                      <Form.Label className="error-text"> {this.state.acronym_error}</Form.Label>
                     )}
                     <input
                       className="form-control"
@@ -373,13 +373,14 @@ class AddNewCohort extends Component {
                   </Form.Group>
                   <Form.Group id="ctl11_div_cohortType">
                     <Form.Label className="oneLineLabel" htmlFor="cu_type">
-                      Cohort Type<span style={{ color: "red" }}>*</span>
+                      Cohort Type<span className="error-text">*</span>
                     </Form.Label>
                     {this.state.type_error !== "" && (
-                      <Form.Label style={{ color: "red" }}> {this.state.type_error}</Form.Label>
+                      <Form.Label className="error-text"> {this.state.type_error}</Form.Label>
                     )}
                     <div style={{ width: "90%" }}>
-                      <Select
+                      <AccessibleSelect
+                        inputId="cu_type"
                         name="type"
                         value={this.state.type}
                         options={[
@@ -395,7 +396,8 @@ class AddNewCohort extends Component {
                       Cohort Owner(s)
                     </Form.Label>
                     <div style={{ width: "90%" }}>
-                      <Select
+                      <AccessibleSelect
+                        inputId="cu_organization"
                         name="owners"
                         isMulti="true"
                         value={this.state.cohortOwners}
@@ -409,7 +411,7 @@ class AddNewCohort extends Component {
                       Notes{" "}
                     </Form.Label>
                     {this.state.notes_error !== "" && (
-                      <Form.Label style={{ color: "red", paddingLeft: "5px" }}> {this.state.notes_error}</Form.Label>
+                      <Form.Label className="error-text" style={{ paddingLeft: "5px" }}> {this.state.notes_error}</Form.Label>
                     )}
                     <textarea
                       className="form-control"

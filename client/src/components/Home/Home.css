@@ -128,3 +128,9 @@ img {
   width: 100%;
   height: 35%;
 }
+
+.card-body-section {
+  background-color: rgba(0, 0, 0, 0.2);
+  width: 100%;
+  padding: 0 5% 10px;
+}
