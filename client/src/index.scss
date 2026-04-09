@@ -1450,6 +1450,17 @@ tr.compare-row--hover,
   color: #b91c1c;
 }
 
+// Override Bootstrap .text-success (#28a745 = 3.13:1) for WCAG AA contrast
+.text-success {
+  color: #1a7a34 !important;
+}
+
+// Override react-select default placeholder color (#808080) for WCAG AA contrast
+// Targets react-select's generated placeholder div class pattern
+[class$="-placeholder"] {
+  color: #5e5e5e !important;
+}
+
 .bg-light-grey {
   background-color: #f1f1f1;
 }

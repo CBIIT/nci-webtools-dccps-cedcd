@@ -889,7 +889,7 @@ const CohortForm = ({ ...props }) => {
             onClick={() => setActivePanel(activePanel === "panelA" ? "" : "panelA")}
             panelTitle="Cohort Information">
             {/* A.1a Cohort Name */}
-            <Form.Group as={Row}>
+            <Form.Group as={Row} controlId="cohort-name">
               <Form.Label column sm="5">
                 A.1a Cohort Name
               </Form.Label>
@@ -899,7 +899,7 @@ const CohortForm = ({ ...props }) => {
             </Form.Group>
 
             {/* A.1b Cohort Abbreviation */}
-            <Form.Group as={Row}>
+            <Form.Group as={Row} controlId="cohort-acronym">
               <Form.Label column sm="5">
                 A.1b Cohort Abbreviation
               </Form.Label>
@@ -1031,7 +1031,7 @@ const CohortForm = ({ ...props }) => {
                             }
                           }}
                         />
-                        <Form.Check.Label style={{ fontWeight: "normal" }}>No</Form.Check.Label>
+                        <Form.Check.Label htmlFor="clarification-contact-radio-no" style={{ fontWeight: "normal" }}>No</Form.Check.Label>
                       </Form.Check>
                     </Reminder>
                   ) : (
@@ -1066,7 +1066,7 @@ const CohortForm = ({ ...props }) => {
                           }
                         }}
                       />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>No</Form.Check.Label>
+                      <Form.Check.Label htmlFor="clarification-contact-radio-no" style={{ fontWeight: "normal" }}>No</Form.Check.Label>
                     </Form.Check>
                   )}
 
@@ -1095,7 +1095,7 @@ const CohortForm = ({ ...props }) => {
                             }
                           }}
                         />
-                        <Form.Check.Label style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
+                        <Form.Check.Label htmlFor="clarification-contact-radio-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                       </Form.Check>
                     </Reminder>
                   ) : (
@@ -1122,7 +1122,7 @@ const CohortForm = ({ ...props }) => {
                           }
                         }}
                       />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
+                      <Form.Check.Label htmlFor="clarification-contact-radio-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                     </Form.Check>
                   )}
                 </div>
@@ -1241,7 +1241,7 @@ const CohortForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>
+                    <Form.Check.Label htmlFor="default-completerName-check" style={{ fontWeight: "normal" }}>
                       Same as the person who completed the form(4a)
                     </Form.Check.Label>
                   </Form.Check>
@@ -1270,7 +1270,7 @@ const CohortForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>
+                    <Form.Check.Label htmlFor="default-contacterName-check" style={{ fontWeight: "normal" }}>
                       Same as the contact person for clarification of this form(4b)
                     </Form.Check.Label>
                   </Form.Check>
@@ -1312,7 +1312,7 @@ const CohortForm = ({ ...props }) => {
                         checked={cohort.eligible_gender_id === 4}
                         onChange={() => !isReadOnly && removeEligbleGenderError(4)}
                       />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>All</Form.Check.Label>
+                      <Form.Check.Label htmlFor="default-gender-all" style={{ fontWeight: "normal" }}>All</Form.Check.Label>
                     </Form.Check>
                     <Form.Check type="radio" className="pl-0" id="default-gender-males" name="eligible_gender_id">
                       <Form.Check.Input
@@ -1323,7 +1323,7 @@ const CohortForm = ({ ...props }) => {
                         checked={cohort.eligible_gender_id === 2}
                         onChange={() => !isReadOnly && removeEligbleGenderError(2)}
                       />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>Males only</Form.Check.Label>
+                      <Form.Check.Label htmlFor="default-gender-males" style={{ fontWeight: "normal" }}>Males only</Form.Check.Label>
                     </Form.Check>
                     <Form.Check type="radio" className="pl-0" id="default-gender-females" name="eligible_gender_id">
                       <Form.Check.Input
@@ -1334,7 +1334,7 @@ const CohortForm = ({ ...props }) => {
                         checked={cohort.eligible_gender_id === 1}
                         onChange={() => !isReadOnly && removeEligbleGenderError(1)}
                       />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>Females only</Form.Check.Label>
+                      <Form.Check.Label htmlFor="default-gender-females" style={{ fontWeight: "normal" }}>Females only</Form.Check.Label>
                     </Form.Check>
                   </div>
                 </Col>
@@ -1355,7 +1355,7 @@ const CohortForm = ({ ...props }) => {
                           if (!isReadOnly) dispatch(allactions.cohortActions.eligible_disease(+e.target.checked));
                         }}
                       />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>
+                      <Form.Check.Label htmlFor="default-cancerSurvivors" style={{ fontWeight: "normal" }}>
                         Cancer survivors only, specify cancer site(s)
                       </Form.Check.Label>
                     </Form.Check>
@@ -1504,7 +1504,7 @@ const CohortForm = ({ ...props }) => {
                             }
                           }}
                         />
-                        <Form.Check.Label style={{ fontWeight: "normal" }}>No</Form.Check.Label>
+                        <Form.Check.Label htmlFor="enrollment-ongoing-radio-no" style={{ fontWeight: "normal" }}>No</Form.Check.Label>
                       </Form.Check>
                     </Reminder>
                     <Reminder message="Required Field" disabled={!(errors.enrollment_ongoing && saved)}>
@@ -1542,7 +1542,7 @@ const CohortForm = ({ ...props }) => {
                             }
                           }}
                         />
-                        <Form.Check.Label style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
+                        <Form.Check.Label htmlFor="enrollment-ongoing-radio-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                       </Form.Check>
                     </Reminder>
                   </div>
@@ -2031,7 +2031,7 @@ const CohortForm = ({ ...props }) => {
                         )
                       }
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>In person</Form.Check.Label>
+                    <Form.Check.Label htmlFor="default-collected-in-person" style={{ fontWeight: "normal" }}>In person</Form.Check.Label>
                   </Form.Check>
                   <Form.Check type="checkbox" className="pl-0" id="default-collected-phone" name="data_collected_phone">
                     <Form.Check.Input
@@ -2054,7 +2054,7 @@ const CohortForm = ({ ...props }) => {
                         )
                       }
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Phone interview</Form.Check.Label>
+                    <Form.Check.Label htmlFor="default-collected-phone" style={{ fontWeight: "normal" }}>Phone interview</Form.Check.Label>
                   </Form.Check>
                   <Form.Check type="checkbox" className="pl-0" id="default-collected-paper" name="data_collected_paper">
                     <Form.Check.Input
@@ -2077,7 +2077,7 @@ const CohortForm = ({ ...props }) => {
                         )
                       }
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Self-administered via paper</Form.Check.Label>
+                    <Form.Check.Label htmlFor="default-collected-paper" style={{ fontWeight: "normal" }}>Self-administered via paper</Form.Check.Label>
                   </Form.Check>
                   <Form.Check type="checkbox" className="pl-0" id="default-collected-web" name="data_collected_web">
                     <Form.Check.Input
@@ -2100,7 +2100,7 @@ const CohortForm = ({ ...props }) => {
                         )
                       }
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>
+                    <Form.Check.Label htmlFor="default-collected-web" style={{ fontWeight: "normal" }}>
                       Self-administered via web-based device
                     </Form.Check.Label>
                   </Form.Check>
@@ -2127,7 +2127,7 @@ const CohortForm = ({ ...props }) => {
                         )
                       }
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Other, please specify</Form.Check.Label>
+                    <Form.Check.Label htmlFor="default-collected-other" style={{ fontWeight: "normal" }}>Other, please specify</Form.Check.Label>
                   </Form.Check>
                 </div>
                 {saved && errors.data_collected_other_specify ? (
@@ -2216,7 +2216,7 @@ const CohortForm = ({ ...props }) => {
                         )
                       }
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>None</Form.Check.Label>
+                    <Form.Check.Label htmlFor="default-require-none" style={{ fontWeight: "normal" }}>None</Form.Check.Label>
                   </Form.Check>
                   <Form.Check type="checkbox" className="pl-0" id="default-require-collab" name="requireCollab">
                     <Form.Check.Input
@@ -2242,7 +2242,7 @@ const CohortForm = ({ ...props }) => {
                         )
                       }
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>
+                    <Form.Check.Label htmlFor="default-require-collab" style={{ fontWeight: "normal" }}>
                       Require collaboration with cohort investigators
                     </Form.Check.Label>
                   </Form.Check>
@@ -2270,7 +2270,7 @@ const CohortForm = ({ ...props }) => {
                         )
                       }
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Require IRB approvals</Form.Check.Label>
+                    <Form.Check.Label htmlFor="default-require-irb" style={{ fontWeight: "normal" }}>Require IRB approvals</Form.Check.Label>
                   </Form.Check>
                   <Form.Check type="checkbox" className="pl-0" id="default-require-data" name="requireData">
                     <Form.Check.Input
@@ -2296,7 +2296,7 @@ const CohortForm = ({ ...props }) => {
                         )
                       }
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>
+                    <Form.Check.Label htmlFor="default-require-data" style={{ fontWeight: "normal" }}>
                       Require data use agreements and/or material transfer agreement
                     </Form.Check.Label>
                   </Form.Check>
@@ -2324,7 +2324,7 @@ const CohortForm = ({ ...props }) => {
                         )
                       }
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>
+                    <Form.Check.Label htmlFor="default-restrict-geno-info" style={{ fontWeight: "normal" }}>
                       Restrictions in the consent related to genetic information
                     </Form.Check.Label>
                   </Form.Check>
@@ -2352,7 +2352,7 @@ const CohortForm = ({ ...props }) => {
                         )
                       }
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>
+                    <Form.Check.Label htmlFor="default-restrict-other-db" style={{ fontWeight: "normal" }}>
                       Restrictions in the consent related to linking to other databases
                     </Form.Check.Label>
                   </Form.Check>
@@ -2384,7 +2384,7 @@ const CohortForm = ({ ...props }) => {
                         )
                       }
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Restrictions on commercial use</Form.Check.Label>
+                    <Form.Check.Label htmlFor="default-restrict-commercial" style={{ fontWeight: "normal" }}>Restrictions on commercial use</Form.Check.Label>
                   </Form.Check>
                   <Form.Check type="checkbox" className="pl-0" id="default-restrict-other" name="restrictOther">
                     <Form.Check.Input
@@ -2412,7 +2412,7 @@ const CohortForm = ({ ...props }) => {
                         )
                       }
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Other, please specify</Form.Check.Label>
+                    <Form.Check.Label htmlFor="default-restrict-other" style={{ fontWeight: "normal" }}>Other, please specify</Form.Check.Label>
                   </Form.Check>
                 </div>
                 {saved && errors.restrictions_other_specify ? (

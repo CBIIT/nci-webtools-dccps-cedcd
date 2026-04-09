@@ -411,7 +411,7 @@ const MortalityForm = ({ ...props }) => {
               </Form.Label>
               <Col sm="12">
                 <div key="checkbox" className="mb-3">
-                  <Form.Check className="pl-0" name="deathIndex">
+                  <Form.Check className="pl-0" id="deathIndex-checkbox" name="deathIndex">
                     <Form.Check.Input
                       bsPrefix
                       type="checkbox"
@@ -425,12 +425,12 @@ const MortalityForm = ({ ...props }) => {
                       }}
                     />
 
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>
+                    <Form.Check.Label htmlFor="deathIndex-checkbox" style={{ fontWeight: "normal" }}>
                       U.S. National Death Index (NDI) linkage
                     </Form.Check.Label>
                   </Form.Check>
 
-                  <Form.Check className="pl-0" name="deathCertificate">
+                  <Form.Check className="pl-0" id="deathCertificate-checkbox" name="deathCertificate">
                     <Form.Check.Input
                       bsPrefix
                       type="checkbox"
@@ -446,10 +446,10 @@ const MortalityForm = ({ ...props }) => {
                       }}
                     />
 
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Death Certificates</Form.Check.Label>
+                    <Form.Check.Label htmlFor="deathCertificate-checkbox" style={{ fontWeight: "normal" }}>Death Certificates</Form.Check.Label>
                   </Form.Check>
 
-                  <Form.Check className="pl-0" name="otherDeath">
+                  <Form.Check className="pl-0" id="otherDeath-checkbox" name="otherDeath">
                     <Form.Check.Input
                       bsPrefix
                       type="checkbox"
@@ -464,7 +464,7 @@ const MortalityForm = ({ ...props }) => {
                       }}
                     />
 
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Other</Form.Check.Label>
+                    <Form.Check.Label htmlFor="otherDeath-checkbox" style={{ fontWeight: "normal" }}>Other</Form.Check.Label>
                   </Form.Check>
                 </div>
 
@@ -497,9 +497,8 @@ const MortalityForm = ({ ...props }) => {
                 )}
               </Form.Label>
               <Col sm="6" className="align-self-center">
-                <Form.Check type="radio" name="haveDeathDate" inline>
+                <Form.Check type="radio" id="haveDeathDate-no" name="haveDeathDate" inline>
                   <Form.Check.Input
-                    type="radio"
                     type="radio"
                     className="mr-2"
                     checked={mortality.haveDeathDate === 0}
@@ -510,10 +509,10 @@ const MortalityForm = ({ ...props }) => {
                       }
                     }}
                   />
-                  <Form.Check.Label style={{ fontWeight: "normal" }}>No</Form.Check.Label>
+                  <Form.Check.Label htmlFor="haveDeathDate-no" style={{ fontWeight: "normal" }}>No</Form.Check.Label>
                 </Form.Check>
 
-                <Form.Check type="radio" name="haveDeathDate" inline>
+                <Form.Check type="radio" id="haveDeathDate-yes" name="haveDeathDate" inline>
                   <Form.Check.Input
                     type="radio"
                     className="mr-2"
@@ -525,7 +524,7 @@ const MortalityForm = ({ ...props }) => {
                       }
                     }}
                   />
-                  <Form.Check.Label style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
+                  <Form.Check.Label htmlFor="haveDeathDate-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                 </Form.Check>
               </Col>
             </Form.Group>
@@ -538,9 +537,8 @@ const MortalityForm = ({ ...props }) => {
                 )}
               </Form.Label>
               <Col sm="6" className="align-self-center">
-                <Form.Check type="radio" name="haveDeathCause" inline>
+                <Form.Check type="radio" id="haveDeathCause-no" name="haveDeathCause" inline>
                   <Form.Check.Input
-                    type="radio"
                     type="radio"
                     className="mr-2"
                     checked={mortality.haveDeathCause === 0}
@@ -555,12 +553,11 @@ const MortalityForm = ({ ...props }) => {
                       }
                     }}
                   />
-                  <Form.Check.Label style={{ fontWeight: "normal" }}>No</Form.Check.Label>
+                  <Form.Check.Label htmlFor="haveDeathCause-no" style={{ fontWeight: "normal" }}>No</Form.Check.Label>
                 </Form.Check>
 
-                <Form.Check type="radio" name="haveDeathCause" inline>
+                <Form.Check type="radio" id="haveDeathCause-yes" name="haveDeathCause" inline>
                   <Form.Check.Input
-                    type="radio"
                     type="radio"
                     className="mr-2"
                     checked={mortality.haveDeathCause === 1}
@@ -571,7 +568,7 @@ const MortalityForm = ({ ...props }) => {
                       }
                     }}
                   />
-                  <Form.Check.Label style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
+                  <Form.Check.Label htmlFor="haveDeathCause-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                 </Form.Check>
               </Col>
             </Form>
@@ -583,7 +580,7 @@ const MortalityForm = ({ ...props }) => {
               </Form.Label>
               <Col sm="12">
                 <div key="checkbox" className="mb-3">
-                  <Form.Check className="pl-0" name="icd9">
+                  <Form.Check className="pl-0" id="icd9-checkbox" name="icd9">
                     <Form.Check.Input
                       bsPrefix
                       type="checkbox"
@@ -597,10 +594,10 @@ const MortalityForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>ICD-9</Form.Check.Label>
+                    <Form.Check.Label htmlFor="icd9-checkbox" style={{ fontWeight: "normal" }}>ICD-9</Form.Check.Label>
                   </Form.Check>
 
-                  <Form.Check className="pl-0" name="icd10">
+                  <Form.Check className="pl-0" id="icd10-checkbox" name="icd10">
                     <Form.Check.Input
                       bsPrefix
                       type="checkbox"
@@ -614,10 +611,10 @@ const MortalityForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>ICD-10</Form.Check.Label>
+                    <Form.Check.Label htmlFor="icd10-checkbox" style={{ fontWeight: "normal" }}>ICD-10</Form.Check.Label>
                   </Form.Check>
 
-                  <Form.Check className="pl-0" name="notCoded">
+                  <Form.Check className="pl-0" id="notCoded-checkbox" name="notCoded">
                     <Form.Check.Input
                       bsPrefix
                       type="checkbox"
@@ -631,10 +628,10 @@ const MortalityForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Not Coded</Form.Check.Label>
+                    <Form.Check.Label htmlFor="notCoded-checkbox" style={{ fontWeight: "normal" }}>Not Coded</Form.Check.Label>
                   </Form.Check>
 
-                  <Form.Check className="pl-0" name="otherCode">
+                  <Form.Check className="pl-0" id="otherCode-checkbox" name="otherCode">
                     <Form.Check.Input
                       bsPrefix
                       type="checkbox"
@@ -649,7 +646,7 @@ const MortalityForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Other Code</Form.Check.Label>
+                    <Form.Check.Label htmlFor="otherCode-checkbox" style={{ fontWeight: "normal" }}>Other Code</Form.Check.Label>
                   </Form.Check>
                 </div>
                 <Reminder

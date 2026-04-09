@@ -485,7 +485,7 @@ const DataLinkageForm = ({ ...props }) => {
               <Col sm="12" className="align-self-center">
                 {saved && errors.haveDataLink ? (
                   <Reminder>
-                    <Form.Check type="radio" name="haveDataLink" inline style={{ color: "red" }}>
+                    <Form.Check type="radio" id="haveDataLink-no" name="haveDataLink" inline className="error-text">
                       <Form.Check.Input
                         type="radio"
                         type="radio"
@@ -499,11 +499,11 @@ const DataLinkageForm = ({ ...props }) => {
                           }
                         }}
                       />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>No</Form.Check.Label>
+                      <Form.Check.Label htmlFor="haveDataLink-no" style={{ fontWeight: "normal" }}>No</Form.Check.Label>
                     </Form.Check>
                   </Reminder>
                 ) : (
-                  <Form.Check type="radio" name="haveDataLink" inline>
+                  <Form.Check type="radio" id="haveDataLink-no" name="haveDataLink" inline>
                     <Form.Check.Input
                       type="radio"
                       type="radio"
@@ -517,12 +517,12 @@ const DataLinkageForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>No</Form.Check.Label>
+                    <Form.Check.Label htmlFor="haveDataLink-no" style={{ fontWeight: "normal" }}>No</Form.Check.Label>
                   </Form.Check>
                 )}
                 {saved && errors.haveDataLink ? (
                   <Reminder>
-                    <Form.Check type="radio" name="haveDataLink" inline style={{ color: "red" }}>
+                    <Form.Check type="radio" id="haveDataLink-yes" name="haveDataLink" inline className="error-text">
                       <Form.Check.Input
                         type="radio"
                         className="mr-2"
@@ -534,11 +534,11 @@ const DataLinkageForm = ({ ...props }) => {
                           }
                         }}
                       />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
+                      <Form.Check.Label htmlFor="haveDataLink-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                     </Form.Check>
                   </Reminder>
                 ) : (
-                  <Form.Check type="radio" name="haveDataLink" inline>
+                  <Form.Check type="radio" id="haveDataLink-yes" name="haveDataLink" inline>
                     <Form.Check.Input
                       type="radio"
                       className="mr-2"
@@ -550,7 +550,7 @@ const DataLinkageForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
+                    <Form.Check.Label htmlFor="haveDataLink-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                   </Form.Check>
                 )}
               </Col>
@@ -611,7 +611,7 @@ const DataLinkageForm = ({ ...props }) => {
               <Col sm="12" className="align-self-center">
                 {saved && errors.haveHarmonization ? (
                   <Reminder>
-                    <Form.Check type="radio" name="haveHarmonization" inline style={{ color: "red" }}>
+                    <Form.Check type="radio" id="haveHarmonization-no" name="haveHarmonization" inline className="error-text">
                       <Form.Check.Input
                         type="radio"
                         type="radio"
@@ -625,11 +625,11 @@ const DataLinkageForm = ({ ...props }) => {
                           }
                         }}
                       />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>No</Form.Check.Label>
+                      <Form.Check.Label htmlFor="haveHarmonization-no" style={{ fontWeight: "normal" }}>No</Form.Check.Label>
                     </Form.Check>
                   </Reminder>
                 ) : (
-                  <Form.Check type="radio" name="haveHarmonization" inline>
+                  <Form.Check type="radio" id="haveHarmonization-no" name="haveHarmonization" inline>
                     <Form.Check.Input
                       type="radio"
                       type="radio"
@@ -643,12 +643,12 @@ const DataLinkageForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>No</Form.Check.Label>
+                    <Form.Check.Label htmlFor="haveHarmonization-no" style={{ fontWeight: "normal" }}>No</Form.Check.Label>
                   </Form.Check>
                 )}
                 {saved && errors.haveHarmonization ? (
                   <Reminder>
-                    <Form.Check type="radio" name="haveHarmonization" inline style={{ color: "red" }}>
+                    <Form.Check type="radio" id="haveHarmonization-yes" name="haveHarmonization" inline className="error-text">
                       <Form.Check.Input
                         type="radio"
                         className="mr-2"
@@ -660,11 +660,11 @@ const DataLinkageForm = ({ ...props }) => {
                           }
                         }}
                       />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
+                      <Form.Check.Label htmlFor="haveHarmonization-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                     </Form.Check>
                   </Reminder>
                 ) : (
-                  <Form.Check type="radio" name="haveHarmonization" inline>
+                  <Form.Check type="radio" id="haveHarmonization-yes" name="haveHarmonization" inline>
                     <Form.Check.Input
                       type="radio"
                       className="mr-2"
@@ -676,7 +676,7 @@ const DataLinkageForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
+                    <Form.Check.Label htmlFor="haveHarmonization-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                   </Form.Check>
                 )}
               </Col>
@@ -735,7 +735,7 @@ const DataLinkageForm = ({ ...props }) => {
               <Col sm="12" className="align-self-center">
                 {saved && errors.haveDeposited ? (
                   <Reminder>
-                    <Form.Check type="radio" name="haveDeposited" inline style={{ color: "red" }}>
+                    <Form.Check type="radio" id="haveDeposited-no" name="haveDeposited" inline className="error-text">
                       <Form.Check.Input
                         type="radio"
                         type="radio"
@@ -751,11 +751,11 @@ const DataLinkageForm = ({ ...props }) => {
                           }
                         }}
                       />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>No</Form.Check.Label>
+                      <Form.Check.Label htmlFor="haveDeposited-no" style={{ fontWeight: "normal" }}>No</Form.Check.Label>
                     </Form.Check>
                   </Reminder>
                 ) : (
-                  <Form.Check type="radio" name="haveDeposited" inline>
+                  <Form.Check type="radio" id="haveDeposited-no" name="haveDeposited" inline>
                     <Form.Check.Input
                       type="radio"
                       type="radio"
@@ -771,12 +771,12 @@ const DataLinkageForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>No</Form.Check.Label>
+                    <Form.Check.Label htmlFor="haveDeposited-no" style={{ fontWeight: "normal" }}>No</Form.Check.Label>
                   </Form.Check>
                 )}
                 {saved && errors.haveDeposited ? (
                   <Reminder>
-                    <Form.Check type="radio" name="haveDeposited" inline style={{ color: "red" }}>
+                    <Form.Check type="radio" id="haveDeposited-yes" name="haveDeposited" inline className="error-text">
                       <Form.Check.Input
                         type="radio"
                         className="mr-2"
@@ -788,11 +788,11 @@ const DataLinkageForm = ({ ...props }) => {
                           }
                         }}
                       />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
+                      <Form.Check.Label htmlFor="haveDeposited-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                     </Form.Check>
                   </Reminder>
                 ) : (
-                  <Form.Check type="radio" name="haveDeposited" inline>
+                  <Form.Check type="radio" id="haveDeposited-yes" name="haveDeposited" inline>
                     <Form.Check.Input
                       type="radio"
                       className="mr-2"
@@ -804,7 +804,7 @@ const DataLinkageForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
+                    <Form.Check.Label htmlFor="haveDeposited-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                   </Form.Check>
                 )}
               </Col>
@@ -817,7 +817,7 @@ const DataLinkageForm = ({ ...props }) => {
               </Form.Label>
               <Col sm="12">
                 <div key="checkbox">
-                  <Form.Check className="pl-0" name="dbGaP">
+                  <Form.Check className="pl-0" id="dbGaP-checkbox" name="dbGaP">
                     <Form.Check.Input
                       bsPrefix
                       type="checkbox"
@@ -831,10 +831,10 @@ const DataLinkageForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>dbGaP</Form.Check.Label>
+                    <Form.Check.Label htmlFor="dbGaP-checkbox" style={{ fontWeight: "normal" }}>dbGaP</Form.Check.Label>
                   </Form.Check>
 
-                  <Form.Check className="pl-0" name="BioLINCC">
+                  <Form.Check className="pl-0" id="BioLINCC-checkbox" name="BioLINCC">
                     <Form.Check.Input
                       bsPrefix
                       type="checkbox"
@@ -848,10 +848,10 @@ const DataLinkageForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>BioLINCC</Form.Check.Label>
+                    <Form.Check.Label htmlFor="BioLINCC-checkbox" style={{ fontWeight: "normal" }}>BioLINCC</Form.Check.Label>
                   </Form.Check>
 
-                  <Form.Check className="pl-0" name="otherRepo">
+                  <Form.Check className="pl-0" id="otherRepo-checkbox" name="otherRepo">
                     <Form.Check.Input
                       bsPrefix
                       type="checkbox"
@@ -865,7 +865,7 @@ const DataLinkageForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Other Repo</Form.Check.Label>
+                    <Form.Check.Label htmlFor="otherRepo-checkbox" style={{ fontWeight: "normal" }}>Other Repo</Form.Check.Label>
                   </Form.Check>
                 </div>
               </Col>
@@ -882,7 +882,7 @@ const DataLinkageForm = ({ ...props }) => {
               <Col sm="12" className="align-self-center">
                 {saved && errors.dataOnline ? (
                   <Reminder>
-                    <Form.Check type="radio" name="dataOnline" inline style={{ color: "red" }}>
+                    <Form.Check type="radio" id="dataOnline-no" name="dataOnline" inline className="error-text">
                       <Form.Check.Input
                         type="radio"
                         type="radio"
@@ -902,11 +902,11 @@ const DataLinkageForm = ({ ...props }) => {
                           }
                         }}
                       />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>No</Form.Check.Label>
+                      <Form.Check.Label htmlFor="dataOnline-no" style={{ fontWeight: "normal" }}>No</Form.Check.Label>
                     </Form.Check>
                   </Reminder>
                 ) : (
-                  <Form.Check type="radio" name="dataOnline" inline>
+                  <Form.Check type="radio" id="dataOnline-no" name="dataOnline" inline>
                     <Form.Check.Input
                       type="radio"
                       type="radio"
@@ -926,15 +926,16 @@ const DataLinkageForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>No</Form.Check.Label>
+                    <Form.Check.Label htmlFor="dataOnline-no" style={{ fontWeight: "normal" }}>No</Form.Check.Label>
                   </Form.Check>
                 )}
                 <Reminder disabled={!(saved && errors.dataOnline)}>
                   <Form.Check
                     type="radio"
+                    id="dataOnline-yes"
                     name="dataOnline"
                     inline
-                    style={saved && errors.dataOnline ? { color: "red" } : {}}>
+                    className={saved && errors.dataOnline ? "error-text" : ""}>
                     <Form.Check.Input
                       type="radio"
                       className="mr-2"
@@ -954,7 +955,7 @@ const DataLinkageForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
+                    <Form.Check.Label htmlFor="dataOnline-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                   </Form.Check>
                 </Reminder>
               </Col>
@@ -1148,7 +1149,7 @@ const DataLinkageForm = ({ ...props }) => {
               <Col sm="12" className="align-self-center">
                 {saved && errors.createdRepo ? (
                   <Reminder>
-                    <Form.Check type="radio" name="createdRepo" inline style={{ color: "red" }}>
+                    <Form.Check type="radio" id="createdRepo-no" name="createdRepo" inline className="error-text">
                       <Form.Check.Input
                         type="radio"
                         type="radio"
@@ -1162,11 +1163,11 @@ const DataLinkageForm = ({ ...props }) => {
                           }
                         }}
                       />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>No</Form.Check.Label>
+                      <Form.Check.Label htmlFor="createdRepo-no" style={{ fontWeight: "normal" }}>No</Form.Check.Label>
                     </Form.Check>
                   </Reminder>
                 ) : (
-                  <Form.Check type="radio" name="createdRepo" inline>
+                  <Form.Check type="radio" id="createdRepo-no" name="createdRepo" inline>
                     <Form.Check.Input
                       type="radio"
                       type="radio"
@@ -1180,12 +1181,12 @@ const DataLinkageForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>No</Form.Check.Label>
+                    <Form.Check.Label htmlFor="createdRepo-no" style={{ fontWeight: "normal" }}>No</Form.Check.Label>
                   </Form.Check>
                 )}
                 {saved && errors.createdRepo ? (
                   <Reminder>
-                    <Form.Check type="radio" name="createdRepo" inline style={{ color: "red" }}>
+                    <Form.Check type="radio" id="createdRepo-yes" name="createdRepo" inline className="error-text">
                       <Form.Check.Input
                         type="radio"
                         className="mr-2"
@@ -1197,11 +1198,11 @@ const DataLinkageForm = ({ ...props }) => {
                           }
                         }}
                       />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
+                      <Form.Check.Label htmlFor="createdRepo-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                     </Form.Check>
                   </Reminder>
                 ) : (
-                  <Form.Check type="radio" name="createdRepo" inline>
+                  <Form.Check type="radio" id="createdRepo-yes" name="createdRepo" inline>
                     <Form.Check.Input
                       type="radio"
                       className="mr-2"
@@ -1213,7 +1214,7 @@ const DataLinkageForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
+                    <Form.Check.Label htmlFor="createdRepo-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                   </Form.Check>
                 )}
               </Col>

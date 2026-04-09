@@ -837,7 +837,7 @@ const SpecimenForm = ({ ...props }) => {
             }
           }}
         />
-        <Form.Check.Label style={{ fontWeight: "normal" }}>{label}</Form.Check.Label>
+        <Form.Check.Label htmlFor={key} style={{ fontWeight: "normal" }}>{label}</Form.Check.Label>
       </Form.Check>
     );
   }

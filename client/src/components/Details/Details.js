@@ -1661,14 +1661,14 @@ class Details extends Component {
           <div className="filter-block home col-md-12">
             <div className="row" style={{ display: "flex", height: "35px" }}>
               <div id="tableControls" className="" style={{ paddingLeft: "15px" }}>
-                <ul className="table-controls">
+                <div className="table-controls">
                   <FloatingSubmit
                     onClick={this.handleComparasion}
                     align="true"
                     placement="top"
                     values={this.state.selected}
                   />
-                </ul>
+                </div>
               </div>
               <div id="tableExport" style={{ paddingLeft: "1rem", paddingTop: "7px" }}>
                 <Workbook
