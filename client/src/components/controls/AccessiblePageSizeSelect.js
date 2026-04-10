@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const AccessiblePageSizeSelect = ({ id = 'page-size-select', value, onChange, options }) => {
   return (

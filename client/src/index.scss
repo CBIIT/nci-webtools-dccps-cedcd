@@ -1456,8 +1456,9 @@ tr.compare-row--hover,
 }
 
 // Override react-select default placeholder color (#808080) for WCAG AA contrast
-// Targets react-select's generated placeholder div class pattern
-[class$="-placeholder"] {
+// Scoped to react-select containers (class always ends in "-container") to avoid
+// accidentally restyling placeholders from other libraries.
+[class$="-container"] [class$="-placeholder"] {
   color: #5e5e5e !important;
 }
 
