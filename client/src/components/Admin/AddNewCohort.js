@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
 import AccessibleSelect from "../controls/AccessibleSelect";
 import { connect } from "react-redux";
-import RequireAuthorization from "../RequireAuthorization/RequireAuthorization";
 import Messenger from "../Snackbar/Snackbar";
 import "./AddNewCohort.css";
 import Button from "react-bootstrap/Button";

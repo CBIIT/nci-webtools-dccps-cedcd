@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, NavLink } from "react-router-dom";
 import Table from "react-bootstrap/Table";
-import RequireAuthorization from "../RequireAuthorization/RequireAuthorization";
-import PageSummary from "../Paging/Paging";
 import Paging from "../Paging/Paging";
 import AccessiblePageSizeSelect from "../controls/AccessiblePageSizeSelect";
 
