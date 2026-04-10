@@ -93,7 +93,7 @@ const Person = ({
             <Reminder message={errors[name]}>
               <Form.Control
                 type="text"
-                style={{ border: "1px solid red" }}
+                style={{ border: "1px solid #b91c1c" }}
                 placeholder="Max of 100 characters"
                 maxLength="100"
                 name={name}
@@ -138,7 +138,7 @@ const Person = ({
             <Reminder message={errors[position]}>
               <Form.Control
                 type="text"
-                style={{ border: "1px solid red" }}
+                style={{ border: "1px solid #b91c1c" }}
                 placeholder="Max of 100 characters"
                 maxLength="100"
                 name={position}
@@ -207,7 +207,7 @@ const Person = ({
               <Reminder message={errors[phone]}>
                 <Form.Control
                   type="text"
-                  style={{ border: "1px solid red", width: "75%" }}
+                  style={{ border: "1px solid #b91c1c", width: "75%" }}
                   placeholder={cohort[type] === "+1" ? "10 digits for USA" : "Max of 100 characters"}
                   maxLength="100"
                   name={phone}
@@ -250,7 +250,7 @@ const Person = ({
             <Reminder message={errors[email]}>
               <Form.Control
                 type="email"
-                style={{ border: "1px solid red" }}
+                style={{ border: "1px solid #b91c1c" }}
                 placeholder="Max of 100 characters"
                 maxLength="100"
                 name={email}

@@ -51,7 +51,7 @@ const Investigator = ({ id, name, institution, email, handleRemove, errors, disa
                 <Reminder message={errors[name]}>
                   <Form.Control
                     type="text"
-                    style={{ border: "1px solid red" }}
+                    style={{ border: "1px solid #b91c1c" }}
                     placeholder="Max of 100 characters"
                     maxLength="100"
                     name={name}
@@ -91,7 +91,7 @@ const Investigator = ({ id, name, institution, email, handleRemove, errors, disa
                 <Reminder message={errors[institution]}>
                   <Form.Control
                     type="text"
-                    style={{ border: "1px solid red" }}
+                    style={{ border: "1px solid #b91c1c" }}
                     placeholder="Max of 100 characters"
                     maxLength="100"
                     name={institution}
@@ -130,7 +130,7 @@ const Investigator = ({ id, name, institution, email, handleRemove, errors, disa
               {errors[email] && displayStyle ? (
                 <Reminder message={errors[email]}>
                   <Form.Control
-                    style={{ border: "1px solid red" }}
+                    style={{ border: "1px solid #b91c1c" }}
                     placeholder="Max of 100 characters"
                     maxLength="100"
                     type="email"

@@ -571,7 +571,7 @@ const DataLinkageForm = ({ ...props }) => {
                     placement="right">
                     <Form.Control
                       type="text"
-                      style={{ border: "1px solid red" }}
+                      style={{ border: "1px solid #b91c1c" }}
                       name="haveDataLinkSpecify"
                       className="form-control"
                       value={dataLinkage.haveDataLinkSpecify}
@@ -700,7 +700,7 @@ const DataLinkageForm = ({ ...props }) => {
                     placement="right">
                     <Form.Control
                       type="text"
-                      style={{ border: "1px solid red" }}
+                      style={{ border: "1px solid #b91c1c" }}
                       name="haveHarmonizationSpecify"
                       className="form-control"
                       value={dataLinkage.haveHarmonizationSpecify}
@@ -1023,7 +1023,7 @@ const DataLinkageForm = ({ ...props }) => {
                 <Reminder message={errors.dataOnlineURL} disabled={!(errors.dataOnlineURL && saved)} placement="right">
                   <Form.Control
                     type="text"
-                    style={errors.dataOnlineURL && saved ? { border: "1px solid red" } : {}}
+                    style={errors.dataOnlineURL && saved ? { border: "1px solid #b91c1c" } : {}}
                     name="dataOnlineURL"
                     className="form-control"
                     value={dataLinkage.dataOnlineURL}
@@ -1244,7 +1244,7 @@ const DataLinkageForm = ({ ...props }) => {
                   <Reminder message={errors.createdRepoSpecify} disabled={!errors.createdRepoSpecify} placement="right">
                     <Form.Control
                       type="text"
-                      style={{ border: "1px solid red" }}
+                      style={{ border: "1px solid #b91c1c" }}
                       name="createdRepoSpecify"
                       className="form-control"
                       value={dataLinkage.createdRepoSpecify}

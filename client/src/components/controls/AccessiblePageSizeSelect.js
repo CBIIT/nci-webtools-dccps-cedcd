@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const AccessiblePageSizeSelect = ({ id, value, onChange, options }) => {
+const AccessiblePageSizeSelect = ({ id, value, onChange, options = [] }) => {
   return (
     <span>
       <label htmlFor={id}>Page Size</label>{' '}

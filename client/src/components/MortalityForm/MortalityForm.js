@@ -388,7 +388,7 @@ const MortalityForm = ({ ...props }) => {
                     name="mortalityYear"
                     type="number"
                     min="1900"
-                    style={saved && errors.mortalityYear ? { border: "1px solid red" } : {}}
+                    style={saved && errors.mortalityYear ? { border: "1px solid #b91c1c" } : {}}
                     value={mortality.mortalityYear}
                     readOnly={isReadOnly}
                     onChange={(e) => {

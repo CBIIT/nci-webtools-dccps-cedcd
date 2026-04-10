@@ -1455,11 +1455,10 @@ tr.compare-row--hover,
   color: #1a7a34 !important;
 }
 
-// Override react-select default placeholder color (#808080) for WCAG AA contrast
-// Scoped to react-select containers (class always ends in "-container") to avoid
-// accidentally restyling placeholders from other libraries.
-[class$="-container"] [class$="-placeholder"] {
-  color: #5e5e5e !important;
+// Override react-select default placeholder color (#808080) for WCAG AA contrast.
+// Scoped to the cedcd-select classNamePrefix set on AccessibleSelect.
+.cedcd-select__placeholder {
+  color: #5e5e5e;
 }
 
 .bg-light-grey {
