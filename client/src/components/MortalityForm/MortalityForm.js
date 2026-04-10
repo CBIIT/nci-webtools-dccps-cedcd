@@ -497,6 +497,8 @@ const MortalityForm = ({ ...props }) => {
                 )}
               </Form.Label>
               <Col sm="6" className="align-self-center">
+                <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
+                  <legend className="sr-only">Do you have date of death for most subjects?</legend>
                 <Form.Check type="radio" id="haveDeathDate-no" name="haveDeathDate" inline>
                   <Form.Check.Input
                     type="radio"
@@ -526,6 +528,7 @@ const MortalityForm = ({ ...props }) => {
                   />
                   <Form.Check.Label htmlFor="haveDeathDate-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                 </Form.Check>
+                </fieldset>
               </Col>
             </Form.Group>
 
@@ -537,6 +540,8 @@ const MortalityForm = ({ ...props }) => {
                 )}
               </Form.Label>
               <Col sm="6" className="align-self-center">
+                <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
+                  <legend className="sr-only">Do you have cause of death for most subjects?</legend>
                 <Form.Check type="radio" id="haveDeathCause-no" name="haveDeathCause" inline>
                   <Form.Check.Input
                     type="radio"
@@ -570,6 +575,7 @@ const MortalityForm = ({ ...props }) => {
                   />
                   <Form.Check.Label htmlFor="haveDeathCause-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                 </Form.Check>
+                </fieldset>
               </Col>
             </Form>
 

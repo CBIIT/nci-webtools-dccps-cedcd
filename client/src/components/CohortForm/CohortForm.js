@@ -944,7 +944,7 @@ const CohortForm = ({ ...props }) => {
                   <Reminder message={errors.cohort_web_site}>
                     <Form.Control
                       type="text"
-                      style={{ color: "red", border: "1px solid red" }}
+                      style={{ color: "#b91c1c", border: "1px solid #b91c1c" }}
                       placeholder="Max of 200 characters"
                       maxLength="200"
                       value={cohort.cohort_web_site}
@@ -997,14 +997,15 @@ const CohortForm = ({ ...props }) => {
                 <span className="required-label">Is this the same person who completed this form?</span>
               </Form.Label>
               <Col sm="6" className="align-self-center">
-                <div key="radio">
+                <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
+                  <legend className="sr-only">Is this the same person who completed this form?</legend>
                   {errors.clarification_contact && saved ? (
                     <Reminder message={errors.clarification_contact}>
                       <Form.Check
                         type="radio"
                         id="clarification-contact-radio-no"
                         inline
-                        style={{ color: "red", borderBottom: "1px solid red" }}
+                        style={{ color: "#b91c1c", borderBottom: "1px solid #b91c1c" }}
                         name="clarification_contact">
                         <Form.Check.Input
                           bsPrefix
@@ -1076,7 +1077,7 @@ const CohortForm = ({ ...props }) => {
                         type="radio"
                         id="clarification-contact-radio-yes"
                         inline
-                        style={{ color: "red", borderBottom: "1px solid red" }}
+                        style={{ color: "#b91c1c", borderBottom: "1px solid #b91c1c" }}
                         name="clarification_contact">
                         <Form.Check.Input
                           bsPrefix
@@ -1125,7 +1126,7 @@ const CohortForm = ({ ...props }) => {
                       <Form.Check.Label htmlFor="clarification-contact-radio-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                     </Form.Check>
                   )}
-                </div>
+                </fieldset>
               </Col>
               <Col sm="12">
                 <Person
@@ -1302,7 +1303,8 @@ const CohortForm = ({ ...props }) => {
                   {errors.eligible_gender_id && saved && <span className="text-danger ml-3">{errorMsg}</span>}
                 </Form.Label>
                 <Col sm="12">
-                  <div key="radio">
+                  <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
+                    <legend className="sr-only">Eligible sex</legend>
                     <Form.Check type="radio" className="pl-0" id="default-gender-all" name="eligible_gender_id">
                       <Form.Check.Input
                         bsPrefix
@@ -1336,7 +1338,7 @@ const CohortForm = ({ ...props }) => {
                       />
                       <Form.Check.Label htmlFor="default-gender-females" style={{ fontWeight: "normal" }}>Females only</Form.Check.Label>
                     </Form.Check>
-                  </div>
+                  </fieldset>
                 </Col>
               </Col>
               <Col sm="12" className="p-0 mb-3">
@@ -1407,7 +1409,7 @@ const CohortForm = ({ ...props }) => {
                     <Reminder message={errors.enrollment_total}>
                       <Form.Control
                         type="text"
-                        style={{ color: "red", border: "1px solid red", minWidth: "100px", maxWidth: "100px" }}
+                        style={{ color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }}
                         name="enrollment_total"
                         value={cohort.enrollment_total}
                         onChange={(e) =>
@@ -1440,7 +1442,7 @@ const CohortForm = ({ ...props }) => {
                     <Reminder message={errors.enrollment_year_start}>
                       <Form.Control
                         type="text"
-                        style={{ color: "red", border: "1px solid red", minWidth: "100px", maxWidth: "100px" }}
+                        style={{ color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }}
                         name="enrollment_year_start"
                         placeholder="YYYY"
                         value={cohort.enrollment_year_start}
@@ -1474,14 +1476,15 @@ const CohortForm = ({ ...props }) => {
                   Is enrollment ongoing?<span className="error-text">*</span>
                 </Form.Label>
                 <Col sm="2" className="mt-3">
-                  <div key="radio">
+                  <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
+                    <legend className="sr-only">Is enrollment ongoing?</legend>
                     <Reminder message="Required Field" disabled={!(errors.enrollment_ongoing && saved)}>
                       <Form.Check
                         type="radio"
                         id="enrollment-ongoing-radio-no"
                         inline
                         style={
-                          errors.enrollment_ongoing && saved ? { color: "red", borderBottom: "1px solid red" } : {}
+                          errors.enrollment_ongoing && saved ? { color: "#b91c1c", borderBottom: "1px solid #b91c1c" } : {}
                         }
                         name="enrollment_ongoing">
                         <Form.Check.Input
@@ -1513,7 +1516,7 @@ const CohortForm = ({ ...props }) => {
                         id="enrollment-ongoing-radio-yes"
                         inline
                         style={
-                          errors.enrollment_ongoing && saved ? { color: "red", borderBottom: "1px solid red" } : {}
+                          errors.enrollment_ongoing && saved ? { color: "#b91c1c", borderBottom: "1px solid #b91c1c" } : {}
                         }
                         name="enrollment_ongoing">
                         <Form.Check.Input
@@ -1545,7 +1548,7 @@ const CohortForm = ({ ...props }) => {
                         <Form.Check.Label htmlFor="enrollment-ongoing-radio-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                       </Form.Check>
                     </Reminder>
-                  </div>
+                  </fieldset>
                 </Col>
               </Col>
               <Col sm="12" className="p-0 mb-1">
@@ -1557,7 +1560,7 @@ const CohortForm = ({ ...props }) => {
                     <input
                       style={
                         errors.enrollment_year_end && saved
-                          ? { color: "red", border: "1px solid red", minWidth: "100px", maxWidth: "100px" }
+                          ? { color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }
                           : { minWidth: "100px", maxWidth: "100px" }
                       }
                       className="form-control"
@@ -1597,7 +1600,7 @@ const CohortForm = ({ ...props }) => {
                     <Reminder message={errors.enrollment_target}>
                       <Form.Control
                         type="text"
-                        style={{ color: "red", border: "1px solid red", minWidth: "100px", maxWidth: "100px" }}
+                        style={{ color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }}
                         name="enrollment_target"
                         value={cohort.enrollment_target}
                         onChange={(e) =>
@@ -1644,7 +1647,7 @@ const CohortForm = ({ ...props }) => {
                       type="text"
                       style={
                         errors.enrollment_year_complete && saved
-                          ? { color: "red", border: "1px solid red", minWidth: "100px", maxWidth: "100px" }
+                          ? { color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }
                           : { minWidth: "100px", maxWidth: "100px" }
                       }
                       name="enrollment_year_complete"
@@ -1689,7 +1692,7 @@ const CohortForm = ({ ...props }) => {
                         style={
                           !(errors.enrollment_age_min && saved)
                             ? { minWidth: "100px", maxWidth: "100px" }
-                            : { color: "red", border: "1px solid red", minWidth: "100px", maxWidth: "100px" }
+                            : { color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }
                         }
                         name="enrollment_age_min"
                         value={cohort.enrollment_age_min}
@@ -1716,7 +1719,7 @@ const CohortForm = ({ ...props }) => {
                         style={
                           !(errors.enrollment_age_max && saved)
                             ? { minWidth: "100px", maxWidth: "100px" }
-                            : { color: "red", border: "1px solid red", minWidth: "100px", maxWidth: "100px" }
+                            : { color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }
                         }
                         name="enrollment_age_max"
                         value={cohort.enrollment_age_max}
@@ -1748,7 +1751,7 @@ const CohortForm = ({ ...props }) => {
                       style={
                         !(errors.enrollment_age_median && saved)
                           ? { minWidth: "100px", maxWidth: "100px" }
-                          : { color: "red", border: "1px solid red", minWidth: "100px", maxWidth: "100px" }
+                          : { color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }
                       }
                       name="enrollment_age_median"
                       value={cohort.enrollment_age_median}
@@ -1779,7 +1782,7 @@ const CohortForm = ({ ...props }) => {
                       style={
                         !(errors.enrollment_age_mean && saved)
                           ? { minWidth: "100px", maxWidth: "100px" }
-                          : { color: "red", border: "1px solid red", minWidth: "100px", maxWidth: "100px" }
+                          : { color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }
                       }
                       name="enrollment_age_mean"
                       value={cohort.enrollment_age_mean}
@@ -1809,7 +1812,7 @@ const CohortForm = ({ ...props }) => {
                         style={
                           !(errors.current_age_min && saved)
                             ? { minWidth: "100px", maxWidth: "100px" }
-                            : { color: "red", border: "1px solid red", minWidth: "100px", maxWidth: "100px" }
+                            : { color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }
                         }
                         name="current_age_min"
                         value={cohort.current_age_min}
@@ -1834,7 +1837,7 @@ const CohortForm = ({ ...props }) => {
                         style={
                           !(errors.current_age_max && saved)
                             ? { minWidth: "100px", maxWidth: "100px" }
-                            : { color: "red", border: "1px solid red", minWidth: "100px", maxWidth: "100px" }
+                            : { color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }
                         }
                         name="current_age_max"
                         value={cohort.current_age_max}
@@ -1864,7 +1867,7 @@ const CohortForm = ({ ...props }) => {
                       style={
                         !(errors.current_age_median && saved)
                           ? { minWidth: "100px", maxWidth: "100px" }
-                          : { color: "red", border: "1px solid red", minWidth: "100px", maxWidth: "100px" }
+                          : { color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }
                       }
                       name="current_age_median"
                       value={cohort.current_age_median}
@@ -1893,7 +1896,7 @@ const CohortForm = ({ ...props }) => {
                       style={
                         !(errors.current_age_mean && saved)
                           ? { minWidth: "100px", maxWidth: "100px" }
-                          : { color: "red", border: "1px solid red", minWidth: "100px", maxWidth: "100px" }
+                          : { color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }
                       }
                       name="current_age_mean"
                       value={cohort.current_age_mean}
@@ -1930,7 +1933,7 @@ const CohortForm = ({ ...props }) => {
                   <Reminder message={errors.time_interval}>
                     <Form.Control
                       type="text"
-                      style={{ color: "red", border: "1px solid red" }}
+                      style={{ color: "#b91c1c", border: "1px solid #b91c1c" }}
                       placeholder="Max of 200 characters"
                       maxLength="200"
                       name="time_interval"
@@ -1964,7 +1967,7 @@ const CohortForm = ({ ...props }) => {
                   <Reminder message={errors.most_recent_year}>
                     <Form.Control
                       type="text"
-                      style={{ color: "red", border: "1px solid red" }}
+                      style={{ color: "#b91c1c", border: "1px solid #b91c1c" }}
                       name="most_recent_year"
                       value={cohort.most_recent_year}
                       onChange={(e) =>
@@ -2134,7 +2137,7 @@ const CohortForm = ({ ...props }) => {
                   <Reminder message={errors.data_collected_other_specify}>
                     <Form.Control
                       type="text"
-                      style={{ color: "red", border: "1px solid red" }}
+                      style={{ color: "#b91c1c", border: "1px solid #b91c1c" }}
                       name="data_collected_other_specify"
                       value={cohort.data_collected_other_specify}
                       placeholder="Max of 200 characters"
@@ -2419,7 +2422,7 @@ const CohortForm = ({ ...props }) => {
                   <Reminder message={errors.restrictions_other_specify}>
                     <Form.Control
                       type="text"
-                      style={{ color: "red", border: "1px solid red" }}
+                      style={{ color: "#b91c1c", border: "1px solid #b91c1c" }}
                       name="restrictions_other_specify"
                       value={cohort.restrictions_other_specify}
                       placeholder="Max of 200 characters"
@@ -2719,7 +2722,7 @@ const CohortForm = ({ ...props }) => {
                   <Reminder message={errors.strategy_other_specify}>
                     <Form.Control
                       type="text"
-                      style={{ color: "red", border: "1px solid red" }}
+                      style={{ color: "#b91c1c", border: "1px solid #b91c1c" }}
                       name="strategy_other_specify"
                       value={cohort.strategy_other_specify}
                       placeholder="Max of 200 characters"

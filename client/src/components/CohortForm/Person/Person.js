@@ -86,7 +86,7 @@ const Person = ({
     <>
       <Form.Group as={Row} className="mb-1">
         <Form.Label column sm={marginWidth} style={{ fontWeight: "normal" }}>
-          Name<span style={{ color: "red" }}>*</span>
+          Name<span className="error-text">*</span>
         </Form.Label>
         <Col sm={inputWidth}>
           {errors[name] && displayStyle ? (
@@ -131,7 +131,7 @@ const Person = ({
       </Form.Group>
       <Form.Group as={Row} className="mb-1">
         <Form.Label column sm={marginWidth} style={{ fontWeight: "normal" }}>
-          Position with the cohort<span style={{ color: "red" }}>*</span>
+          Position with the cohort<span className="error-text">*</span>
         </Form.Label>
         <Col sm={inputWidth}>
           {errors[position] && displayStyle ? (
@@ -243,7 +243,7 @@ const Person = ({
       </Form.Group>
       <Form.Group as={Row} className="mb-1">
         <Form.Label column sm={marginWidth} style={{ fontWeight: "normal" }}>
-          Email<span style={{ color: "red" }}>*</span>
+          Email<span className="error-text">*</span>
         </Form.Label>
         <Col sm={inputWidth}>
           {errors[email] && displayStyle ? (

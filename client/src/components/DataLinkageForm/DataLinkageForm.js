@@ -483,6 +483,8 @@ const DataLinkageForm = ({ ...props }) => {
               </Form.Label>
 
               <Col sm="12" className="align-self-center">
+                <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
+                  <legend className="sr-only">Have you linked your cohort data to any other existing databases?</legend>
                 {saved && errors.haveDataLink ? (
                   <Reminder>
                     <Form.Check type="radio" id="haveDataLink-no" name="haveDataLink" inline className="error-text">
@@ -553,6 +555,7 @@ const DataLinkageForm = ({ ...props }) => {
                     <Form.Check.Label htmlFor="haveDataLink-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                   </Form.Check>
                 )}
+                </fieldset>
               </Col>
             </Form>
 
@@ -609,6 +612,8 @@ const DataLinkageForm = ({ ...props }) => {
               </Form.Label>
 
               <Col sm="12" className="align-self-center">
+                <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
+                  <legend className="sr-only">Have you participated in projects that required cross-cohort data harmonization?</legend>
                 {saved && errors.haveHarmonization ? (
                   <Reminder>
                     <Form.Check type="radio" id="haveHarmonization-no" name="haveHarmonization" inline className="error-text">
@@ -679,6 +684,7 @@ const DataLinkageForm = ({ ...props }) => {
                     <Form.Check.Label htmlFor="haveHarmonization-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                   </Form.Check>
                 )}
+                </fieldset>
               </Col>
             </Form>
 
@@ -733,6 +739,8 @@ const DataLinkageForm = ({ ...props }) => {
                 )}
               </Form.Label>
               <Col sm="12" className="align-self-center">
+                <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
+                  <legend className="sr-only">Have you deposited data in an NIH sponsored data repository?</legend>
                 {saved && errors.haveDeposited ? (
                   <Reminder>
                     <Form.Check type="radio" id="haveDeposited-no" name="haveDeposited" inline className="error-text">
@@ -807,6 +815,7 @@ const DataLinkageForm = ({ ...props }) => {
                     <Form.Check.Label htmlFor="haveDeposited-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                   </Form.Check>
                 )}
+                </fieldset>
               </Col>
             </Form>
 
@@ -880,6 +889,8 @@ const DataLinkageForm = ({ ...props }) => {
               </Form.Label>
 
               <Col sm="12" className="align-self-center">
+                <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
+                  <legend className="sr-only">Is your procedure for requesting data displayed online?</legend>
                 {saved && errors.dataOnline ? (
                   <Reminder>
                     <Form.Check type="radio" id="dataOnline-no" name="dataOnline" inline className="error-text">
@@ -958,6 +969,7 @@ const DataLinkageForm = ({ ...props }) => {
                     <Form.Check.Label htmlFor="dataOnline-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                   </Form.Check>
                 </Reminder>
+                </fieldset>
               </Col>
             </Form>
 
@@ -1147,6 +1159,8 @@ const DataLinkageForm = ({ ...props }) => {
               </Form.Label>
 
               <Col sm="12" className="align-self-center">
+                <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
+                  <legend className="sr-only">Have you created your own data enclave or a public-facing data repository?</legend>
                 {saved && errors.createdRepo ? (
                   <Reminder>
                     <Form.Check type="radio" id="createdRepo-no" name="createdRepo" inline className="error-text">
@@ -1217,6 +1231,7 @@ const DataLinkageForm = ({ ...props }) => {
                     <Form.Check.Label htmlFor="createdRepo-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                   </Form.Check>
                 )}
+                </fieldset>
               </Col>
             </Form>
 

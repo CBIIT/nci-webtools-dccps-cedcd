@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 const AccessiblePageSizeSelect = ({ id, value, onChange, options }) => {
   return (
@@ -11,6 +12,13 @@ const AccessiblePageSizeSelect = ({ id, value, onChange, options }) => {
       </select>
     </span>
   );
+};
+
+AccessiblePageSizeSelect.propTypes = {
+  id: PropTypes.string.isRequired,
+  value: PropTypes.number,
+  onChange: PropTypes.func,
+  options: PropTypes.arrayOf(PropTypes.shape({ value: PropTypes.number, label: PropTypes.string })),
 };
 
 export default AccessiblePageSizeSelect;
