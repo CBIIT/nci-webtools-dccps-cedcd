@@ -476,7 +476,7 @@ const DataLinkageForm = ({ ...props }) => {
               <Form.Label column sm="12">
                 F.1 Have you linked your cohort data to any other existing databases (e.g., Center for Medicare and
                 Medicaid Services, State or Surveillance, Epidemiology and End Results (SEER) Cancer Registries)?
-                <span style={{ color: "red" }}>*</span>
+                <span className="error-text">*</span>
                 {saved && errors.haveDataLink && (
                   <span className="text-danger ml-3 font-weight-normal">Required Field</span>
                 )}
@@ -602,7 +602,7 @@ const DataLinkageForm = ({ ...props }) => {
             <Form as={Row}>
               <Form.Label column sm="12">
                 F.2 Have you participated in projects that required cross-cohort data harmonization?
-                <span style={{ color: "red" }}>*</span>
+                <span className="error-text">*</span>
                 {saved && errors.haveHarmonization && (
                   <span className="text-danger ml-3 font-weight-normal">Required Field</span>
                 )}
@@ -727,7 +727,7 @@ const DataLinkageForm = ({ ...props }) => {
 
             <Form as={Row}>
               <Form.Label column sm="12">
-                F.3 Have you deposited data in an NIH sponsored data repository?<span style={{ color: "red" }}>*</span>
+                F.3 Have you deposited data in an NIH sponsored data repository?<span className="error-text">*</span>
                 {saved && errors.haveDeposited && (
                   <span className="text-danger ml-3 font-weight-normal">Required Field</span>
                 )}
@@ -873,7 +873,7 @@ const DataLinkageForm = ({ ...props }) => {
 
             <Form as={Row}>
               <Form.Label column sm="12">
-                F.4 Is your procedure for requesting data displayed online?<span style={{ color: "red" }}>*</span>
+                F.4 Is your procedure for requesting data displayed online?<span className="error-text">*</span>
                 {saved && errors.dataOnline && (
                   <span className="text-danger ml-3 font-weight-normal">Required Field</span>
                 )}
@@ -1140,7 +1140,7 @@ const DataLinkageForm = ({ ...props }) => {
             <Form as={Row}>
               <Form.Label column sm="12">
                 F.5 Have you created your own data enclave or a public-facing data repository?
-                <span style={{ color: "red" }}>*</span>
+                <span className="error-text">*</span>
                 {saved && errors.createdRepo && (
                   <span className="text-danger ml-3 font-weight-normal">Required Field</span>
                 )}

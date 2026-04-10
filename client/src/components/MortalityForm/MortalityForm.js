@@ -379,7 +379,7 @@ const MortalityForm = ({ ...props }) => {
           <CollapsiblePanel condition={activePanels.A} onClick={(_) => toggleActivePanel("A")} panelTitle="Mortality">
             <Form.Group as={Row} className={saved && errors.mortalityYear && `has-error`}>
               <Form.Label column sm="12">
-                E.1 Most recent year of mortality follow up<span style={{ color: "red" }}>*</span>
+                E.1 Most recent year of mortality follow up<span className="error-text">*</span>
               </Form.Label>
               <Col sm="2">
                 <Reminder message={errors.mortalityYear} disabled={!(saved && errors.mortalityYear)} placement="right">
@@ -403,7 +403,7 @@ const MortalityForm = ({ ...props }) => {
 
             <Form.Group as={Row} className={saved && errors.otherDeathSpecify && "has-error"}>
               <Form.Label column sm="12">
-                E.2 How did your cohort confirm death?<span style={{ color: "red" }}>*</span>
+                E.2 How did your cohort confirm death?<span className="error-text">*</span>
                 <span style={{ fontWeight: "normal" }}> (Select all that apply)</span>
                 {saved && errors.deathConfirm && (
                   <span className="font-weight-normal text-danger ml-3">Required Field</span>
@@ -491,7 +491,7 @@ const MortalityForm = ({ ...props }) => {
 
             <Form.Group as={Row}>
               <Form.Label column sm="12">
-                E.3 Do you have date of death for most subjects<span style={{ color: "red" }}>*</span>
+                E.3 Do you have date of death for most subjects<span className="error-text">*</span>
                 {saved && errors.haveDeathDate && (
                   <span className="font-weight-normal text-danger ml-3">Required Field</span>
                 )}
@@ -531,7 +531,7 @@ const MortalityForm = ({ ...props }) => {
 
             <Form as={Row}>
               <Form.Label column sm="12">
-                E.4 Do you have cause of death for most subjects<span style={{ color: "red" }}>*</span>
+                E.4 Do you have cause of death for most subjects<span className="error-text">*</span>
                 {saved && errors.haveDeathCause && (
                   <span className="font-weight-normal text-danger ml-3">Required Field</span>
                 )}
@@ -673,7 +673,7 @@ const MortalityForm = ({ ...props }) => {
             <Form.Group as={Row} className={saved && errors.deathNumbers && "has-error"}>
               <Form.Label column sm="12">
                 E.5 What is the number of deaths in your cohort as of most recent mortality follow-up?
-                <span style={{ color: "red" }}>*</span>
+                <span className="error-text">*</span>
               </Form.Label>
 
               <Col sm="2">

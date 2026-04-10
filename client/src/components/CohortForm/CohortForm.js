@@ -969,7 +969,7 @@ const CohortForm = ({ ...props }) => {
 
             <Form.Group as={Row}>
               <Form.Label column sm="12">
-                A.4a Person who completed the form<span style={{ color: "red" }}>*</span>
+                A.4a Person who completed the form<span className="error-text">*</span>
               </Form.Label>
               <Col sm="12">
                 <Person
@@ -991,7 +991,7 @@ const CohortForm = ({ ...props }) => {
             {/* A.4b Contact Person */}
             <Form.Group as={Row}>
               <Form.Label column sm="12">
-                A.4b Contact Person for Clarification of this form<span style={{ color: "red" }}>*</span>
+                A.4b Contact Person for Clarification of this form<span className="error-text">*</span>
               </Form.Label>
               <Form.Label column sm="5" style={{ fontWeight: "normal" }}>
                 <span className="required-label">Is this the same person who completed this form?</span>
@@ -1298,7 +1298,7 @@ const CohortForm = ({ ...props }) => {
               </Form.Label>
               <Col sm="12" className="p-0 mb-3">
                 <Form.Label column sm="12" style={{ fontWeight: "normal" }}>
-                  Eligible sex<span style={{ color: "red" }}>*</span>
+                  Eligible sex<span className="error-text">*</span>
                   {errors.eligible_gender_id && saved && <span className="text-danger ml-3">{errorMsg}</span>}
                 </Form.Label>
                 <Col sm="12">
@@ -1400,7 +1400,7 @@ const CohortForm = ({ ...props }) => {
               </Form.Label>
               <Col sm="12" className="p-0 mb-1">
                 <Form.Label column sm="12" md="6" style={{ fontWeight: "normal" }}>
-                  Total number of subjects enrolled to date<span style={{ color: "red" }}>*</span>
+                  Total number of subjects enrolled to date<span className="error-text">*</span>
                 </Form.Label>
                 <Col sm="2">
                   {errors.enrollment_total && saved ? (
@@ -1433,7 +1433,7 @@ const CohortForm = ({ ...props }) => {
               </Col>
               <Col sm="12" className="p-0 mb-1">
                 <Form.Label column md="6" sm="12" style={{ fontWeight: "normal" }}>
-                  Started in year<span style={{ color: "red" }}>*</span>
+                  Started in year<span className="error-text">*</span>
                 </Form.Label>
                 <Col sm="2">
                   {errors.enrollment_year_start && saved ? (
@@ -1471,7 +1471,7 @@ const CohortForm = ({ ...props }) => {
               </Col>
               <Col sm="12" className="p-0 mb-1">
                 <Form.Label column md="6" sm="12" style={{ fontWeight: "normal" }}>
-                  Is enrollment ongoing?<span style={{ color: "red" }}>*</span>
+                  Is enrollment ongoing?<span className="error-text">*</span>
                 </Form.Label>
                 <Col sm="2" className="mt-3">
                   <div key="radio">
@@ -1550,7 +1550,7 @@ const CohortForm = ({ ...props }) => {
               </Col>
               <Col sm="12" className="p-0 mb-1">
                 <Form.Label column md="6" sm="12" style={{ fontWeight: "normal" }}>
-                  Ended in year<span style={{ color: "red" }}>*</span>
+                  Ended in year<span className="error-text">*</span>
                 </Form.Label>
                 <Col sm="2">
                   <Reminder message={errors.enrollment_year_end} disabled={!(errors.enrollment_year_end && saved)}>
@@ -1590,7 +1590,7 @@ const CohortForm = ({ ...props }) => {
               <Col sm="12" className="p-0 mb-1">
                 <Form.Label column sm="12" md="6" style={{ fontWeight: "normal" }}>
                   If still enrolling, please specify the target number of plan to enroll
-                  <span style={{ color: "red" }}>*</span>
+                  <span className="error-text">*</span>
                 </Form.Label>
                 <Col sm="2">
                   {errors.enrollment_target && saved ? (
@@ -1634,7 +1634,7 @@ const CohortForm = ({ ...props }) => {
               <Col sm="12" className="p-0 mb-1">
                 <Form.Label column sm="12" md="6" style={{ fontWeight: "normal" }}>
                   If still enrolling, please specify when you plan to complete enrollment
-                  <span style={{ color: "red" }}>*</span>
+                  <span className="error-text">*</span>
                 </Form.Label>
                 <Col sm="2">
                   <Reminder
@@ -1679,7 +1679,7 @@ const CohortForm = ({ ...props }) => {
               </Col>
               <Col sm="12" className="p-0 mb-1">
                 <Form.Label column sm="12" md="6" style={{ fontWeight: "normal" }}>
-                  Baseline age range of enrolled subjects<span style={{ color: "red" }}>*</span>
+                  Baseline age range of enrolled subjects<span className="error-text">*</span>
                 </Form.Label>
                 <Col sm="4">
                   <InputGroup>
@@ -1739,7 +1739,7 @@ const CohortForm = ({ ...props }) => {
               </Col>
               <Col sm="12" className="p-0 mb-1">
                 <Form.Label column sm="12" md="6" style={{ fontWeight: "normal" }}>
-                  Baseline Median age<span style={{ color: "red" }}>*</span>
+                  Baseline Median age<span className="error-text">*</span>
                 </Form.Label>
                 <Col sm="2">
                   <Reminder message={errors.enrollment_age_median} disabled={!(errors.enrollment_age_median && saved)}>
@@ -1770,7 +1770,7 @@ const CohortForm = ({ ...props }) => {
               </Col>
               <Col sm="12" className="p-0 mb-1">
                 <Form.Label column sm="12" md="6" style={{ fontWeight: "normal" }}>
-                  Baseline Mean age<span style={{ color: "red" }}>*</span>
+                  Baseline Mean age<span className="error-text">*</span>
                 </Form.Label>
                 <Col sm="2">
                   <Reminder message={errors.enrollment_age_mean} disabled={!(errors.enrollment_age_mean && saved)}>
@@ -1799,7 +1799,7 @@ const CohortForm = ({ ...props }) => {
               </Col>
               <Col sm="12" className="p-0 mb-1">
                 <Form.Label column sm="12" md="6" style={{ fontWeight: "normal" }}>
-                  Current age range of enrolled subjects<span style={{ color: "red" }}>*</span>
+                  Current age range of enrolled subjects<span className="error-text">*</span>
                 </Form.Label>
                 <Col sm="4">
                   <InputGroup>
@@ -1855,7 +1855,7 @@ const CohortForm = ({ ...props }) => {
               </Col>
               <Col sm="12" className="p-0 mb-1">
                 <Form.Label column sm="12" md="6" style={{ fontWeight: "normal" }}>
-                  Current Median age<span style={{ color: "red" }}>*</span>
+                  Current Median age<span className="error-text">*</span>
                 </Form.Label>
                 <Col sm="2">
                   <Reminder message={errors.current_age_median} disabled={!(errors.current_age_median && saved)}>
@@ -1884,7 +1884,7 @@ const CohortForm = ({ ...props }) => {
               </Col>
               <Col sm="12" className="p-0 mb-1">
                 <Form.Label column sm="12" md="6" style={{ fontWeight: "normal" }}>
-                  Current Mean age<span style={{ color: "red" }}>*</span>
+                  Current Mean age<span className="error-text">*</span>
                 </Form.Label>
                 <Col sm="2">
                   <Reminder message={errors.current_age_mean} disabled={!(errors.current_age_mean && saved)}>
@@ -1923,7 +1923,7 @@ const CohortForm = ({ ...props }) => {
             <Form.Group as={Row}>
               <Form.Label column sm="12">
                 A.9 Specify the frequency of questionnaires, e.g, annually, every 2 years etc.
-                <span style={{ color: "red" }}>*</span>
+                <span className="error-text">*</span>
               </Form.Label>
               <Col sm="12">
                 {errors.time_interval && saved ? (
@@ -1957,7 +1957,7 @@ const CohortForm = ({ ...props }) => {
             {/* A.10 Most Recent Year Questionnaire Collected */}
             <Form.Group as={Row}>
               <Form.Label column sm="6">
-                A.10 Most recent year when questionnaire data were collected<span style={{ color: "red" }}>*</span>
+                A.10 Most recent year when questionnaire data were collected<span className="error-text">*</span>
               </Form.Label>
               <Col sm="2">
                 {errors.most_recent_year && saved ? (
@@ -1998,10 +1998,10 @@ const CohortForm = ({ ...props }) => {
             <Form.Group as={Row}>
               <Form.Label column sm="12">
                 A.11 How was information from the questionnaire administered/collected?
-                <span style={{ color: "red" }}>*</span>
+                <span className="error-text">*</span>
                 <span className="font-weight-normal"> (Select all that apply)</span>
                 {errors.dataCollection && saved && (
-                  <span style={{ color: "red", marginLeft: "10px", fontWeight: "normal" }}>{errorMsg}</span>
+                  <span className="error-text" style={{ marginLeft: "10px", fontWeight: "normal" }}>{errorMsg}</span>
                 )}
               </Form.Label>
               <Col sm="12">
@@ -2184,10 +2184,10 @@ const CohortForm = ({ ...props }) => {
               <Form.Label column sm="12">
                 A.12 Does your cohort have any specific requirements or restrictions concerning participanting in
                 collaborative projects involving pooling of data or specimens or use of specimens in genomic studies?
-                <span style={{ color: "red" }}>*</span>
+                <span className="error-text">*</span>
                 <span className="font-weight-normal"> (Select all that apply)</span>
                 {errors.requirements && saved && (
-                  <span style={{ color: "red", marginLeft: "10px", fontWeight: "normal" }}>{errorMsg}</span>
+                  <span className="error-text" style={{ marginLeft: "10px", fontWeight: "normal" }}>{errorMsg}</span>
                 )}
               </Form.Label>
               <Col sm="12">
@@ -2457,10 +2457,10 @@ const CohortForm = ({ ...props }) => {
             {/* A.13 Strategies Used */}
             <Form.Group as={Row}>
               <Form.Label column sm="12">
-                A.13 What strategies does your cohort use to engage participants?<span style={{ color: "red" }}>*</span>
+                A.13 What strategies does your cohort use to engage participants?<span className="error-text">*</span>
                 <span className="font-weight-normal"> (Select all that apply)</span>
                 {errors.strategy && saved && (
-                  <span style={{ color: "red", marginLeft: "10px", fontWeight: "normal" }}>{errorMsg}</span>
+                  <span className="error-text" style={{ marginLeft: "10px", fontWeight: "normal" }}>{errorMsg}</span>
                 )}
               </Form.Label>
               <Col sm="12">

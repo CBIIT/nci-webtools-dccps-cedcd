@@ -399,7 +399,7 @@ class AddNewCohort extends Component {
                       <AccessibleSelect
                         inputId="cu_organization"
                         name="owners"
-                        isMulti="true"
+                        isMulti
                         value={this.state.cohortOwners}
                         options={this.state.ownerOptions}
                         onChange={this.handleMultiChange}

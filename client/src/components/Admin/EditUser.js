@@ -332,15 +332,6 @@ const EditUser = ({ ...props }) => {
             <div id="edituser-col-1" className="col-md-6 col-6">
               <Form>
                 <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
-                {/* <Form.Group id="ctl11_div_userName" className="px-0 my-3 col-md-12 col-12">
-                                    <Form.Label className="col-md-12 col-12" htmlFor="user_name" style={{ paddingLeft: '0' }}>User Account Name<span style={{ color: 'red' }}>*</span></Form.Label>
-                                    {errors.userName_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.userName_error}</Form.Label>}
-                                    <span className="col-md-12 col-12" style={{ paddingLeft: '0' }}>
-                                        <input className="form-control" name="user_userName" type="text" placeholder='Max of 100 characters'
-                                            id="user_userName" value={userName} maxLength="100"
-                                            onChange={(e) => { setUserName(e.target.value); if (errors.userName_error !== '') setErrors({ ...errors, userName_error: '' }) }} />
-                                    </span>
-                                </Form.Group> */}
 
                 <Form.Group id="ctl11_div_loginType" className="pl-0 my-3 col-md-12 col-12">
                   {errors.loginType_error !== "" && (

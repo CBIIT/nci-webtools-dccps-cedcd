@@ -880,7 +880,7 @@ const SpecimenForm = ({ ...props }) => {
         <Form.Group as={Row}>
           <Form.Label column sm="12">
             {field.title}
-            <span style={{ color: "red" }}>*</span>
+            <span className="error-text">*</span>
             {errors[item[0].field_id] && saved && !g1to6Flag && (
               <span className="ml-3 text-danger font-weight-normal">Required Field</span>
             )}
@@ -913,7 +913,7 @@ const SpecimenForm = ({ ...props }) => {
 
               <Col className="mb-0 pl-0" sm="12">
                 <Col sm="5">
-                  Collected at baseline<span style={{ color: "red" }}>*</span>
+                  Collected at baseline<span className="error-text">*</span>
                 </Col>
                 <Col sm="3" className="align-self-center">
                   <RadioButtonInput {...item[0]} />
@@ -963,7 +963,7 @@ const SpecimenForm = ({ ...props }) => {
 
               <Col sm="12" className="mb-0 pl-0">
                 <Col sm="5">
-                  Collected at other time points<span style={{ color: "red" }}>*</span>
+                  Collected at other time points<span className="error-text">*</span>
                 </Col>
                 <Col sm="3" className="align-self-center">
                   <RadioButtonInput {...item[1]} />
@@ -1154,7 +1154,7 @@ const SpecimenForm = ({ ...props }) => {
                 </Col>
                 <Col sm="12">
                   <div sm="12">
-                    If collected, types of aliquots (select all that apply)<span style={{ color: "red" }}>*</span>
+                    If collected, types of aliquots (select all that apply)<span className="error-text">*</span>
                     {+specimen.bioBloodBaseline === 1 &&
                       specimen.bioBloodBaselineSerum === 0 &&
                       specimen.bioBloodBaselinePlasma === 0 &&
@@ -1193,7 +1193,7 @@ const SpecimenForm = ({ ...props }) => {
                 </Col>
                 <Col sm="12">
                   <div sm="12">
-                    If collected, types of aliquots (select all that apply)<span style={{ color: "red" }}>*</span>
+                    If collected, types of aliquots (select all that apply)<span className="error-text">*</span>
                     {+specimen.bioBloodOtherTime === 1 &&
                       specimen.bioBloodOtherTimeSerum === 0 &&
                       specimen.bioBloodOtherTimePlasma === 0 &&
@@ -1238,7 +1238,7 @@ const SpecimenForm = ({ ...props }) => {
             panelTitle="Metabolomics Data">
             <Form.Group as={Row} sm="12">
               <Form.Label column sm="8">
-                G.15 Metabolomic Data (from MS and/or NMR)<span style={{ color: "red" }}>*</span>
+                G.15 Metabolomic Data (from MS and/or NMR)<span className="error-text">*</span>
                 {errors.bioMetabolomicData && saved && !g1to6Flag && (
                   <span className="ml-3 text-danger font-weight-normal">Required Field</span>
                 )}
@@ -1255,7 +1255,7 @@ const SpecimenForm = ({ ...props }) => {
             {/* G15 a */}
             <Form.Group as={Row} sm="12">
               <Form.Label column sm="12">
-                G.15a Are the biospecimens collected fasting samples?<span style={{ color: "red" }}>*</span>
+                G.15a Are the biospecimens collected fasting samples?<span className="error-text">*</span>
                 {+specimen.bioMetabolomicData === 1 && errors.bioMetaFastingSample && saved && !g1to6Flag && (
                   <span className="text-danger ml-3 font-weight-normal">Required Field</span>
                 )}
@@ -1268,7 +1268,7 @@ const SpecimenForm = ({ ...props }) => {
             {/* G15 b */}
             <Form.Group as={Row}>
               <Form.Label column sm="12">
-                G.15b What are the disease outcome(s) in your study?<span style={{ color: "red" }}>*</span>
+                G.15b What are the disease outcome(s) in your study?<span className="error-text">*</span>
                 <span className="font-weight-normal"> (Select all that apply)</span>
                 {+specimen.bioMetabolomicData === 1 &&
                   errors.bioMetaOutcomesInCancerStudy &&
@@ -1352,7 +1352,7 @@ const SpecimenForm = ({ ...props }) => {
             <Form.Group as={Row}>
               <Form.Label column sm="12">
                 G.15c Are you a member of the Consortium of Metabolomics Studies (COMETS)?
-                <span style={{ color: "red" }}>*</span>
+                <span className="error-text">*</span>
                 {+specimen.bioMetabolomicData === 1 && errors.bioMemberOfMetabolomicsStudies && saved && (
                   <span className="text-danger ml-3 font-weight-normal">Required Field</span>
                 )}
@@ -1366,7 +1366,7 @@ const SpecimenForm = ({ ...props }) => {
             <Form.Group as={Row}>
               <Form.Label column sm="12">
                 G.15d What is the number of participants with metabolomics data in your study?
-                <span style={{ color: "red" }}>*</span>
+                <span className="error-text">*</span>
               </Form.Label>
               <Col sm="2">
                 <Reminder
@@ -1402,7 +1402,7 @@ const SpecimenForm = ({ ...props }) => {
             {/* G15 e */}
             <Form.Group as={Row}>
               <Form.Label column sm="12">
-                G.15e Which laboratory or company was used for the analysis?<span style={{ color: "red" }}>*</span>
+                G.15e Which laboratory or company was used for the analysis?<span className="error-text">*</span>
               </Form.Label>
               <Col sm="12">
                 <Reminder
@@ -1442,7 +1442,7 @@ const SpecimenForm = ({ ...props }) => {
             <Form.Group as={Row}>
               <Form.Label column sm="12">
                 G.15f Which type(s) of analytical platform was used, (e.g., NMR, Orbitrap mass spectrometry, QTOF mass
-                spectrometry)?<span style={{ color: "red" }}>*</span>
+                spectrometry)?<span className="error-text">*</span>
               </Form.Label>
               <Col sm="12">
                 <Reminder
@@ -1483,7 +1483,7 @@ const SpecimenForm = ({ ...props }) => {
             <Form.Group as={Row}>
               <Form.Label column sm="12">
                 G.15g Which separation platform(s) was used (e.g., GC, HILIC, RPLC, Ion pairing LC)?
-                <span style={{ color: "red" }}>*</span>
+                <span className="error-text">*</span>
               </Form.Label>
               <Col sm="12">
                 <Reminder
@@ -1523,7 +1523,7 @@ const SpecimenForm = ({ ...props }) => {
 
             <Form.Group as={Row}>
               <Form.Label column sm="12">
-                G.15h How many metabolites were measured?<span style={{ color: "red" }}>*</span>
+                G.15h How many metabolites were measured?<span className="error-text">*</span>
               </Form.Label>
               <Col sm="2">
                 <Reminder
@@ -1561,7 +1561,7 @@ const SpecimenForm = ({ ...props }) => {
             {/* G15 i */}
             <Form.Group as={Row}>
               <Form.Label column sm="12">
-                G.15i What year were samples analyzed?<span style={{ color: "red" }}>*</span>
+                G.15i What year were samples analyzed?<span className="error-text">*</span>
               </Form.Label>
               <Col sm="2">
                 <Reminder

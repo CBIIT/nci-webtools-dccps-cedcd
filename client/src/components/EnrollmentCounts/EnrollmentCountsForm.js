@@ -1274,7 +1274,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
             {/* B.2 Most Recent Date Enrollment */}
             <Form.Group as={Row}>
               <Form.Label column sm="5">
-                B.2 Most recent date enrollment counts were confirmed<span style={{ color: "red" }}>*</span>
+                B.2 Most recent date enrollment counts were confirmed<span className="error-text">*</span>
               </Form.Label>
               <Col sm="3">
                 {errors.mostRecentDate && saved ? (

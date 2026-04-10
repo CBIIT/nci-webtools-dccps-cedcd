@@ -129,7 +129,7 @@ class ManageUser extends Component {
   }
 
   handleUserPageSizeChange = (e) => {
-    this.refreshDataList(1, null, null, e.target.value, null);
+    this.refreshDataList(1, null, null, Number(e.target.value), null);
   };
 
   componentDidMount() {

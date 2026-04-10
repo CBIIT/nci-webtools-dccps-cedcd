@@ -1602,7 +1602,7 @@ class Details extends Component {
             <td>
               <Link to={url} onClick={this.saveHistory}>
                 {item.cohort_name}
-                <span style={{ color: "red" }}>{item.outdated ? "*" : ""}</span>
+                <span className="error-text">{item.outdated ? "*" : ""}</span>
               </Link>
             </td>
             <td>
@@ -1729,7 +1729,7 @@ class Details extends Component {
           <div className="filter-block home col-md-12">
             <div className="row" style={{ display: "flex" }}>
               <div style={{ paddingTop: "7px", paddingLeft: "10px" }}>
-                <span style={{ color: "red" }}>*</span>Indicates cohort profile has not been updated for at least 2
+                <span className="error-text">*</span>Indicates cohort profile has not been updated for at least 2
                 years or will not have future updates.
               </div>
               <div style={{ marginLeft: "auto", paddingRight: "1rem", paddingTop: "7px" }}>
