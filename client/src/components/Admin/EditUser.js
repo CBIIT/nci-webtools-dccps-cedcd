@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, NavLink } from "react-router-dom";
-import AccessibleSelect from '../controls/AccessibleSelect';
+import AccessibleSelect from "../controls/AccessibleSelect";
 import validator from "../../validators";
 import Messenger from "../Snackbar/Snackbar";
 import CenterModal from "../controls/modal/modal";
-import Unauthorized from "../Unauthorized/Unauthorized";
-import RequireAuthorization from "../RequireAuthorization/RequireAuthorization";
 import "./AddNewCohort.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
