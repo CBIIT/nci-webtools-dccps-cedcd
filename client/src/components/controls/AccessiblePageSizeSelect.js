@@ -1,6 +1,6 @@
 import React from "react";
 
-const AccessiblePageSizeSelect = ({ id = 'page-size-select', value, onChange, options }) => {
+const AccessiblePageSizeSelect = ({ id, value, onChange, options }) => {
   return (
     <span>
       <label htmlFor={id}>Page Size</label>{' '}

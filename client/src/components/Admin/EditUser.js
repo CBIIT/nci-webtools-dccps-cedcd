@@ -343,6 +343,7 @@ const EditUser = ({ ...props }) => {
                       <Form.Check.Input
                         id="login_type_logingov"
                         type="radio"
+                        name="login_type"
                         value="Login.gov"
                         checked={loginType === "Login.gov"}
                         onChange={(e) => {
@@ -360,6 +361,7 @@ const EditUser = ({ ...props }) => {
                       <Form.Check.Input
                         id="login_type_nih"
                         type="radio"
+                        name="login_type"
                         value="NIH"
                         checked={loginType === "NIH"}
                         onChange={(e) => {
@@ -463,6 +465,7 @@ const EditUser = ({ ...props }) => {
                       <Form.Check.Input
                         id="user_role_owner"
                         type="radio"
+                        name="user_role"
                         value="Cohort Owner"
                         checked={userRole === "Cohort Owner"}
                         onChange={(e) => {
@@ -475,6 +478,7 @@ const EditUser = ({ ...props }) => {
                       <Form.Check.Input
                         id="user_role_admin"
                         type="radio"
+                        name="user_role"
                         value="Admin"
                         checked={userRole === "Admin"}
                         onChange={(e) => {
@@ -537,21 +541,6 @@ const EditUser = ({ ...props }) => {
                 </div>
               </Form>
 
-              {/* <div className="bttn-group col-md-12 col-xs-12">
-                                <Button 
-                                    variant="primary"
-                                    value="Save" 
-                                    className="col-lg-2 col-md-6 float-right"
-                                    onClick={handleSave}>
-                                    Save
-                                </Button>
-                                <Button 
-                                    variant="secondary" 
-                                    className="col-lg-2 col-md-6 float-right" 
-                                    onClick={goBack}>
-                                    Cancel
-                                </Button>
-                            </div> */}
             </div>
           )}
         </div>
