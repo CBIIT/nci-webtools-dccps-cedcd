@@ -688,6 +688,7 @@ const MortalityForm = ({ ...props }) => {
                     type="number"
                     min="0"
                     name="deathNumbers"
+                    aria-label="Number of deaths in cohort as of most recent mortality follow-up"
                     value={mortality.deathNumbers}
                     readOnly={isReadOnly}
                     onChange={(e) => {

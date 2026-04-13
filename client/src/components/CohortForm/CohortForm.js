@@ -1411,6 +1411,7 @@ const CohortForm = ({ ...props }) => {
                         type="text"
                         style={{ color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }}
                         name="enrollment_total"
+                        aria-label="Total number of subjects enrolled to date"
                         value={cohort.enrollment_total}
                         onChange={(e) =>
                           !isReadOnly && dispatch(allactions.cohortActions.enrollment_total(e.target.value))
@@ -1423,6 +1424,7 @@ const CohortForm = ({ ...props }) => {
                       type="text"
                       style={{ minWidth: "100px", maxWidth: "100px" }}
                       name="enrollment_total"
+                      aria-label="Total number of subjects enrolled to date"
                       value={cohort.enrollment_total}
                       onChange={(e) =>
                         !isReadOnly && dispatch(allactions.cohortActions.enrollment_total(e.target.value))
@@ -1602,6 +1604,7 @@ const CohortForm = ({ ...props }) => {
                         type="text"
                         style={{ color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }}
                         name="enrollment_target"
+                        aria-label="Target number of subjects planned to enroll"
                         value={cohort.enrollment_target}
                         onChange={(e) =>
                           !isReadOnly && dispatch(allactions.cohortActions.enrollment_target(e.target.value))
@@ -1620,6 +1623,7 @@ const CohortForm = ({ ...props }) => {
                       type="text"
                       style={{ minWidth: "100px", maxWidth: "100px" }}
                       name="enrollment_target"
+                      aria-label="Target number of subjects planned to enroll"
                       value={cohort.enrollment_target}
                       onChange={(e) =>
                         !isReadOnly && dispatch(allactions.cohortActions.enrollment_target(e.target.value))
@@ -1695,6 +1699,7 @@ const CohortForm = ({ ...props }) => {
                             : { color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }
                         }
                         name="enrollment_age_min"
+                        aria-label="Baseline minimum enrollment age"
                         value={cohort.enrollment_age_min}
                         onChange={(e) =>
                           !isReadOnly &&
@@ -1722,6 +1727,7 @@ const CohortForm = ({ ...props }) => {
                             : { color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }
                         }
                         name="enrollment_age_max"
+                        aria-label="Baseline maximum enrollment age"
                         value={cohort.enrollment_age_max}
                         onChange={(e) =>
                           !isReadOnly &&
@@ -1754,6 +1760,7 @@ const CohortForm = ({ ...props }) => {
                           : { color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }
                       }
                       name="enrollment_age_median"
+                      aria-label="Baseline median enrollment age"
                       value={cohort.enrollment_age_median}
                       onChange={(e) =>
                         !isReadOnly &&
@@ -1785,6 +1792,7 @@ const CohortForm = ({ ...props }) => {
                           : { color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }
                       }
                       name="enrollment_age_mean"
+                      aria-label="Baseline mean enrollment age"
                       value={cohort.enrollment_age_mean}
                       onChange={(e) =>
                         !isReadOnly &&
@@ -1815,6 +1823,7 @@ const CohortForm = ({ ...props }) => {
                             : { color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }
                         }
                         name="current_age_min"
+                        aria-label="Current minimum age of enrolled subjects"
                         value={cohort.current_age_min}
                         onChange={(e) =>
                           !isReadOnly &&
@@ -1840,6 +1849,7 @@ const CohortForm = ({ ...props }) => {
                             : { color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }
                         }
                         name="current_age_max"
+                        aria-label="Current maximum age of enrolled subjects"
                         value={cohort.current_age_max}
                         onChange={(e) =>
                           !isReadOnly &&
@@ -1870,6 +1880,7 @@ const CohortForm = ({ ...props }) => {
                           : { color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }
                       }
                       name="current_age_median"
+                      aria-label="Current median age of enrolled subjects"
                       value={cohort.current_age_median}
                       onChange={(e) =>
                         !isReadOnly &&
@@ -1899,6 +1910,7 @@ const CohortForm = ({ ...props }) => {
                           : { color: "#b91c1c", border: "1px solid #b91c1c", minWidth: "100px", maxWidth: "100px" }
                       }
                       name="current_age_mean"
+                      aria-label="Current mean age of enrolled subjects"
                       value={cohort.current_age_mean}
                       onChange={(e) =>
                         !isReadOnly &&

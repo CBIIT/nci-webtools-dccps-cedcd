@@ -1608,29 +1608,25 @@ const SpecimenForm = ({ ...props }) => {
               </div>
             </div>
             <div className="table-responsive m-0">
-              <Table bordered condensed className="table-valign-middle">
+              <Table bordered condensed className="table-valign-middle" aria-label="Biospecimen counts by cancer site and specimen type">
                 <thead>
                   <tr>
-                    <th className="col-sm-1 text-center">ICD-9</th>
-                    <th className="col-sm-1 text-center">ICD-10</th>
-                    <th className="col-sm-3 text-center">Cancer Site/Type</th>
-                    <th className="col-sm-1 text-center">Serum and/or Plasma</th>
-                    <th className="col-sm-1 text-center">Buffy Coat and/or Lymphocytes</th>
-                    <th className="col-sm-1 text-center">Saliva and/or Buccal</th>
-                    <th className="col-sm-1 text-center">Urine</th>
-                    <th className="col-sm-1 text-center">Feces</th>
-                    <th className="col-sm-1 text-center">Tumor Tissue Fresh/Frozen</th>
-                    <th className="col-sm-1 text-center">Tumor Tissue FFPE</th>
+                    <th scope="col" className="col-sm-1 text-center">ICD-9</th>
+                    <th scope="col" className="col-sm-1 text-center">ICD-10</th>
+                    <th scope="col" className="col-sm-3 text-center">Cancer Site/Type</th>
+                    <th scope="col" className="col-sm-1 text-center">Serum and/or Plasma</th>
+                    <th scope="col" className="col-sm-1 text-center">Buffy Coat and/or Lymphocytes</th>
+                    <th scope="col" className="col-sm-1 text-center">Saliva and/or Buccal</th>
+                    <th scope="col" className="col-sm-1 text-center">Urine</th>
+                    <th scope="col" className="col-sm-1 text-center">Feces</th>
+                    <th scope="col" className="col-sm-1 text-center">Tumor Tissue Fresh/Frozen</th>
+                    <th scope="col" className="col-sm-1 text-center">Tumor Tissue FFPE</th>
                   </tr>
                 </thead>
                 <tbody>
                   {lookup.cancer.map((c) => {
                     const keyPrefix = `${cohortId}_${c.id}`;
-                    const inputKeys = lookup.specimen
-                      .filter((k) => {
-                        return k.id < 10;
-                      })
-                      .map((k) => `${c.id}-${k.id}`);
+                    const specimenTypes = lookup.specimen.filter((k) => k.id < 10);
 
                     return (
                       <tr key={keyPrefix}>
@@ -1638,23 +1634,27 @@ const SpecimenForm = ({ ...props }) => {
                         <td className={classNames("text-nowrap", c.icd10 ? "bg-light-grey" : "bg-grey")}>{c.icd10}</td>
                         <td className="text-nowrap bg-light-grey">{c.cancer}</td>
 
-                        {inputKeys.map((key, i) => (
-                          <td key={key} className="p-0">
-                            <Form.Control
-                              className="input-number"
-                              name={key}
-                              value={specimen.counts[key] || 0}
-                              type="number"
-                              onChange={(e) => {
-                                dispatch(allactions.specimenActions.setSpecimenCount(key, e.target.value));
-                                dispatch(setHasUnsavedChanges(true));
-                              }}
-                              min="0"
-                              disabled={+g1to6Flag === 1}
-                              readOnly={isReadOnly}
-                            />
-                          </td>
-                        ))}
+                        {specimenTypes.map((k) => {
+                          const key = `${c.id}-${k.id}`;
+                          return (
+                            <td key={key} className="p-0">
+                              <Form.Control
+                                className="input-number"
+                                name={key}
+                                aria-label={`${c.cancer} - ${k.specimen}`}
+                                value={specimen.counts[key] || 0}
+                                type="number"
+                                onChange={(e) => {
+                                  dispatch(allactions.specimenActions.setSpecimenCount(key, e.target.value));
+                                  dispatch(setHasUnsavedChanges(true));
+                                }}
+                                min="0"
+                                disabled={+g1to6Flag === 1}
+                                readOnly={isReadOnly}
+                              />
+                            </td>
+                          );
+                        })}
                       </tr>
                     );
                   })}
