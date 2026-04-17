@@ -490,7 +490,6 @@ const DataLinkageForm = ({ ...props }) => {
                     <Form.Check type="radio" id="haveDataLink-no" name="haveDataLink" inline className="error-text">
                       <Form.Check.Input
                         type="radio"
-                        type="radio"
                         className="mr-2"
                         checked={dataLinkage.haveDataLink === 0}
                         onClick={() => {
@@ -507,7 +506,6 @@ const DataLinkageForm = ({ ...props }) => {
                 ) : (
                   <Form.Check type="radio" id="haveDataLink-no" name="haveDataLink" inline>
                     <Form.Check.Input
-                      type="radio"
                       type="radio"
                       className="mr-2"
                       checked={dataLinkage.haveDataLink === 0}
@@ -619,7 +617,6 @@ const DataLinkageForm = ({ ...props }) => {
                     <Form.Check type="radio" id="haveHarmonization-no" name="haveHarmonization" inline className="error-text">
                       <Form.Check.Input
                         type="radio"
-                        type="radio"
                         className="mr-2"
                         checked={dataLinkage.haveHarmonization === 0}
                         onClick={() => {
@@ -636,7 +633,6 @@ const DataLinkageForm = ({ ...props }) => {
                 ) : (
                   <Form.Check type="radio" id="haveHarmonization-no" name="haveHarmonization" inline>
                     <Form.Check.Input
-                      type="radio"
                       type="radio"
                       className="mr-2"
                       checked={dataLinkage.haveHarmonization === 0}
@@ -746,7 +742,6 @@ const DataLinkageForm = ({ ...props }) => {
                     <Form.Check type="radio" id="haveDeposited-no" name="haveDeposited" inline className="error-text">
                       <Form.Check.Input
                         type="radio"
-                        type="radio"
                         className="mr-2"
                         checked={dataLinkage.haveDeposited === 0}
                         onClick={() => {
@@ -765,7 +760,6 @@ const DataLinkageForm = ({ ...props }) => {
                 ) : (
                   <Form.Check type="radio" id="haveDeposited-no" name="haveDeposited" inline>
                     <Form.Check.Input
-                      type="radio"
                       type="radio"
                       className="mr-2"
                       checked={dataLinkage.haveDeposited === 0}
@@ -896,7 +890,6 @@ const DataLinkageForm = ({ ...props }) => {
                     <Form.Check type="radio" id="dataOnline-no" name="dataOnline" inline className="error-text">
                       <Form.Check.Input
                         type="radio"
-                        type="radio"
                         className="mr-2"
                         checked={dataLinkage.dataOnline === 0}
                         onClick={() => {
@@ -919,7 +912,6 @@ const DataLinkageForm = ({ ...props }) => {
                 ) : (
                   <Form.Check type="radio" id="dataOnline-no" name="dataOnline" inline>
                     <Form.Check.Input
-                      type="radio"
                       type="radio"
                       className="mr-2"
                       checked={dataLinkage.dataOnline === 0}
@@ -1166,7 +1158,6 @@ const DataLinkageForm = ({ ...props }) => {
                     <Form.Check type="radio" id="createdRepo-no" name="createdRepo" inline className="error-text">
                       <Form.Check.Input
                         type="radio"
-                        type="radio"
                         className="mr-2"
                         checked={dataLinkage.createdRepo === 0}
                         onClick={() => {
@@ -1183,7 +1174,6 @@ const DataLinkageForm = ({ ...props }) => {
                 ) : (
                   <Form.Check type="radio" id="createdRepo-no" name="createdRepo" inline>
                     <Form.Check.Input
-                      type="radio"
                       type="radio"
                       className="mr-2"
                       checked={dataLinkage.createdRepo === 0}
