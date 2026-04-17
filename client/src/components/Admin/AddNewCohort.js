@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
-import AccessibleSelect from "../controls/AccessibleSelect";
+import Select from "../controls/Select";
 import { connect } from "react-redux";
 import Messenger from "../Snackbar/Snackbar";
 import "./AddNewCohort.css";
@@ -378,7 +378,7 @@ class AddNewCohort extends Component {
                       <Form.Label className="error-text"> {this.state.type_error}</Form.Label>
                     )}
                     <div style={{ width: "90%" }}>
-                      <AccessibleSelect
+                      <Select
                         inputId="cu_type"
                         name="type"
                         value={this.state.type}
@@ -395,7 +395,7 @@ class AddNewCohort extends Component {
                       Cohort Owner(s)
                     </Form.Label>
                     <div style={{ width: "90%" }}>
-                      <AccessibleSelect
+                      <Select
                         inputId="cu_organization"
                         name="owners"
                         isMulti

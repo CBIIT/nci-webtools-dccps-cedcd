@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, NavLink } from "react-router-dom";
 import Table from "react-bootstrap/Table";
 import Paging from "../Paging/Paging";
-import AccessiblePageSizeSelect from "../controls/AccessiblePageSizeSelect";
+import PageSizeSelect from "../controls/PageSizeSelect";
 
 export default function CohortActivity() {
   const { abbreviation } = useParams();
@@ -101,7 +101,7 @@ export default function CohortActivity() {
 
         <div className="d-flex align-items-center justify-content-between">
           <div>
-            <AccessiblePageSizeSelect
+            <PageSizeSelect
               id="cohort-activity-page-size"
               value={pageSize}
               onChange={(e) => {

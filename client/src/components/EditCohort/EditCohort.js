@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
-import AccessibleSelect from "../controls/AccessibleSelect";
+import Select from "../controls/Select";
 import { connect } from "react-redux";
 import RequireAuthorization from "../RequireAuthorization/RequireAuthorization";
 import Messenger from "../Snackbar/Snackbar";
@@ -416,7 +416,7 @@ class EditCohort extends Component {
                       <Form.Label className="error-text"> {this.state.list_error}</Form.Label>
                     )}
                     <div style={{ width: "90%" }}>
-                      <AccessibleSelect
+                      <Select
                         inputId="edit_cohort_select"
                         name="cohort"
                         value={this.state.cohort}
@@ -469,7 +469,7 @@ class EditCohort extends Component {
                       <Form.Label className="error-text"> {this.state.type_error}</Form.Label>
                     )}
                     <div style={{ width: "90%" }}>
-                      <AccessibleSelect
+                      <Select
                         inputId="cu_type"
                         name="type"
                         value={this.state.type}
@@ -487,7 +487,7 @@ class EditCohort extends Component {
                       Cohort Owner(s)
                     </Form.Label>
                     <div style={{ width: "90%" }}>
-                      <AccessibleSelect
+                      <Select
                         inputId="cu_organization"
                         name="owners"
                         isMulti

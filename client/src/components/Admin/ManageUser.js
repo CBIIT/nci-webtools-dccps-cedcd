@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import PageSummary from "../PageSummary/PageSummary";
 import Paging from "../Paging/Paging";
 import TableHeaderManageUser from "./TableHeaderManageUser";
-import AccessiblePageSizeSelect from "../controls/AccessiblePageSizeSelect";
+import PageSizeSelect from "../controls/PageSizeSelect";
 import "./ManageCohort.css";
 import { isNull } from "lodash";
 
@@ -351,7 +351,7 @@ class ManageUser extends Component {
               ""
             ) : (
               <div className="pageSize" style={{ verticalAlign: "middle", paddingTop: "2px" }}>
-                <AccessiblePageSizeSelect
+                <PageSizeSelect
                   id="manage-user-page-size"
                   value={this.state.pageInfo.pageSize}
                   onChange={(e) => this.handleUserPageSizeChange(e)}

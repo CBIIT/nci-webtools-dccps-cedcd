@@ -1456,7 +1456,7 @@ tr.compare-row--hover,
 }
 
 // Override react-select default placeholder color (#808080) for WCAG AA contrast.
-// Scoped to the cedcd-select classNamePrefix set on AccessibleSelect.
+// Scoped to the cedcd-select classNamePrefix set on controls/Select (react-select wrapper).
 .cedcd-select__placeholder {
   color: #5e5e5e;
 }

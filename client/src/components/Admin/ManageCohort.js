@@ -5,7 +5,7 @@ import PageSummary from "../PageSummary/PageSummary";
 import Paging from "../Paging/Paging";
 import CohortStatusList from "./CohortStatusList";
 import TableHeaderManageCohort from "./TableHeaderManageCohort";
-import AccessiblePageSizeSelect from "../controls/AccessiblePageSizeSelect";
+import PageSizeSelect from "../controls/PageSizeSelect";
 import { isNull } from "lodash";
 
 import "./ManageCohort.css";
@@ -432,7 +432,7 @@ class ManageCohort extends Component {
               ""
             ) : (
               <div className="pageSize" style={{ verticalAlign: "middle", paddingTop: "2px" }}>
-                <AccessiblePageSizeSelect
+                <PageSizeSelect
                   id="manage-cohort-page-size"
                   value={this.state.pageInfo.pageSize}
                   onChange={(e) => this.handleCohortPageSizeChange(e)}

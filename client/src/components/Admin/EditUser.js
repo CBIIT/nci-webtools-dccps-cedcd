@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, NavLink } from "react-router-dom";
-import AccessibleSelect from "../controls/AccessibleSelect";
+import Select from "../controls/Select";
 import validator from "../../validators";
 import Messenger from "../Snackbar/Snackbar";
 import CenterModal from "../controls/modal/modal";
@@ -500,7 +500,7 @@ const EditUser = ({ ...props }) => {
                   ) : (
                     <div className="col-md-12 col-12 px-0">
                       <div className="col-md-12 col-12 px-0">
-                        <AccessibleSelect
+                        <Select
                           inputId="cohort_select"
                           name="owners"
                           isMulti
