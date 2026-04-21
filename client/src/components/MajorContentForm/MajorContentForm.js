@@ -734,7 +734,7 @@ const MajorContentForm = ({ ...props }) => {
               </Form.Label>
               <Col sm="12" className="mb-1">
                 <span>If data were collected at baseline, please specify all tobacco products that apply</span>
-                <span style={{ color: "red" }}>*</span>
+                <span className="error-text">*</span>
                 {errors.tobaccoUseBaseLine &&
                   errors.cigarBaseLine &&
                   errors.pipeBaseLine &&
@@ -788,7 +788,7 @@ const MajorContentForm = ({ ...props }) => {
               </Col>
               <Col sm="12" className="mb-1">
                 <span>If data were collected during follow-up, please specify all tobacco products that apply</span>
-                <span style={{ color: "red" }}>*</span>
+                <span className="error-text">*</span>
                 {errors.tobaccoUseFollowUp &&
                   errors.cigarFollowUp &&
                   errors.pipeFollowUp &&
@@ -859,7 +859,7 @@ const MajorContentForm = ({ ...props }) => {
       <Form.Group className="mb-0" style={{ marginTop: "10px" }}>
         <Form.Label style={{ marginBottom: "8px" }}>
           C.33 Do you have information on the following cancer related conditions?
-          <span style={{ color: "red" }}>*</span> <span className="font-weight-normal"> (Select all that apply)</span>
+          <span className="error-text">*</span> <span className="font-weight-normal"> (Select all that apply)</span>
           {errors.cancerRelatedConditionsNA &&
             errors.cancerToxicity &&
             errors.cancerLateEffects &&

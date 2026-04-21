@@ -185,16 +185,9 @@ li {
   vertical-align: top;
   background: rgba(100, 200, 100, 0);
 }
-ul.table-controls {
+.table-controls {
   padding: 0;
   margin: 0;
-}
-.table-controls li {
-  display: inline-block;
-}
-.table-controls li.total {
-  margin: 4px;
-  padding: 0;
 }
 ul.results-nav li {
   list-style: none;
@@ -773,7 +766,7 @@ fieldset[disabled] .btn-primary.active {
   right: 1rem;
 }
 .btn-secondary {
-  background-color: #73a4a4;
+  background-color: #507272;
   border-color: #fff;
   min-width: 100px;
   padding-left: 2rem;
