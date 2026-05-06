@@ -6,7 +6,7 @@ RUN dnf -y upgrade --refresh \
     npm \
     tar \
     gzip \
-    && dnf -y upgrade python3 python3-libs || true \
+    && dnf -y upgrade python3 python3-libs \
     && dnf clean all
 
 # Refresh the bundled npm CLI so transitive deps under /usr/lib/node_modules/npm

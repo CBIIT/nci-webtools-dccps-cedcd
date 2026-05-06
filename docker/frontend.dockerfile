@@ -35,7 +35,7 @@ FROM public.ecr.aws/amazonlinux/amazonlinux:2023
 RUN dnf -y upgrade --refresh \
     && dnf -y install \
     httpd \
-    && dnf -y upgrade httpd httpd-filesystem httpd-tools mod_http2 mod_ssl || true \
+    && dnf -y upgrade httpd httpd-filesystem httpd-tools mod_http2 mod_ssl \
     && dnf clean all
 
 COPY --from=builder /app/client/build/ /var/www/html/
