@@ -6,11 +6,13 @@ RUN dnf -y upgrade --refresh \
     npm \
     tar \
     gzip \
+    && dnf -y upgrade python3 python3-libs || true \
     && dnf clean all
 
-# Refresh the bundled npm CLI so transitive deps under /usr/lib/node_modules/npm (e.g. tar, minimatch)
-# match current npm releases and reduce scanner noise vs the distro-shipped npm snapshot.
-RUN npm install -g npm@10 \
+# Refresh the bundled npm CLI so transitive deps under /usr/lib/node_modules/npm
+# (tar, minimatch, brace-expansion, etc.) track current npm releases.
+# Latest npm 10.x (Node 18+). npm 11 requires Node ^20.17 — only switch after the image uses Node 20+.
+RUN npm install -g npm@10.9.8 \
     && npm cache clean --force
 
 RUN mkdir -p /app/server
