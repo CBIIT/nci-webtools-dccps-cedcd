@@ -47,16 +47,22 @@
     "xlsx-populate": "^1.14.0"
   },
   "overrides": {
+    "async-validator": "^1.12.2",
     "axios": "^1.16.0",
-    "follow-redirects": "^1.15.11",
+    "brace-expansion": "^5.0.5",
+    "diff": "^5.2.2",
+    "follow-redirects": "^1.16.0",
+    "glob": "^10.5.0",
     "immutable": "3.8.3",
     "lodash": "^4.18.1",
     "lodash-es": "^4.18.1",
     "lodash.template": "^4.18.1",
+    "minimatch": "^10.2.5",
     "node-fetch": "^2.7.0",
     "nodemailer": "^8.0.7",
     "path-to-regexp": "0.1.13",
-    "qs": "^6.14.2"
+    "qs": "^6.14.2",
+    "tar": "^7.5.13"
   },
   "devDependencies": {
     "prettier": "^3.0.3"

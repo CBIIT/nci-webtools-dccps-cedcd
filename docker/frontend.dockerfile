@@ -1,6 +1,6 @@
 FROM public.ecr.aws/amazonlinux/amazonlinux:2023
 
-RUN dnf -y update \
+RUN dnf -y upgrade --refresh \
     && dnf -y install \
     gcc-c++ \
     httpd \
