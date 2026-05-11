@@ -11,7 +11,8 @@ RUN dnf -y upgrade --refresh \
     npm \
     && dnf clean all
 
-RUN npm install -g npm@10 \
+# Refresh bundled npm under /usr/lib so transitive deps (brace-expansion, etc.) match a current release.
+RUN npm install -g npm@10.9.8 \
     && npm cache clean --force
 
 WORKDIR /app/client
