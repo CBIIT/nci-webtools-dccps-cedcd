@@ -8,6 +8,11 @@ RUN dnf -y upgrade --refresh \
     && dnf -y upgrade python3 python3-libs \
     && dnf clean all
 
+# Patch brace-expansion CVE-2026-33750 in the bundled npm's own node_modules.
+# AL2023 nodejs24 ships npm 11.12.1 with brace-expansion <5.0.5; fix requires 5.0.5+.
+RUN npm install --prefix /usr/lib/nodejs24/lib/node_modules/npm brace-expansion@5.0.5 \
+    && npm cache clean --force
+
 RUN mkdir -p /app/server
 
 WORKDIR /app/server
