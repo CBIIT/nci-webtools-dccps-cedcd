@@ -44,7 +44,6 @@
     "rotating-file-stream": "^1.2.2",
     "sha1": "^1.1.1",
     "urllib": "^2.25.4",
-    "uuid": "^3.1.0",
     "winston": "^3.8.2",
     "winston-daily-rotate-file": "^4.7.1",
     "xlsx-populate": "^1.14.0"
