@@ -1,0 +1,127 @@
+name: Terraform Deploy CEDCD
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: "Deployment tier"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - qa
+          - stage
+          - prod
+      apply:
+        description: "Apply changes (false = plan only)"
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: ${{ inputs.tier }}
+    env:
+      AWS_REGION: us-east-1
+      APP: cedcd
+      TIER: ${{ inputs.tier }}
+      CICD_REPO: CBIIT/nci-softwaresolutions-CICD
+      CICD_REF: main
+      TF_PROJECT_DIR: nci-softwaresolutions-CICD/infrastructure/terraform/cedcd
+      CICD_ROLE_ARN: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cicd
+      TF_VARS_FILE: cedcd-${{ inputs.tier }}.tfvars
+      TF_BACKEND_FILE: cedcd-${{ inputs.tier }}.tfbackend
+      TF_CONFIG_BUCKET: nci-cbiit-cicd-analysistools-nonprod
+
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.CICD_ROLE_ARN }}
+          role-session-name: ${{ env.TIER }}-${{ env.APP }}-terraform-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Validate required tier files
+        run: |
+          set -euo pipefail
+          S3_PREFIX="s3://${TF_CONFIG_BUCKET}/env/${TIER}/${APP}"
+          aws s3 ls "${S3_PREFIX}/${TF_VARS_FILE}" >/dev/null
+          aws s3 ls "${S3_PREFIX}/${TF_BACKEND_FILE}" >/dev/null
+
+      - name: Clone CICD Terraform repository
+        env:
+          CICD_REPO_PAT: ${{ secrets.CICD_REPO_PAT }}
+        run: |
+          set -euo pipefail
+          if [ -n "${CICD_REPO_PAT:-}" ]; then
+            git clone "https://${CICD_REPO_PAT}@github.com/${CICD_REPO}.git"
+          else
+            git clone "https://github.com/${CICD_REPO}.git"
+          fi
+          cd nci-softwaresolutions-CICD
+          git checkout "${CICD_REF}"
+          test -d "infrastructure/terraform/${APP}"
+
+      - name: Install Terraform tooling
+        run: |
+          set -euo pipefail
+          sh nci-softwaresolutions-CICD/infrastructure/terraform/setup.sh
+
+      - name: Place tier tfvars and backend config
+        run: |
+          set -euo pipefail
+          S3_PREFIX="s3://${TF_CONFIG_BUCKET}/env/${TIER}/${APP}"
+          aws s3 cp "${S3_PREFIX}/${TF_VARS_FILE}" "${TF_PROJECT_DIR}/${TF_VARS_FILE}"
+          aws s3 cp "${S3_PREFIX}/${TF_BACKEND_FILE}" "${TF_PROJECT_DIR}/${TF_BACKEND_FILE}"
+
+      - name: Terraform init
+        run: |
+          set -euo pipefail
+          cd "${TF_PROJECT_DIR}"
+          tf init --reconfigure --backend-config="${TF_BACKEND_FILE}"
+
+      - name: Terraform workspace
+        run: |
+          set -euo pipefail
+          cd "${TF_PROJECT_DIR}"
+          tf workspace select "${TIER}" || tf workspace new "${TIER}"
+          tf workspace list
+
+      - name: Terraform plan
+        run: |
+          set -euo pipefail
+          cd "${TF_PROJECT_DIR}"
+          tf plan -var-file="${TF_VARS_FILE}"
+
+      - name: Terraform apply
+        if: ${{ inputs.apply }}
+        run: |
+          set -euo pipefail
+          cd "${TF_PROJECT_DIR}"
+          tf apply -auto-approve -var-file="${TF_VARS_FILE}"
+
+      - name: Deployment summary
+        if: ${{ inputs.apply }}
+        run: |
+          echo "## Terraform Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tier:** ${{ env.TIER }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **App:** ${{ env.APP }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **CICD Ref:** ${{ env.CICD_REF }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Run:** ${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Terraform cleanup
+        if: always()
+        run: |
+          set +e
+          rm -rf "${TF_PROJECT_DIR}/.terraform"
