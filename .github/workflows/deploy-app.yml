@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tier:
-        description: "Deployment Tier"
+        description: "Deploy environment"
         required: true
         default: "dev"
         type: choice
@@ -30,7 +30,6 @@ jobs:
       FRONTEND_CONTAINER_PORT: 80
       BACKEND_CONTAINER_PORT: 8221
       TIER: ${{ inputs.tier }}
-      IMAGE_TIER: ${{ contains(fromJson('["dev","qa"]'), inputs.tier) && 'development' || 'release' }}
       CICD_ROLE_ARN: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/power-user-github-actions-cicd
       ECS_DATA_IMPORT_CPU_UNITS: "1024"
       ECS_DATA_IMPORT_MEMORY_UNITS: "2048"
@@ -42,28 +41,23 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v6.0.0
         with:
           role-to-assume: ${{ env.CICD_ROLE_ARN }}
-          role-session-name: ${{ env.TIER }}-cedcd-deploy-${{ github.ref_name }}
+          role-session-name: ${{ env.TIER }}-${{ env.APP }}-deploy-${{ github.ref_name }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Set dynamic environment variables
         run: |
           DEPLOY_DATE=$(date +"%Y-%m-%d")
           TIMESTAMP=$(date +"%Y%m%d%H%M%S")
-          BRANCH_NAME=${{ github.ref_name }}
-          VERSION=$(echo "$BRANCH_NAME" | awk -F'_' '{print $2}')
-          DATE=$(echo "$BRANCH_NAME" | awk -F'_' '{print $3}')
           REPO=${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_REGION.amazonaws.com/$APP
 
           echo "DEPLOY_DATE=$DEPLOY_DATE" >> $GITHUB_ENV
-          echo "VERSION=${VERSION:-unknown_version}" >> $GITHUB_ENV
-          echo "DATE=${DATE:-unknown_date}" >> $GITHUB_ENV
           echo "IMAGE_REPOSITORY=$REPO" >> $GITHUB_ENV
-          echo "FRONTEND_IMAGE=$REPO:$IMAGE_TIER-frontend-${{ github.ref_name }}-$TIMESTAMP" >> $GITHUB_ENV
-          echo "BACKEND_IMAGE=$REPO:$IMAGE_TIER-backend-${{ github.ref_name }}-$TIMESTAMP" >> $GITHUB_ENV
-          echo "FRONTEND_IMAGE_LATEST=$REPO:$IMAGE_TIER-frontend-${{ github.ref_name }}-latest" >> $GITHUB_ENV
-          echo "BACKEND_IMAGE_LATEST=$REPO:$IMAGE_TIER-backend-${{ github.ref_name }}-latest" >> $GITHUB_ENV
-          echo "DATA_IMPORT_IMAGE=$REPO:$IMAGE_TIER-data-import-${{ github.ref_name }}-$TIMESTAMP" >> $GITHUB_ENV
-          echo "DATA_IMPORT_IMAGE_LATEST=$REPO:$IMAGE_TIER-data-import-${{ github.ref_name }}-latest" >> $GITHUB_ENV
+          echo "FRONTEND_IMAGE=$REPO:frontend-${{ github.ref_name }}-$TIMESTAMP" >> $GITHUB_ENV
+          echo "BACKEND_IMAGE=$REPO:backend-${{ github.ref_name }}-$TIMESTAMP" >> $GITHUB_ENV
+          echo "FRONTEND_IMAGE_LATEST=$REPO:frontend-${{ github.ref_name }}-latest" >> $GITHUB_ENV
+          echo "BACKEND_IMAGE_LATEST=$REPO:backend-${{ github.ref_name }}-latest" >> $GITHUB_ENV
+          echo "DATA_IMPORT_IMAGE=$REPO:data-import-${{ github.ref_name }}-$TIMESTAMP" >> $GITHUB_ENV
+          echo "DATA_IMPORT_IMAGE_LATEST=$REPO:data-import-${{ github.ref_name }}-latest" >> $GITHUB_ENV
           echo "ENVIRONMENT_TIER=${TIER^^}" >> $GITHUB_ENV
 
           if [[ "$TIER" == "dev" ]]; then
