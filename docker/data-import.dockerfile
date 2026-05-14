@@ -5,6 +5,9 @@ RUN dnf -y upgrade --refresh \
     nodejs24 \
     && dnf clean all
 
+RUN npm install -g npm@latest \
+    && npm cache clean --force
+
 RUN mkdir -p /app/database
 
 WORKDIR /app/database

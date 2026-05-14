@@ -8,10 +8,7 @@ RUN dnf -y upgrade --refresh \
     && dnf -y upgrade python3 python3-libs \
     && dnf clean all
 
-# Do not use `npm install --prefix .../lib/node_modules/npm <pkg>`: that re-resolves npm's
-# entire dependency tree and can fail (e.g. 404 on @npmcli/*) or fight corporate mirrors.
-# Upgrade the global npm CLI instead so brace-expansion and other bundled deps match a release.
-RUN npm install -g npm@11.14.1 \
+RUN npm install -g npm@latest \
     && npm cache clean --force
 
 RUN mkdir -p /app/server

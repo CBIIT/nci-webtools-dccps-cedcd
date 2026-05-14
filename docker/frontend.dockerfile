@@ -5,14 +5,10 @@ FROM public.ecr.aws/amazonlinux/amazonlinux:2023 AS builder
 
 RUN dnf -y upgrade --refresh \
     && dnf -y install \
-    gcc-c++ \
-    make \
-    nodejs \
-    npm \
+    nodejs24 \
     && dnf clean all
 
-# Refresh bundled npm under /usr/lib so transitive deps (brace-expansion, etc.) match a current release.
-RUN npm install -g npm@10.9.8 \
+RUN npm install -g npm@latest \
     && npm cache clean --force
 
 WORKDIR /app/client
@@ -36,7 +32,6 @@ FROM public.ecr.aws/amazonlinux/amazonlinux:2023
 RUN dnf -y upgrade --refresh \
     && dnf -y install \
     httpd \
-    && dnf -y upgrade httpd httpd-filesystem httpd-tools mod_http2 mod_ssl \
     && dnf clean all
 
 COPY --from=builder /app/client/build/ /var/www/html/
