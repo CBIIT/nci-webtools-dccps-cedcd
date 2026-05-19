@@ -30,7 +30,7 @@ jobs:
       BACKEND_CONTAINER_PORT: 8221
       TIER: ${{ inputs.tier }}
       IMAGE_TIER: ${{ contains(fromJson('["dev","qa"]'), inputs.tier) && 'development' || 'release' }}
-      CICD_ROLE_ARN: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cicd
+      CICD_ROLE_ARN: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/power-user-github-actions-cicd
       ECS_DATA_IMPORT_CPU_UNITS: "1024"
       ECS_DATA_IMPORT_MEMORY_UNITS: "2048"
       
