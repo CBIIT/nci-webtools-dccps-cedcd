@@ -89,17 +89,12 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "${TIER}" == "dev" || "${TIER}" == "qa" ]]; then
-            TF_CONFIG_BUCKET="nci-cbiit-cicd-analysistools-nonprod"
             TIER_GROUP="nonprod"
           else
-            TF_CONFIG_BUCKET="nci-cbiit-cicd-analysistools-prod"
             TIER_GROUP="prod"
           fi
           cd "${TF_PROJECT_DIR}"
-          terraform init --reconfigure \
-            -backend-config="bucket=${TF_CONFIG_BUCKET}" \
-            -backend-config="key=env/${TIER_GROUP}/${APP}/terraform.tfstate" \
-            -backend-config="region=${AWS_REGION}"
+          terraform init --reconfigure -backend-config="cedcd-${TIER_GROUP}.tfbackend"
 
       - name: Terraform workspace
         run: |
