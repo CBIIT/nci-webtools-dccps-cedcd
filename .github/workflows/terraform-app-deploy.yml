@@ -33,7 +33,7 @@ jobs:
       APP: cedcd
       TIER: ${{ inputs.tier }}
       CICD_REPO: CBIIT/nci-softwaresolutions-CICD
-      CICD_REF: main
+      CICD_REF: master
       TF_PROJECT_DIR: nci-softwaresolutions-CICD/infrastructure/terraform/cedcd
       CICD_ROLE_ARN: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/power-user-github-actions-cicd
       TF_VARS_FILE: cedcd-${{ inputs.tier }}.tfvars
