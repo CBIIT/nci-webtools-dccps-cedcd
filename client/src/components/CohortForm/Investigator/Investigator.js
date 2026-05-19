@@ -43,7 +43,7 @@ const Investigator = ({ id, name, institution, email, handleRemove, errors, disa
           <Form.Group as={Row} className="mb-1">
             <Form.Label column sm="6" style={{ fontWeight: "normal" }}>
               <span className="pl-3">
-                Name<span style={{ color: "red" }}>*</span>
+                Name<span className="error-text">*</span>
               </span>
             </Form.Label>
             <Col sm="6">
@@ -51,7 +51,7 @@ const Investigator = ({ id, name, institution, email, handleRemove, errors, disa
                 <Reminder message={errors[name]}>
                   <Form.Control
                     type="text"
-                    style={{ border: "1px solid red" }}
+                    style={{ border: "1px solid #b91c1c" }}
                     placeholder="Max of 100 characters"
                     maxLength="100"
                     name={name}
@@ -83,7 +83,7 @@ const Investigator = ({ id, name, institution, email, handleRemove, errors, disa
           <Form.Group as={Row} className="mb-1">
             <Form.Label column sm="6" style={{ fontWeight: "normal" }}>
               <span className="pl-3">
-                Institution<span style={{ color: "red" }}>*</span>
+                Institution<span className="error-text">*</span>
               </span>
             </Form.Label>
             <Col sm="6">
@@ -91,7 +91,7 @@ const Investigator = ({ id, name, institution, email, handleRemove, errors, disa
                 <Reminder message={errors[institution]}>
                   <Form.Control
                     type="text"
-                    style={{ border: "1px solid red" }}
+                    style={{ border: "1px solid #b91c1c" }}
                     placeholder="Max of 100 characters"
                     maxLength="100"
                     name={institution}
@@ -123,14 +123,14 @@ const Investigator = ({ id, name, institution, email, handleRemove, errors, disa
           <Form.Group as={Row} className="mb-1">
             <Form.Label column sm="6" style={{ fontWeight: "normal" }}>
               <span className="pl-3">
-                Email<span style={{ color: "red" }}>*</span>
+                Email<span className="error-text">*</span>
               </span>
             </Form.Label>
             <Col sm="6">
               {errors[email] && displayStyle ? (
                 <Reminder message={errors[email]}>
                   <Form.Control
-                    style={{ border: "1px solid red" }}
+                    style={{ border: "1px solid #b91c1c" }}
                     placeholder="Max of 100 characters"
                     maxLength="100"
                     type="email"

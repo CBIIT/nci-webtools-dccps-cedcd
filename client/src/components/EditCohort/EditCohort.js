@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
-import Select from "react-select";
+import Select from "../controls/Select";
 import { connect } from "react-redux";
 import RequireAuthorization from "../RequireAuthorization/RequireAuthorization";
 import Messenger from "../Snackbar/Snackbar";
@@ -409,14 +409,15 @@ class EditCohort extends Component {
                 <Form onSubmit={this.handleSubmit}>
                   <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
                   <Form.Group id="ctl11_div_cohortList">
-                    <Form.Label className="oneLineLabel" htmlFor="cu_firstName">
-                      Cohort<span style={{ color: "red" }}>*</span>
+                    <Form.Label className="oneLineLabel" htmlFor="edit_cohort_select">
+                      Cohort<span className="error-text">*</span>
                     </Form.Label>
                     {this.state.list_error !== "" && (
-                      <Form.Label style={{ color: "red" }}> {this.state.list_error}</Form.Label>
+                      <Form.Label className="error-text"> {this.state.list_error}</Form.Label>
                     )}
                     <div style={{ width: "90%" }}>
                       <Select
+                        inputId="edit_cohort_select"
                         name="cohort"
                         value={this.state.cohort}
                         options={this.state.cohortList.map((e) => {
@@ -431,7 +432,7 @@ class EditCohort extends Component {
                       Cohort Name
                     </Form.Label>
                     {this.state.name_error !== "" && (
-                      <Form.Label style={{ color: "red" }}> {this.state.name_error}</Form.Label>
+                      <Form.Label className="error-text"> {this.state.name_error}</Form.Label>
                     )}
                     <input
                       className="form-control"
@@ -448,7 +449,7 @@ class EditCohort extends Component {
                       Cohort Acronym
                     </Form.Label>
                     {this.state.acronym_error !== "" && (
-                      <Form.Label style={{ color: "red" }}> {this.state.acronym_error}</Form.Label>
+                      <Form.Label className="error-text"> {this.state.acronym_error}</Form.Label>
                     )}
                     <input
                       className="form-control"
@@ -462,13 +463,14 @@ class EditCohort extends Component {
                   </Form.Group>
                   <Form.Group id="ctl11_div_cohortType">
                     <Form.Label className="oneLineLabel" htmlFor="cu_type">
-                      Cohort Type<span style={{ color: "red" }}>*</span>
+                      Cohort Type<span className="error-text">*</span>
                     </Form.Label>
                     {this.state.type_error !== "" && (
-                      <Form.Label style={{ color: "red" }}> {this.state.type_error}</Form.Label>
+                      <Form.Label className="error-text"> {this.state.type_error}</Form.Label>
                     )}
                     <div style={{ width: "90%" }}>
                       <Select
+                        inputId="cu_type"
                         name="type"
                         value={this.state.type}
                         options={[
@@ -486,8 +488,9 @@ class EditCohort extends Component {
                     </Form.Label>
                     <div style={{ width: "90%" }}>
                       <Select
+                        inputId="cu_organization"
                         name="owners"
-                        isMulti="true"
+                        isMulti
                         value={this.state.cohortOwners}
                         options={this.state.ownerOptions}
                         onChange={this.handleMultiChange}
@@ -500,7 +503,7 @@ class EditCohort extends Component {
                       Notes{" "}
                     </Form.Label>
                     {this.state.notes_error !== "" && (
-                      <Form.Label style={{ color: "red", paddingLeft: "5px" }}> {this.state.notes_error}</Form.Label>
+                      <Form.Label className="error-text" style={{ paddingLeft: "5px" }}> {this.state.notes_error}</Form.Label>
                     )}
                     <textarea
                       className="form-control"

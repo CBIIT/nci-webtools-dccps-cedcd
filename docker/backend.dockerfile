@@ -1,12 +1,15 @@
 FROM public.ecr.aws/amazonlinux/amazonlinux:2023
 
-RUN dnf -y update \
+RUN dnf -y upgrade --refresh \
     && dnf -y install \
-    nodejs \
-    npm  \
-    tar \ 
+    nodejs24 \
+    tar \
     gzip \
+    && dnf -y upgrade python3 python3-libs \
     && dnf clean all
+
+RUN npm install -g npm@latest \
+    && npm cache clean --force
 
 RUN mkdir -p /app/server
 

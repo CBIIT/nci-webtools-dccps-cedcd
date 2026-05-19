@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, NavLink } from "react-router-dom";
 import Table from "react-bootstrap/Table";
-import RequireAuthorization from "../RequireAuthorization/RequireAuthorization";
-import PageSummary from "../Paging/Paging";
 import Paging from "../Paging/Paging";
+import PageSizeSelect from "../controls/PageSizeSelect";
 
 export default function CohortActivity() {
   const { abbreviation } = useParams();
@@ -102,20 +101,20 @@ export default function CohortActivity() {
 
         <div className="d-flex align-items-center justify-content-between">
           <div>
-            <label htmlFor="page-size" className="mr-1">
-              Page Size:{" "}
-            </label>
-            <select
-              id="page-size"
+            <PageSizeSelect
+              id="cohort-activity-page-size"
               value={pageSize}
               onChange={(e) => {
-                setPageSize(e.target.value);
+                setPageSize(Number(e.target.value));
                 setPage(0);
-              }}>
-              {[5, 10, 15, 20].map((size) => (
-                <option value={size}>{size}</option>
-              ))}
-            </select>
+              }}
+              options={[
+                { value: 5, label: "5" },
+                { value: 10, label: "10" },
+                { value: 15, label: "15" },
+                { value: 20, label: "20" },
+              ]}
+            />
           </div>
 
           <div className="d-flex">

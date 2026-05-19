@@ -837,7 +837,7 @@ const SpecimenForm = ({ ...props }) => {
             }
           }}
         />
-        <Form.Check.Label style={{ fontWeight: "normal" }}>{label}</Form.Check.Label>
+        <Form.Check.Label htmlFor={key} style={{ fontWeight: "normal" }}>{label}</Form.Check.Label>
       </Form.Check>
     );
   }
@@ -880,7 +880,7 @@ const SpecimenForm = ({ ...props }) => {
         <Form.Group as={Row}>
           <Form.Label column sm="12">
             {field.title}
-            <span style={{ color: "red" }}>*</span>
+            <span className="error-text">*</span>
             {errors[item[0].field_id] && saved && !g1to6Flag && (
               <span className="ml-3 text-danger font-weight-normal">Required Field</span>
             )}
@@ -913,7 +913,7 @@ const SpecimenForm = ({ ...props }) => {
 
               <Col className="mb-0 pl-0" sm="12">
                 <Col sm="5">
-                  Collected at baseline<span style={{ color: "red" }}>*</span>
+                  Collected at baseline<span className="error-text">*</span>
                 </Col>
                 <Col sm="3" className="align-self-center">
                   <RadioButtonInput {...item[0]} />
@@ -963,7 +963,7 @@ const SpecimenForm = ({ ...props }) => {
 
               <Col sm="12" className="mb-0 pl-0">
                 <Col sm="5">
-                  Collected at other time points<span style={{ color: "red" }}>*</span>
+                  Collected at other time points<span className="error-text">*</span>
                 </Col>
                 <Col sm="3" className="align-self-center">
                   <RadioButtonInput {...item[1]} />
@@ -1154,7 +1154,7 @@ const SpecimenForm = ({ ...props }) => {
                 </Col>
                 <Col sm="12">
                   <div sm="12">
-                    If collected, types of aliquots (select all that apply)<span style={{ color: "red" }}>*</span>
+                    If collected, types of aliquots (select all that apply)<span className="error-text">*</span>
                     {+specimen.bioBloodBaseline === 1 &&
                       specimen.bioBloodBaselineSerum === 0 &&
                       specimen.bioBloodBaselinePlasma === 0 &&
@@ -1193,7 +1193,7 @@ const SpecimenForm = ({ ...props }) => {
                 </Col>
                 <Col sm="12">
                   <div sm="12">
-                    If collected, types of aliquots (select all that apply)<span style={{ color: "red" }}>*</span>
+                    If collected, types of aliquots (select all that apply)<span className="error-text">*</span>
                     {+specimen.bioBloodOtherTime === 1 &&
                       specimen.bioBloodOtherTimeSerum === 0 &&
                       specimen.bioBloodOtherTimePlasma === 0 &&
@@ -1238,7 +1238,7 @@ const SpecimenForm = ({ ...props }) => {
             panelTitle="Metabolomics Data">
             <Form.Group as={Row} sm="12">
               <Form.Label column sm="8">
-                G.15 Metabolomic Data (from MS and/or NMR)<span style={{ color: "red" }}>*</span>
+                G.15 Metabolomic Data (from MS and/or NMR)<span className="error-text">*</span>
                 {errors.bioMetabolomicData && saved && !g1to6Flag && (
                   <span className="ml-3 text-danger font-weight-normal">Required Field</span>
                 )}
@@ -1255,7 +1255,7 @@ const SpecimenForm = ({ ...props }) => {
             {/* G15 a */}
             <Form.Group as={Row} sm="12">
               <Form.Label column sm="12">
-                G.15a Are the biospecimens collected fasting samples?<span style={{ color: "red" }}>*</span>
+                G.15a Are the biospecimens collected fasting samples?<span className="error-text">*</span>
                 {+specimen.bioMetabolomicData === 1 && errors.bioMetaFastingSample && saved && !g1to6Flag && (
                   <span className="text-danger ml-3 font-weight-normal">Required Field</span>
                 )}
@@ -1268,7 +1268,7 @@ const SpecimenForm = ({ ...props }) => {
             {/* G15 b */}
             <Form.Group as={Row}>
               <Form.Label column sm="12">
-                G.15b What are the disease outcome(s) in your study?<span style={{ color: "red" }}>*</span>
+                G.15b What are the disease outcome(s) in your study?<span className="error-text">*</span>
                 <span className="font-weight-normal"> (Select all that apply)</span>
                 {+specimen.bioMetabolomicData === 1 &&
                   errors.bioMetaOutcomesInCancerStudy &&
@@ -1352,7 +1352,7 @@ const SpecimenForm = ({ ...props }) => {
             <Form.Group as={Row}>
               <Form.Label column sm="12">
                 G.15c Are you a member of the Consortium of Metabolomics Studies (COMETS)?
-                <span style={{ color: "red" }}>*</span>
+                <span className="error-text">*</span>
                 {+specimen.bioMetabolomicData === 1 && errors.bioMemberOfMetabolomicsStudies && saved && (
                   <span className="text-danger ml-3 font-weight-normal">Required Field</span>
                 )}
@@ -1366,7 +1366,7 @@ const SpecimenForm = ({ ...props }) => {
             <Form.Group as={Row}>
               <Form.Label column sm="12">
                 G.15d What is the number of participants with metabolomics data in your study?
-                <span style={{ color: "red" }}>*</span>
+                <span className="error-text">*</span>
               </Form.Label>
               <Col sm="2">
                 <Reminder
@@ -1402,7 +1402,7 @@ const SpecimenForm = ({ ...props }) => {
             {/* G15 e */}
             <Form.Group as={Row}>
               <Form.Label column sm="12">
-                G.15e Which laboratory or company was used for the analysis?<span style={{ color: "red" }}>*</span>
+                G.15e Which laboratory or company was used for the analysis?<span className="error-text">*</span>
               </Form.Label>
               <Col sm="12">
                 <Reminder
@@ -1442,7 +1442,7 @@ const SpecimenForm = ({ ...props }) => {
             <Form.Group as={Row}>
               <Form.Label column sm="12">
                 G.15f Which type(s) of analytical platform was used, (e.g., NMR, Orbitrap mass spectrometry, QTOF mass
-                spectrometry)?<span style={{ color: "red" }}>*</span>
+                spectrometry)?<span className="error-text">*</span>
               </Form.Label>
               <Col sm="12">
                 <Reminder
@@ -1483,7 +1483,7 @@ const SpecimenForm = ({ ...props }) => {
             <Form.Group as={Row}>
               <Form.Label column sm="12">
                 G.15g Which separation platform(s) was used (e.g., GC, HILIC, RPLC, Ion pairing LC)?
-                <span style={{ color: "red" }}>*</span>
+                <span className="error-text">*</span>
               </Form.Label>
               <Col sm="12">
                 <Reminder
@@ -1523,7 +1523,7 @@ const SpecimenForm = ({ ...props }) => {
 
             <Form.Group as={Row}>
               <Form.Label column sm="12">
-                G.15h How many metabolites were measured?<span style={{ color: "red" }}>*</span>
+                G.15h How many metabolites were measured?<span className="error-text">*</span>
               </Form.Label>
               <Col sm="2">
                 <Reminder
@@ -1561,7 +1561,7 @@ const SpecimenForm = ({ ...props }) => {
             {/* G15 i */}
             <Form.Group as={Row}>
               <Form.Label column sm="12">
-                G.15i What year were samples analyzed?<span style={{ color: "red" }}>*</span>
+                G.15i What year were samples analyzed?<span className="error-text">*</span>
               </Form.Label>
               <Col sm="2">
                 <Reminder
@@ -1608,29 +1608,25 @@ const SpecimenForm = ({ ...props }) => {
               </div>
             </div>
             <div className="table-responsive m-0">
-              <Table bordered condensed className="table-valign-middle">
+              <Table bordered condensed className="table-valign-middle" aria-label="Biospecimen counts by cancer site and specimen type">
                 <thead>
                   <tr>
-                    <th className="col-sm-1 text-center">ICD-9</th>
-                    <th className="col-sm-1 text-center">ICD-10</th>
-                    <th className="col-sm-3 text-center">Cancer Site/Type</th>
-                    <th className="col-sm-1 text-center">Serum and/or Plasma</th>
-                    <th className="col-sm-1 text-center">Buffy Coat and/or Lymphocytes</th>
-                    <th className="col-sm-1 text-center">Saliva and/or Buccal</th>
-                    <th className="col-sm-1 text-center">Urine</th>
-                    <th className="col-sm-1 text-center">Feces</th>
-                    <th className="col-sm-1 text-center">Tumor Tissue Fresh/Frozen</th>
-                    <th className="col-sm-1 text-center">Tumor Tissue FFPE</th>
+                    <th scope="col" className="col-sm-1 text-center">ICD-9</th>
+                    <th scope="col" className="col-sm-1 text-center">ICD-10</th>
+                    <th scope="col" className="col-sm-3 text-center">Cancer Site/Type</th>
+                    <th scope="col" className="col-sm-1 text-center">Serum and/or Plasma</th>
+                    <th scope="col" className="col-sm-1 text-center">Buffy Coat and/or Lymphocytes</th>
+                    <th scope="col" className="col-sm-1 text-center">Saliva and/or Buccal</th>
+                    <th scope="col" className="col-sm-1 text-center">Urine</th>
+                    <th scope="col" className="col-sm-1 text-center">Feces</th>
+                    <th scope="col" className="col-sm-1 text-center">Tumor Tissue Fresh/Frozen</th>
+                    <th scope="col" className="col-sm-1 text-center">Tumor Tissue FFPE</th>
                   </tr>
                 </thead>
                 <tbody>
                   {lookup.cancer.map((c) => {
                     const keyPrefix = `${cohortId}_${c.id}`;
-                    const inputKeys = lookup.specimen
-                      .filter((k) => {
-                        return k.id < 10;
-                      })
-                      .map((k) => `${c.id}-${k.id}`);
+                    const specimenTypes = lookup.specimen.filter((k) => k.id < 10);
 
                     return (
                       <tr key={keyPrefix}>
@@ -1638,23 +1634,27 @@ const SpecimenForm = ({ ...props }) => {
                         <td className={classNames("text-nowrap", c.icd10 ? "bg-light-grey" : "bg-grey")}>{c.icd10}</td>
                         <td className="text-nowrap bg-light-grey">{c.cancer}</td>
 
-                        {inputKeys.map((key, i) => (
-                          <td key={key} className="p-0">
-                            <Form.Control
-                              className="input-number"
-                              name={key}
-                              value={specimen.counts[key] || 0}
-                              type="number"
-                              onChange={(e) => {
-                                dispatch(allactions.specimenActions.setSpecimenCount(key, e.target.value));
-                                dispatch(setHasUnsavedChanges(true));
-                              }}
-                              min="0"
-                              disabled={+g1to6Flag === 1}
-                              readOnly={isReadOnly}
-                            />
-                          </td>
-                        ))}
+                        {specimenTypes.map((k) => {
+                          const key = `${c.id}-${k.id}`;
+                          return (
+                            <td key={key} className="p-0">
+                              <Form.Control
+                                className="input-number"
+                                name={key}
+                                aria-label={`${c.cancer} - ${k.specimen}`}
+                                value={specimen.counts[key] || 0}
+                                type="number"
+                                onChange={(e) => {
+                                  dispatch(allactions.specimenActions.setSpecimenCount(key, e.target.value));
+                                  dispatch(setHasUnsavedChanges(true));
+                                }}
+                                min="0"
+                                disabled={+g1to6Flag === 1}
+                                readOnly={isReadOnly}
+                              />
+                            </td>
+                          );
+                        })}
                       </tr>
                     );
                   })}

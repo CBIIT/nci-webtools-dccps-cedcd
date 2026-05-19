@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import RequireAuthorization from "../RequireAuthorization/RequireAuthorization";
-import Select from "react-select";
+import Select from "../controls/Select";
 import { useHistory } from "react-router-dom";
 import allactions from "../../actions";
 
@@ -29,7 +29,9 @@ export default function SelectCohort() {
       </p>
 
       <div className="col-md-12">
+        <label htmlFor="select-cohort">Select Cohort</label>
         <Select
+          inputId="select-cohort"
           options={user.cohorts.map(({ acronym, name, id }) => ({ label: `${acronym} - ${name}`, value: id }))}
           onChange={(e) => history.push(`/cohort/questionnaire/${e.value}`)}
         />

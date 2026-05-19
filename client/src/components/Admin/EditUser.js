@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, NavLink } from "react-router-dom";
-import Select from "react-select";
+import Select from "../controls/Select";
 import validator from "../../validators";
 import Messenger from "../Snackbar/Snackbar";
 import CenterModal from "../controls/modal/modal";
-import Unauthorized from "../Unauthorized/Unauthorized";
-import RequireAuthorization from "../RequireAuthorization/RequireAuthorization";
 import "./AddNewCohort.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -332,70 +330,59 @@ const EditUser = ({ ...props }) => {
             <div id="edituser-col-1" className="col-md-6 col-6">
               <Form>
                 <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
-                {/* <Form.Group id="ctl11_div_userName" className="px-0 my-3 col-md-12 col-12">
-                                    <Form.Label className="col-md-12 col-12" htmlFor="user_name" style={{ paddingLeft: '0' }}>User Account Name<span style={{ color: 'red' }}>*</span></Form.Label>
-                                    {errors.userName_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.userName_error}</Form.Label>}
-                                    <span className="col-md-12 col-12" style={{ paddingLeft: '0' }}>
-                                        <input className="form-control" name="user_userName" type="text" placeholder='Max of 100 characters'
-                                            id="user_userName" value={userName} maxLength="100"
-                                            onChange={(e) => { setUserName(e.target.value); if (errors.userName_error !== '') setErrors({ ...errors, userName_error: '' }) }} />
-                                    </span>
-                                </Form.Group> */}
 
                 <Form.Group id="ctl11_div_loginType" className="pl-0 my-3 col-md-12 col-12">
-                  <Form.Label className="col-md-12 col-12" htmlFor="login_type" style={{ paddingLeft: "0" }}>
-                    Login Type<span style={{ color: "red" }}>*</span>
-                  </Form.Label>
                   {errors.loginType_error !== "" && (
-                    <Form.Label style={{ color: "red" }}>{errors.loginType_error}</Form.Label>
+                    <Form.Label className="error-text">{errors.loginType_error}</Form.Label>
                   )}
                   <Col sm="6" className="d-flex justify-content-between align-self-center">
-                    <Form.Check type="radio" inline>
-                      <Form.Check.Input
-                        type="radio"
-                        value="Login.gov"
-                        checked={loginType === "Login.gov"}
-                        onChange={(e) => {
-                          setLoginType(e.target.value);
-                          if (errors.loginType_error !== "") {
-                            if (LOGIN_EMAIL_ERR_MSG.valueOf() === errors.loginType_error) {
-                              setErrors({ ...errors, email_error: "", loginType_error: "" });
-                            } else {
-                              setErrors({ ...errors, loginType_error: "" });
+                    <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
+                      <legend>Login Type <span className="error-text">*</span></legend>
+                      <Form.Check type="radio" id="login_type_logingov" inline name="login_type">
+                        <Form.Check.Input
+                          type="radio"
+                          value="Login.gov"
+                          checked={loginType === "Login.gov"}
+                          onChange={(e) => {
+                            setLoginType(e.target.value);
+                            if (errors.loginType_error !== "") {
+                              if (LOGIN_EMAIL_ERR_MSG.valueOf() === errors.loginType_error) {
+                                setErrors({ ...errors, email_error: "", loginType_error: "" });
+                              } else {
+                                setErrors({ ...errors, loginType_error: "" });
+                              }
                             }
-                          }
-                        }}
-                      />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>Login.gov</Form.Check.Label>
-                    </Form.Check>
-
-                    <Form.Check type="radio" inline>
-                      <Form.Check.Input
-                        type="radio"
-                        value="NIH"
-                        checked={loginType === "NIH"}
-                        onChange={(e) => {
-                          setLoginType(e.target.value);
-
-                          if (errors.loginType_error !== "") {
-                            if (LOGIN_EMAIL_ERR_MSG.valueOf() === errors.loginType_error) {
-                              setErrors({ ...errors, email_error: "", loginType_error: "" });
-                            } else {
-                              setErrors({ ...errors, loginType_error: "" });
+                          }}
+                        />
+                        <Form.Check.Label htmlFor="login_type_logingov" style={{ fontWeight: "normal" }}>Login.gov</Form.Check.Label>
+                      </Form.Check>
+                      <Form.Check type="radio" id="login_type_nih" inline name="login_type">
+                        <Form.Check.Input
+                          type="radio"
+                          value="NIH"
+                          checked={loginType === "NIH"}
+                          onChange={(e) => {
+                            setLoginType(e.target.value);
+                            if (errors.loginType_error !== "") {
+                              if (LOGIN_EMAIL_ERR_MSG.valueOf() === errors.loginType_error) {
+                                setErrors({ ...errors, email_error: "", loginType_error: "" });
+                              } else {
+                                setErrors({ ...errors, loginType_error: "" });
+                              }
                             }
-                          }
-                        }}
-                      />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>NIH &nbsp; &nbsp;</Form.Check.Label>
-                    </Form.Check>
+                          }}
+                        />
+                        <Form.Check.Label htmlFor="login_type_nih" style={{ fontWeight: "normal" }}>NIH &nbsp; &nbsp;</Form.Check.Label>
+                      </Form.Check>
+                    </fieldset>
                   </Col>
                 </Form.Group>
 
                 <Form.Group id="ctl11_div_userEmail" className="px-0 my-3 col-md-12 col-12">
                   <Form.Label className="col-md-12 col-12" htmlFor="user_email" style={{ paddingLeft: "0" }}>
-                    Account Email<span style={{ color: "red" }}>*</span>
+                    Account Email<span className="error-text">*</span>
                   </Form.Label>
-                  {errors.email_error !== "" && <Form.Label style={{ color: "red" }}>{errors.email_error}</Form.Label>}
+                  {errors.email_error !== "" && <Form.Label className="error-text">{errors.email_error}</Form.Label>}
                   <span className="col-md-12 col-12" style={{ paddingLeft: "0" }}>
                     <input
                       className="form-control"
@@ -421,10 +408,10 @@ const EditUser = ({ ...props }) => {
 
                 <Form.Group id="ctl11_div_lastName" className="px-0 my-3 col-md-12 col-12">
                   <Form.Label className="col-md-12 col-12" htmlFor="user_lastName" style={{ paddingLeft: "0" }}>
-                    Last Name<span style={{ color: "red" }}>*</span>
+                    Last Name<span className="error-text">*</span>
                   </Form.Label>
                   {errors.lastName_error !== "" && (
-                    <Form.Label style={{ color: "red" }}>{errors.lastName_error}</Form.Label>
+                    <Form.Label className="error-text">{errors.lastName_error}</Form.Label>
                   )}
                   <span className="col-md-12 col-12" style={{ paddingLeft: "0" }}>
                     <input
@@ -444,10 +431,10 @@ const EditUser = ({ ...props }) => {
                 </Form.Group>
                 <Form.Group id="ctl11_div_firstName" className="px-0 my-3 col-md-12 col-12">
                   <Form.Label className="col-md-12 col-12" htmlFor="user_firstName" style={{ paddingLeft: "0" }}>
-                    First Name<span style={{ color: "red" }}>*</span>
+                    First Name<span className="error-text">*</span>
                   </Form.Label>
                   {errors.firstName_error !== "" && (
-                    <Form.Label style={{ color: "red" }}>{errors.firstName_error}</Form.Label>
+                    <Form.Label className="error-text">{errors.firstName_error}</Form.Label>
                   )}
                   <span className="col-md-12 col-12" style={{ paddingLeft: "0" }}>
                     <input
@@ -466,44 +453,43 @@ const EditUser = ({ ...props }) => {
                   </span>
                 </Form.Group>
                 <Form.Group id="ctl11_div_userRole" className="pl-0 my-3 col-md-12 col-12">
-                  <Form.Label className="col-md-12 col-12" htmlFor="user_role" style={{ paddingLeft: "0" }}>
-                    Role<span style={{ color: "red" }}>*</span>
-                  </Form.Label>
                   {errors.userRole_error !== "" && (
-                    <Form.Label style={{ color: "red" }}>{errors.userRole_error}</Form.Label>
+                    <Form.Label className="error-text">{errors.userRole_error}</Form.Label>
                   )}
                   <Col sm="6" className="d-flex justify-content-between align-self-center">
-                    <Form.Check type="radio" inline>
-                      <Form.Check.Input
-                        type="radio"
-                        value="Cohort Owner"
-                        checked={userRole === "Cohort Owner"}
-                        onChange={(e) => {
-                          setUserRole(e.target.value);
-                          setCohortList([]);
-                          if (errors.userRole_error !== "") setErrors({ ...errors, userRole_error: "" });
-                        }}
-                      />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>Cohort Owner</Form.Check.Label>
-                    </Form.Check>
-
-                    <Form.Check type="radio" inline>
-                      <Form.Check.Input
-                        type="radio"
-                        value="Admin"
-                        checked={userRole === "Admin"}
-                        onChange={(e) => {
-                          setUserRole(e.target.value);
-                          if (errors.userRole_error !== "") setErrors({ ...errors, userRole_error: "" });
-                        }}
-                      />
-                      <Form.Check.Label style={{ fontWeight: "normal" }}>Admin</Form.Check.Label>
-                    </Form.Check>
+                    <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
+                      <legend>User Role <span className="error-text">*</span></legend>
+                      <Form.Check type="radio" id="user_role_owner" inline name="user_role">
+                        <Form.Check.Input
+                          type="radio"
+                          value="Cohort Owner"
+                          checked={userRole === "Cohort Owner"}
+                          onChange={(e) => {
+                            setUserRole(e.target.value);
+                            setCohortList([]);
+                            if (errors.userRole_error !== "") setErrors({ ...errors, userRole_error: "" });
+                          }}
+                        />
+                        <Form.Check.Label htmlFor="user_role_owner" style={{ fontWeight: "normal" }}>Cohort Owner</Form.Check.Label>
+                      </Form.Check>
+                      <Form.Check type="radio" id="user_role_admin" inline name="user_role">
+                        <Form.Check.Input
+                          type="radio"
+                          value="Admin"
+                          checked={userRole === "Admin"}
+                          onChange={(e) => {
+                            setUserRole(e.target.value);
+                            if (errors.userRole_error !== "") setErrors({ ...errors, userRole_error: "" });
+                          }}
+                        />
+                        <Form.Check.Label htmlFor="user_role_admin" style={{ fontWeight: "normal" }}>Admin</Form.Check.Label>
+                      </Form.Check>
+                    </fieldset>
                   </Col>
                 </Form.Group>
 
                 <Form.Group className="pl-0 my-3 col-md-12 col-12" style={{ paddingLeft: "0" }}>
-                  <Form.Label className="pl-0 col-md-12 col-12">Cohort</Form.Label>
+                  <Form.Label className="pl-0 col-md-12 col-12" htmlFor="cohort_select">Cohort</Form.Label>
 
                   {userRole === "Admin" ? (
                     <div className="px-0 col-md-12 col-12">
@@ -515,8 +501,9 @@ const EditUser = ({ ...props }) => {
                     <div className="col-md-12 col-12 px-0">
                       <div className="col-md-12 col-12 px-0">
                         <Select
+                          inputId="cohort_select"
                           name="owners"
-                          isMulti="true"
+                          isMulti
                           value={cohortList}
                           options={allCohortList}
                           onChange={handleMultiChange}
@@ -529,6 +516,7 @@ const EditUser = ({ ...props }) => {
                   <div className="pl-0 col-md-12 col-12">
                     <span className="col-md-12 col-12" style={{ paddingLeft: "0", paddingRight: "10" }}>
                       <input
+                        id="active_status_checkbox"
                         type="checkbox"
                         name="active_status"
                         checked={activeStatus ? activeStatus === "Y" : true}
@@ -536,7 +524,7 @@ const EditUser = ({ ...props }) => {
                           activeStatus === "Y" ? setActiveStatus("N") : setActiveStatus("Y");
                         }}
                       />{" "}
-                      Active
+                      <label htmlFor="active_status_checkbox">Active</label>
                     </span>
                   </div>
                 </Form.Group>
@@ -550,21 +538,6 @@ const EditUser = ({ ...props }) => {
                 </div>
               </Form>
 
-              {/* <div className="bttn-group col-md-12 col-xs-12">
-                                <Button 
-                                    variant="primary"
-                                    value="Save" 
-                                    className="col-lg-2 col-md-6 float-right"
-                                    onClick={handleSave}>
-                                    Save
-                                </Button>
-                                <Button 
-                                    variant="secondary" 
-                                    className="col-lg-2 col-md-6 float-right" 
-                                    onClick={goBack}>
-                                    Cancel
-                                </Button>
-                            </div> */}
             </div>
           )}
         </div>

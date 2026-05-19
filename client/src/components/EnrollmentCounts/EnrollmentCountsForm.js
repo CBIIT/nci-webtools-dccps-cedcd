@@ -325,40 +325,40 @@ const EnrollmentCountsForm = ({ ...props }) => {
               </Col>
               <Col sm="12">
                 <div className="table-responsive">
-                  <Table bordered condensed className="table-valign-middle">
+                  <Table bordered condensed className="table-valign-middle" aria-label="Enrollment counts by racial category, ethnicity, and sex">
                     <thead>
                       <tr>
-                        <th rowSpan="3" style={{ fontSize: "1.5rem", paddingRight: "0", width: "15%" }}>
+                        <th scope="col" rowSpan="3" style={{ fontSize: "1.5rem", paddingRight: "0", width: "15%" }}>
                           Racial Categories
                         </th>
-                        <th colSpan="9" style={{ textAlign: "center" }}>
+                        <th scope="colgroup" colSpan="9" style={{ textAlign: "center" }}>
                           Ethnic Categories
                         </th>
-                        <th rowSpan="3" style={{ width: "10%", textAlign: "center" }}>
+                        <th scope="col" rowSpan="3" style={{ width: "10%", textAlign: "center" }}>
                           Total
                         </th>
                       </tr>
                       <tr>
-                        <th colSpan="3" style={{ textAlign: "center" }}>
+                        <th scope="colgroup" colSpan="3" style={{ textAlign: "center" }}>
                           Not Hispanic or Latino
                         </th>
-                        <th colSpan="3" style={{ textAlign: "center" }}>
+                        <th scope="colgroup" colSpan="3" style={{ textAlign: "center" }}>
                           Hispanic or Latino
                         </th>
-                        <th colSpan="3" style={{ textAlign: "center" }}>
+                        <th scope="colgroup" colSpan="3" style={{ textAlign: "center" }}>
                           Unknown/Not Reported Ethnicity
                         </th>
                       </tr>
                       <tr>
-                        <th style={{ fontSize: "1.4rem", textAlign: "center" }}>Females</th>
-                        <th style={{ fontSize: "1.4rem", textAlign: "center" }}>Males</th>
-                        <th style={{ fontSize: "1.4rem", textAlign: "center" }}>Unknown/Not Reported</th>
-                        <th style={{ fontSize: "1.4rem", textAlign: "center" }}>Females</th>
-                        <th style={{ fontSize: "1.4rem", textAlign: "center" }}>Males</th>
-                        <th style={{ fontSize: "1.4rem", textAlign: "center" }}>Unknown/Not Reported</th>
-                        <th style={{ fontSize: "1.4rem", textAlign: "center" }}>Females</th>
-                        <th style={{ fontSize: "1.4rem", textAlign: "center" }}>Males</th>
-                        <th style={{ fontSize: "1.4rem", textAlign: "center" }}>Unknown/Not Reported</th>
+                        <th scope="col" style={{ fontSize: "1.4rem", textAlign: "center" }}>Females</th>
+                        <th scope="col" style={{ fontSize: "1.4rem", textAlign: "center" }}>Males</th>
+                        <th scope="col" style={{ fontSize: "1.4rem", textAlign: "center" }}>Unknown/Not Reported</th>
+                        <th scope="col" style={{ fontSize: "1.4rem", textAlign: "center" }}>Females</th>
+                        <th scope="col" style={{ fontSize: "1.4rem", textAlign: "center" }}>Males</th>
+                        <th scope="col" style={{ fontSize: "1.4rem", textAlign: "center" }}>Unknown/Not Reported</th>
+                        <th scope="col" style={{ fontSize: "1.4rem", textAlign: "center" }}>Females</th>
+                        <th scope="col" style={{ fontSize: "1.4rem", textAlign: "center" }}>Males</th>
+                        <th scope="col" style={{ fontSize: "1.4rem", textAlign: "center" }}>Unknown/Not Reported</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -370,6 +370,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="111"
+                            aria-label="American Indian / Alaska Native - Not Hispanic or Latino - Females"
                             min="0"
                             value={enrollmentCount["111"] || 0}
                             onChange={(e) => updateCells("111", e.target.value)}
@@ -382,6 +383,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="112"
+                            aria-label="American Indian / Alaska Native - Not Hispanic or Latino - Males"
                             min="0"
                             value={enrollmentCount["112"] || 0}
                             onChange={(e) => updateCells("112", e.target.value)}
@@ -394,6 +396,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="113"
+                            aria-label="American Indian / Alaska Native - Not Hispanic or Latino - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["113"] || 0}
                             onChange={(e) => updateCells("113", e.target.value)}
@@ -406,6 +409,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="121"
+                            aria-label="American Indian / Alaska Native - Hispanic or Latino - Females"
                             min="0"
                             value={enrollmentCount["121"] || 0}
                             onChange={(e) => updateCells("121", e.target.value)}
@@ -418,6 +422,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="122"
+                            aria-label="American Indian / Alaska Native - Hispanic or Latino - Males"
                             min="0"
                             value={enrollmentCount["122"] || 0}
                             onChange={(e) => updateCells("122", e.target.value)}
@@ -430,6 +435,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="123"
+                            aria-label="American Indian / Alaska Native - Hispanic or Latino - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["123"] || 0}
                             onChange={(e) => updateCells("123", e.target.value)}
@@ -442,6 +448,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="131"
+                            aria-label="American Indian / Alaska Native - Unknown/Not Reported Ethnicity - Females"
                             min="0"
                             value={enrollmentCount["131"] || 0}
                             onChange={(e) => updateCells("131", e.target.value)}
@@ -454,6 +461,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="132"
+                            aria-label="American Indian / Alaska Native - Unknown/Not Reported Ethnicity - Males"
                             min="0"
                             value={enrollmentCount["132"] || 0}
                             onChange={(e) => updateCells("132", e.target.value)}
@@ -466,6 +474,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="133"
+                            aria-label="American Indian / Alaska Native - Unknown/Not Reported Ethnicity - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["133"] || 0}
                             onChange={(e) => updateCells("133", e.target.value)}
@@ -478,6 +487,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="141"
+                            aria-label="American Indian / Alaska Native - Row Total"
                             min="0"
                             value={enrollmentCount["141"] || 0}
                           />
@@ -491,6 +501,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="211"
+                            aria-label="Asian - Not Hispanic or Latino - Females"
                             min="0"
                             value={enrollmentCount["211"] || 0}
                             onChange={(e) => updateCells("211", e.target.value)}
@@ -502,6 +513,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="212"
+                            aria-label="Asian - Not Hispanic or Latino - Males"
                             min="0"
                             value={enrollmentCount["212"] || 0}
                             onChange={(e) => updateCells("212", e.target.value)}
@@ -513,6 +525,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="213"
+                            aria-label="Asian - Not Hispanic or Latino - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["213"] || 0}
                             onChange={(e) => updateCells("213", e.target.value)}
@@ -524,6 +537,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="221"
+                            aria-label="Asian - Hispanic or Latino - Females"
                             min="0"
                             value={enrollmentCount["221"] || 0}
                             onChange={(e) => updateCells("221", e.target.value)}
@@ -535,6 +549,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="222"
+                            aria-label="Asian - Hispanic or Latino - Males"
                             min="0"
                             value={enrollmentCount["222"] || 0}
                             onChange={(e) => updateCells("222", e.target.value)}
@@ -546,6 +561,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="223"
+                            aria-label="Asian - Hispanic or Latino - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["223"] || 0}
                             onChange={(e) => updateCells("223", e.target.value)}
@@ -557,6 +573,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="231"
+                            aria-label="Asian - Unknown/Not Reported Ethnicity - Females"
                             min="0"
                             value={enrollmentCount["231"] || 0}
                             onChange={(e) => updateCells("231", e.target.value)}
@@ -568,6 +585,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="232"
+                            aria-label="Asian - Unknown/Not Reported Ethnicity - Males"
                             min="0"
                             value={enrollmentCount["232"] || 0}
                             onChange={(e) => updateCells("232", e.target.value)}
@@ -579,6 +597,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="233"
+                            aria-label="Asian - Unknown/Not Reported Ethnicity - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["233"] || 0}
                             onChange={(e) => updateCells("233", e.target.value)}
@@ -591,6 +610,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="241"
+                            aria-label="Asian - Row Total"
                             min="0"
                             value={enrollmentCount["241"] || 0}
                           />
@@ -604,6 +624,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="311"
+                            aria-label="Native Hawaiian or other Pacific Islander - Not Hispanic or Latino - Females"
                             min="0"
                             value={enrollmentCount["311"] || 0}
                             onChange={(e) => updateCells("311", e.target.value)}
@@ -615,6 +636,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="312"
+                            aria-label="Native Hawaiian or other Pacific Islander - Not Hispanic or Latino - Males"
                             min="0"
                             value={enrollmentCount["312"] || 0}
                             onChange={(e) => updateCells("312", e.target.value)}
@@ -626,6 +648,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="313"
+                            aria-label="Native Hawaiian or other Pacific Islander - Not Hispanic or Latino - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["313"] || 0}
                             onChange={(e) => updateCells("313", e.target.value)}
@@ -637,6 +660,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="321"
+                            aria-label="Native Hawaiian or other Pacific Islander - Hispanic or Latino - Females"
                             min="0"
                             value={enrollmentCount["321"] || 0}
                             onChange={(e) => updateCells("321", e.target.value)}
@@ -648,6 +672,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="322"
+                            aria-label="Native Hawaiian or other Pacific Islander - Hispanic or Latino - Males"
                             min="0"
                             value={enrollmentCount["322"] || 0}
                             onChange={(e) => updateCells("322", e.target.value)}
@@ -659,6 +684,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="323"
+                            aria-label="Native Hawaiian or other Pacific Islander - Hispanic or Latino - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["323"] || 0}
                             onChange={(e) => updateCells("323", e.target.value)}
@@ -670,6 +696,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="331"
+                            aria-label="Native Hawaiian or other Pacific Islander - Unknown/Not Reported Ethnicity - Females"
                             min="0"
                             value={enrollmentCount["331"] || 0}
                             onChange={(e) => updateCells("331", e.target.value)}
@@ -681,6 +708,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="332"
+                            aria-label="Native Hawaiian or other Pacific Islander - Unknown/Not Reported Ethnicity - Males"
                             min="0"
                             value={enrollmentCount["332"] || 0}
                             onChange={(e) => updateCells("332", e.target.value)}
@@ -692,6 +720,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="333"
+                            aria-label="Native Hawaiian or other Pacific Islander - Unknown/Not Reported Ethnicity - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["333"] || 0}
                             onChange={(e) => updateCells("333", e.target.value)}
@@ -704,6 +733,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="341"
+                            aria-label="Native Hawaiian or other Pacific Islander - Row Total"
                             min="0"
                             value={enrollmentCount["341"] || 0}
                           />
@@ -717,6 +747,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="411"
+                            aria-label="Black or African American - Not Hispanic or Latino - Females"
                             min="0"
                             value={enrollmentCount["411"] || 0}
                             onChange={(e) => updateCells("411", e.target.value)}
@@ -728,6 +759,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="412"
+                            aria-label="Black or African American - Not Hispanic or Latino - Males"
                             min="0"
                             value={enrollmentCount["412"] || 0}
                             onChange={(e) => updateCells("412", e.target.value)}
@@ -739,6 +771,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="413"
+                            aria-label="Black or African American - Not Hispanic or Latino - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["413"] || 0}
                             onChange={(e) => updateCells("413", e.target.value)}
@@ -750,6 +783,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="421"
+                            aria-label="Black or African American - Hispanic or Latino - Females"
                             min="0"
                             value={enrollmentCount["421"] || 0}
                             onChange={(e) => updateCells("421", e.target.value)}
@@ -761,6 +795,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="422"
+                            aria-label="Black or African American - Hispanic or Latino - Males"
                             min="0"
                             value={enrollmentCount["422"] || 0}
                             onChange={(e) => updateCells("422", e.target.value)}
@@ -772,6 +807,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="423"
+                            aria-label="Black or African American - Hispanic or Latino - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["423"] || 0}
                             onChange={(e) => updateCells("423", e.target.value)}
@@ -783,6 +819,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="431"
+                            aria-label="Black or African American - Unknown/Not Reported Ethnicity - Females"
                             min="0"
                             value={enrollmentCount["431"] || 0}
                             onChange={(e) => updateCells("431", e.target.value)}
@@ -794,6 +831,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="432"
+                            aria-label="Black or African American - Unknown/Not Reported Ethnicity - Males"
                             min="0"
                             value={enrollmentCount["432"] || 0}
                             onChange={(e) => updateCells("432", e.target.value)}
@@ -805,6 +843,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="433"
+                            aria-label="Black or African American - Unknown/Not Reported Ethnicity - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["433"] || 0}
                             onChange={(e) => updateCells("433", e.target.value)}
@@ -817,6 +856,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="441"
+                            aria-label="Black or African American - Row Total"
                             min="0"
                             value={enrollmentCount["441"] || 0}
                           />
@@ -830,6 +870,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="511"
+                            aria-label="White - Not Hispanic or Latino - Females"
                             min="0"
                             value={enrollmentCount["511"] || 0}
                             onChange={(e) => updateCells("511", e.target.value)}
@@ -841,6 +882,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="512"
+                            aria-label="White - Not Hispanic or Latino - Males"
                             min="0"
                             value={enrollmentCount["512"] || 0}
                             onChange={(e) => updateCells("512", e.target.value)}
@@ -852,6 +894,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="513"
+                            aria-label="White - Not Hispanic or Latino - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["513"] || 0}
                             onChange={(e) => updateCells("513", e.target.value)}
@@ -863,6 +906,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="521"
+                            aria-label="White - Hispanic or Latino - Females"
                             min="0"
                             value={enrollmentCount["521"] || 0}
                             onChange={(e) => updateCells("521", e.target.value)}
@@ -874,6 +918,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="522"
+                            aria-label="White - Hispanic or Latino - Males"
                             min="0"
                             value={enrollmentCount["522"] || 0}
                             onChange={(e) => updateCells("522", e.target.value)}
@@ -885,6 +930,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="523"
+                            aria-label="White - Hispanic or Latino - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["523"] || 0}
                             onChange={(e) => updateCells("523", e.target.value)}
@@ -896,6 +942,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="531"
+                            aria-label="White - Unknown/Not Reported Ethnicity - Females"
                             min="0"
                             value={enrollmentCount["531"] || 0}
                             onChange={(e) => updateCells("531", e.target.value)}
@@ -907,6 +954,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="532"
+                            aria-label="White - Unknown/Not Reported Ethnicity - Males"
                             min="0"
                             value={enrollmentCount["532"] || 0}
                             onChange={(e) => updateCells("532", e.target.value)}
@@ -918,6 +966,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="533"
+                            aria-label="White - Unknown/Not Reported Ethnicity - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["533"] || 0}
                             onChange={(e) => updateCells("533", e.target.value)}
@@ -930,6 +979,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="541"
+                            aria-label="White - Row Total"
                             min="0"
                             value={enrollmentCount["541"] || 0}
                           />
@@ -943,6 +993,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="611"
+                            aria-label="More than one race - Not Hispanic or Latino - Females"
                             min="0"
                             value={enrollmentCount["611"] || 0}
                             onChange={(e) => updateCells("611", e.target.value)}
@@ -954,6 +1005,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="612"
+                            aria-label="More than one race - Not Hispanic or Latino - Males"
                             min="0"
                             value={enrollmentCount["612"] || 0}
                             onChange={(e) => updateCells("612", e.target.value)}
@@ -965,6 +1017,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="613"
+                            aria-label="More than one race - Not Hispanic or Latino - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["613"] || 0}
                             onChange={(e) => updateCells("613", e.target.value)}
@@ -976,6 +1029,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="621"
+                            aria-label="More than one race - Hispanic or Latino - Females"
                             min="0"
                             value={enrollmentCount["621"] || 0}
                             onChange={(e) => updateCells("621", e.target.value)}
@@ -987,6 +1041,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="622"
+                            aria-label="More than one race - Hispanic or Latino - Males"
                             min="0"
                             value={enrollmentCount["622"] || 0}
                             onChange={(e) => updateCells("622", e.target.value)}
@@ -998,6 +1053,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="623"
+                            aria-label="More than one race - Hispanic or Latino - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["623"] || 0}
                             onChange={(e) => updateCells("623", e.target.value)}
@@ -1009,6 +1065,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="631"
+                            aria-label="More than one race - Unknown/Not Reported Ethnicity - Females"
                             min="0"
                             value={enrollmentCount["631"] || 0}
                             onChange={(e) => updateCells("631", e.target.value)}
@@ -1020,6 +1077,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="632"
+                            aria-label="More than one race - Unknown/Not Reported Ethnicity - Males"
                             min="0"
                             value={enrollmentCount["632"] || 0}
                             onChange={(e) => updateCells("632", e.target.value)}
@@ -1031,6 +1089,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="633"
+                            aria-label="More than one race - Unknown/Not Reported Ethnicity - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["633"] || 0}
                             onChange={(e) => updateCells("633", e.target.value)}
@@ -1043,6 +1102,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="641"
+                            aria-label="More than one race - Row Total"
                             min="0"
                             value={enrollmentCount["641"] || 0}
                           />
@@ -1056,6 +1116,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="711"
+                            aria-label="Unknown / Not Reported Race - Not Hispanic or Latino - Females"
                             min="0"
                             value={enrollmentCount["711"] || 0}
                             onChange={(e) => updateCells("711", e.target.value)}
@@ -1067,6 +1128,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="712"
+                            aria-label="Unknown / Not Reported Race - Not Hispanic or Latino - Males"
                             min="0"
                             value={enrollmentCount["712"] || 0}
                             onChange={(e) => updateCells("712", e.target.value)}
@@ -1078,6 +1140,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="713"
+                            aria-label="Unknown / Not Reported Race - Not Hispanic or Latino - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["713"] || 0}
                             onChange={(e) => updateCells("713", e.target.value)}
@@ -1089,6 +1152,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="721"
+                            aria-label="Unknown / Not Reported Race - Hispanic or Latino - Females"
                             min="0"
                             value={enrollmentCount["721"] || 0}
                             onChange={(e) => updateCells("721", e.target.value)}
@@ -1100,6 +1164,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="722"
+                            aria-label="Unknown / Not Reported Race - Hispanic or Latino - Males"
                             min="0"
                             value={enrollmentCount["722"] || 0}
                             onChange={(e) => updateCells("722", e.target.value)}
@@ -1111,6 +1176,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="723"
+                            aria-label="Unknown / Not Reported Race - Hispanic or Latino - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["723"] || 0}
                             onChange={(e) => updateCells("723", e.target.value)}
@@ -1122,6 +1188,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="731"
+                            aria-label="Unknown / Not Reported Race - Unknown/Not Reported Ethnicity - Females"
                             min="0"
                             value={enrollmentCount["731"] || 0}
                             onChange={(e) => updateCells("731", e.target.value)}
@@ -1133,6 +1200,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="732"
+                            aria-label="Unknown / Not Reported Race - Unknown/Not Reported Ethnicity - Males"
                             min="0"
                             value={enrollmentCount["732"] || 0}
                             onChange={(e) => updateCells("732", e.target.value)}
@@ -1144,6 +1212,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="733"
+                            aria-label="Unknown / Not Reported Race - Unknown/Not Reported Ethnicity - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["733"] || 0}
                             onChange={(e) => updateCells("733", e.target.value)}
@@ -1156,6 +1225,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="741"
+                            aria-label="Unknown / Not Reported Race - Row Total"
                             min="0"
                             value={enrollmentCount["741"] || 0}
                           />
@@ -1170,6 +1240,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="811"
+                            aria-label="Total - Not Hispanic or Latino - Females"
                             min="0"
                             value={enrollmentCount["811"] || 0}
                           />
@@ -1180,6 +1251,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="812"
+                            aria-label="Total - Not Hispanic or Latino - Males"
                             min="0"
                             value={enrollmentCount["812"] || 0}
                           />
@@ -1190,6 +1262,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="813"
+                            aria-label="Total - Not Hispanic or Latino - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["813"] || 0}
                           />
@@ -1200,6 +1273,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="821"
+                            aria-label="Total - Hispanic or Latino - Females"
                             min="0"
                             value={enrollmentCount["821"] || 0}
                           />
@@ -1210,6 +1284,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="822"
+                            aria-label="Total - Hispanic or Latino - Males"
                             min="0"
                             value={enrollmentCount["822"] || 0}
                           />
@@ -1220,6 +1295,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="823"
+                            aria-label="Total - Hispanic or Latino - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["823"] || 0}
                           />
@@ -1230,6 +1306,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="831"
+                            aria-label="Total - Unknown/Not Reported Ethnicity - Females"
                             min="0"
                             value={enrollmentCount["831"] || 0}
                           />
@@ -1240,6 +1317,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="832"
+                            aria-label="Total - Unknown/Not Reported Ethnicity - Males"
                             min="0"
                             value={enrollmentCount["832"] || 0}
                           />
@@ -1250,6 +1328,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="833"
+                            aria-label="Total - Unknown/Not Reported Ethnicity - Unknown/Not Reported Sex"
                             min="0"
                             value={enrollmentCount["833"] || 0}
                           />
@@ -1260,6 +1339,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             type="number"
                             className="input-number"
                             name="841"
+                            aria-label="Grand Total"
                             min="0"
                             value={enrollmentCount["841"] || 0}
                           />
@@ -1274,7 +1354,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
             {/* B.2 Most Recent Date Enrollment */}
             <Form.Group as={Row}>
               <Form.Label column sm="5">
-                B.2 Most recent date enrollment counts were confirmed<span style={{ color: "red" }}>*</span>
+                B.2 Most recent date enrollment counts were confirmed<span className="error-text">*</span>
               </Form.Label>
               <Col sm="3">
                 {errors.mostRecentDate && saved ? (
