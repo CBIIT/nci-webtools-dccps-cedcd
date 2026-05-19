@@ -72,17 +72,12 @@ jobs:
           test -d "nci-softwaresolutions-CICD/infrastructure/terraform/${APP}"
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4.0.1
 
       - name: Place tier tfvars and backend config
         run: |
           set -euo pipefail
-          if [[ "${TIER}" == "dev" || "${TIER}" == "qa" ]]; then
-            TF_CONFIG_BUCKET="nci-cbiit-cicd-analysistools-nonprod"
-          else
-            TF_CONFIG_BUCKET="nci-cbiit-cicd-analysistools-prod"
-          fi
-          S3_PREFIX="s3://${TF_CONFIG_BUCKET}/env/${TIER}/${APP}"
+          S3_PREFIX="s3://${{ vars.CICD_BUCKET }}/env/${TIER}/${APP}"
           aws s3 cp "${S3_PREFIX}/${TF_VARS_FILE}" "${TF_PROJECT_DIR}/${TF_VARS_FILE}"
 
       - name: Terraform init
