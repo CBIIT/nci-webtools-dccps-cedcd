@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import PageSummary from "../PageSummary/PageSummary";
 import Paging from "../Paging/Paging";
 import TableHeaderManageUser from "./TableHeaderManageUser";
+import PageSizeSelect from "../controls/PageSizeSelect";
 import "./ManageCohort.css";
 import { isNull } from "lodash";
 
@@ -128,7 +129,7 @@ class ManageUser extends Component {
   }
 
   handleUserPageSizeChange = (e) => {
-    this.refreshDataList(1, null, null, e.target.value, null);
+    this.refreshDataList(1, null, null, Number(e.target.value), null);
   };
 
   componentDidMount() {
@@ -350,16 +351,17 @@ class ManageUser extends Component {
               ""
             ) : (
               <div className="pageSize" style={{ verticalAlign: "middle", paddingTop: "2px" }}>
-                Page Size:{" "}
-                <select
-                  className="pageSizeSelect"
+                <PageSizeSelect
+                  id="manage-user-page-size"
                   value={this.state.pageInfo.pageSize}
-                  onChange={(e) => this.handleUserPageSizeChange(e)}>
-                  <option value="5">5</option>
-                  <option value="10">10</option>
-                  <option value="15">15</option>
-                  <option value="20">20</option>
-                </select>
+                  onChange={(e) => this.handleUserPageSizeChange(e)}
+                  options={[
+                    { value: 5, label: "5" },
+                    { value: 10, label: "10" },
+                    { value: 15, label: "15" },
+                    { value: 20, label: "20" },
+                  ]}
+                />
               </div>
             )}
             <div style={{ marginLeft: "auto", paddingRight: "1rem", paddingTop: "4px" }}>

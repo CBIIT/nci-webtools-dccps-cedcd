@@ -141,7 +141,7 @@ class CohortList extends Component {
         {this.props.hasSelectAll ? (
           <span style={{ paddingLeft: "2rem" }}> All Cohorts</span>
         ) : (
-          <ul className="picked-options">{selectedList}</ul>
+          <ul className="picked-options">{selectedList.filter(Boolean)}</ul>
         )}
       </div>
     );

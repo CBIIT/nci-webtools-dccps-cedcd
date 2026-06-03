@@ -238,13 +238,15 @@ class Home extends Component {
                     alt="Header"
                     style={{ width: "60%", paddingTop: "20px" }}></img>
                 </div>
-                <h2 className="card-header" align="center" id="ToolName1">
-                  Search Cohorts
-                </h2>
-                <p className="card-text" align="center">
-                  Browse the full list of cohorts or search for cohorts based on eligibility requirements (e.g., sex,
-                  race, age) and/or types of data collected (e.g., smoking, diet, serum).
-                </p>
+                <div className="card-body-section">
+                  <h2 className="card-header" align="center" id="ToolName1">
+                    Search Cohorts
+                  </h2>
+                  <p className="card-text" align="center">
+                    Browse the full list of cohorts or search for cohorts based on eligibility requirements (e.g., sex,
+                    race, age) and/or types of data collected (e.g., smoking, diet, serum).
+                  </p>
+                </div>
               </div>
             </Link>
           </div>
@@ -262,13 +264,15 @@ class Home extends Component {
                     alt="Header"
                     style={{ width: "60%", paddingTop: "30px" }}></img>
                 </div>
-                <h2 className="card-header" align="center">
-                  Enrollment Counts
-                </h2>
-                <p className="card-text" align="center">
-                  Display enrollment counts across cohorts with the option search for specific sex, race, and ethnicity
-                  terms.
-                </p>
+                <div className="card-body-section">
+                  <h2 className="card-header" align="center">
+                    Enrollment Counts
+                  </h2>
+                  <p className="card-text" align="center">
+                    Display enrollment counts across cohorts with the option search for specific sex, race, and ethnicity
+                    terms.
+                  </p>
+                </div>
               </div>
             </Link>
           </div>
@@ -283,13 +287,15 @@ class Home extends Component {
                 <div className="card-top-coloring" style={{ backgroundColor: "#ffbf58" }}>
                   <img src="./assets/img/Cancer_Counts_Icon.png" alt="Header" style={{ width: "100%" }}></img>
                 </div>
-                <h2 className="card-header" align="center">
-                  Cancer Counts
-                </h2>
-                <p className="card-text" align="center">
-                  Display cancer counts across cohorts with the option to search for specific cancer sites and also by
-                  sex.
-                </p>
+                <div className="card-body-section">
+                  <h2 className="card-header" align="center">
+                    Cancer Counts
+                  </h2>
+                  <p className="card-text" align="center">
+                    Display cancer counts across cohorts with the option to search for specific cancer sites and also by
+                    sex.
+                  </p>
+                </div>
               </div>
             </Link>
           </div>
@@ -304,13 +310,15 @@ class Home extends Component {
                 <div className="card-top-coloring" style={{ backgroundColor: "#99b883" }}>
                   <img src="./assets/img/Biospecimen_Counts_Icon.png" alt="Header" style={{ width: "100%" }}></img>
                 </div>
-                <h2 className="card-header" align="center">
-                  Biospecimen Counts
-                </h2>
-                <p className="card-text" align="center">
-                  Search biospecimens across cohorts with the option to specify the type of biospecimen and find
-                  specimens in participants diagnosed with specific cancer sites.
-                </p>
+                <div className="card-body-section">
+                  <h2 className="card-header" align="center">
+                    Biospecimen Counts
+                  </h2>
+                  <p className="card-text" align="center">
+                    Search biospecimens across cohorts with the option to specify the type of biospecimen and find
+                    specimens in participants diagnosed with specific cancer sites.
+                  </p>
+                </div>
               </div>
             </Link>
           </div>

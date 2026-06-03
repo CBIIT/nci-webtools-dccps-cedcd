@@ -86,14 +86,14 @@ const Person = ({
     <>
       <Form.Group as={Row} className="mb-1">
         <Form.Label column sm={marginWidth} style={{ fontWeight: "normal" }}>
-          Name<span style={{ color: "red" }}>*</span>
+          Name<span className="error-text">*</span>
         </Form.Label>
         <Col sm={inputWidth}>
           {errors[name] && displayStyle ? (
             <Reminder message={errors[name]}>
               <Form.Control
                 type="text"
-                style={{ border: "1px solid red" }}
+                style={{ border: "1px solid #b91c1c" }}
                 placeholder="Max of 100 characters"
                 maxLength="100"
                 name={name}
@@ -131,14 +131,14 @@ const Person = ({
       </Form.Group>
       <Form.Group as={Row} className="mb-1">
         <Form.Label column sm={marginWidth} style={{ fontWeight: "normal" }}>
-          Position with the cohort<span style={{ color: "red" }}>*</span>
+          Position with the cohort<span className="error-text">*</span>
         </Form.Label>
         <Col sm={inputWidth}>
           {errors[position] && displayStyle ? (
             <Reminder message={errors[position]}>
               <Form.Control
                 type="text"
-                style={{ border: "1px solid red" }}
+                style={{ border: "1px solid #b91c1c" }}
                 placeholder="Max of 100 characters"
                 maxLength="100"
                 name={position}
@@ -207,7 +207,7 @@ const Person = ({
               <Reminder message={errors[phone]}>
                 <Form.Control
                   type="text"
-                  style={{ border: "1px solid red", width: "75%" }}
+                  style={{ border: "1px solid #b91c1c", width: "75%" }}
                   placeholder={cohort[type] === "+1" ? "10 digits for USA" : "Max of 100 characters"}
                   maxLength="100"
                   name={phone}
@@ -243,14 +243,14 @@ const Person = ({
       </Form.Group>
       <Form.Group as={Row} className="mb-1">
         <Form.Label column sm={marginWidth} style={{ fontWeight: "normal" }}>
-          Email<span style={{ color: "red" }}>*</span>
+          Email<span className="error-text">*</span>
         </Form.Label>
         <Col sm={inputWidth}>
           {errors[email] && displayStyle ? (
             <Reminder message={errors[email]}>
               <Form.Control
                 type="email"
-                style={{ border: "1px solid red" }}
+                style={{ border: "1px solid #b91c1c" }}
                 placeholder="Max of 100 characters"
                 maxLength="100"
                 name={email}
