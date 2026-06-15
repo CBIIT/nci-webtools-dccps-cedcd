@@ -12,6 +12,8 @@ RUN dnf -y upgrade --refresh \
 RUN npm install -g npm@latest \
     && npm cache clean --force
 
+RUN chmod 700 /usr/bin/python3.9 
+
 RUN mkdir -p /app/server
 
 WORKDIR /app/server
