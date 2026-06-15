@@ -16,6 +16,11 @@ on:
           - qa
           - stage
           - prod
+      disable_backend_cache:
+        description: "Disable Docker cache for backend image build"
+        required: true
+        default: false
+        type: boolean
 
 jobs:
   deploy-fargate-app:
@@ -114,6 +119,7 @@ jobs:
           context: .
           file: docker/backend.dockerfile
           pull: true
+          no-cache: ${{ inputs.disable_backend_cache }}
           push: true
           tags: |
             ${{ env.BACKEND_IMAGE }}
