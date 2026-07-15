@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { saveAs } from "file-saver";
-import XLSX from "xlsx";
+import * as XLSX from "xlsx";
 
 function s2ab(s) {
   var buf = new ArrayBuffer(s.length);

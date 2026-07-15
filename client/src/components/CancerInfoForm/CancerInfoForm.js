@@ -574,10 +574,10 @@ const CancerInfoForm = ({ ...props }) => {
                 </ButtonGroup>
               </div>
               <div className="table-responsive mb-4">
-                <Table bordered condensed className="table-valign-middle">
+                <Table bordered condensed className="table-valign-middle" aria-label="Cancer cases by racial category, ethnicity, and sex">
                   <thead>
                     <tr>
-                      <th rowSpan="3" style={{ fontSize: "1.5rem", paddingRight: "0", width: "15%" }}>
+                      <th scope="col" rowSpan="3" style={{ fontSize: "1.5rem", paddingRight: "0", width: "15%" }}>
                         Racial Categories
                       </th>
                       {lookup.cancer
@@ -585,7 +585,7 @@ const CancerInfoForm = ({ ...props }) => {
                         .map((i) => {
                           if (i.id === parseInt(`${cancerSelected}`)) {
                             return (
-                              <th colSpan="6" className="cancer-table-head " key={i.id}>
+                              <th scope="colgroup" colSpan="6" className="cancer-table-head " key={i.id}>
                                 {" "}
                                 <b>
                                   {" "}
@@ -595,7 +595,7 @@ const CancerInfoForm = ({ ...props }) => {
                             );
                           }
                         })}
-                      <th rowSpan="3" style={{ width: "10%", textAlign: "center" }}>
+                      <th scope="col" rowSpan="3" style={{ width: "10%", textAlign: "center" }}>
                         Total
                       </th>
                     </tr>
@@ -603,7 +603,7 @@ const CancerInfoForm = ({ ...props }) => {
                       {inputTypes.map(({ ethnicityType }, i) => {
                         if (i % 2 === 0)
                           return (
-                            <th colSpan="2" className="text-center" key={i}>
+                            <th scope="colgroup" colSpan="2" className="text-center" key={i}>
                               {lookupMap[ethnicityType].ethnicity}
                             </th>
                           );
@@ -612,7 +612,7 @@ const CancerInfoForm = ({ ...props }) => {
                     <tr>
                       {inputTypes.map(({ sex }, i) => {
                         return (
-                          <th className="text-center" key={i}>
+                          <th scope="col" className="text-center" key={i}>
                             {lookupMap[sex].gender}s
                           </th>
                         );
@@ -634,8 +634,8 @@ const CancerInfoForm = ({ ...props }) => {
                             <td key={key} className={classNames("p-0", submitted && errors[key] && "has-error")}>
                               <Form.Control
                                 className="input-number"
-                                title={`Cancer Site/Type: ${c.cancer} - ${inputTypes[i].ethnicityType} ${inputTypes[i].sex} cases `}
-                                aria-label={`Cancer Site/Type: ${c.cancer} - ${inputTypes[i].ethnicityType} ${inputTypes[i].sex} cases `}
+                                title={`${c.race} - ${lookupMap[inputTypes[i].ethnicityType].ethnicity} - ${lookupMap[inputTypes[i].sex].gender}s`}
+                                aria-label={`${c.race} - ${lookupMap[inputTypes[i].ethnicityType].ethnicity} - ${lookupMap[inputTypes[i].sex].gender}s`}
                                 type="number"
                                 min="0"
                                 name={key}

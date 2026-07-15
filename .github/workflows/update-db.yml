@@ -24,13 +24,14 @@ permissions:
 
 jobs:
   update-database:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     environment: ${{ inputs.tier }}
     env:
       APP: cedcd
       AWS_REGION: us-east-1
       TIER: ${{ inputs.tier }}
-      CICD_ROLE_ARN: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cicd
+      CICD_ROLE_ARN: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/power-user-github-actions-cicd
 
     steps:
       - name: Configure AWS credentials
@@ -40,16 +41,13 @@ jobs:
           role-session-name: ${{ env.TIER }}-cedcd-update-db-${{ github.ref_name }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Set dynamic environment variables
-        run: |
-          echo "ECS_DATA_IMPORT_TASK=${TIER}-${APP}-data-import-ecs-task" >> $GITHUB_ENV
-
       - name: Retrieve SSM parameters
         run: |
           PARAMETER_PATH="/analysistools/${TIER}/${APP}"
 
           # Define parameters to retrieve (SSM name = ENV_VAR_NAME)
           declare -A PARAMS=(
+            ["data_import_task"]="ECS_DATA_IMPORT_TASK"
             ["ecs_cluster"]="ECS_CLUSTER"
             ["subnet_ids"]="SUBNET_IDS"
             ["security_group_ids"]="SECURITY_GROUP_IDS"

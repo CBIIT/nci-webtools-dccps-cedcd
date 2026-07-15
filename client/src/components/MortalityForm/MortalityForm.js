@@ -379,7 +379,7 @@ const MortalityForm = ({ ...props }) => {
           <CollapsiblePanel condition={activePanels.A} onClick={(_) => toggleActivePanel("A")} panelTitle="Mortality">
             <Form.Group as={Row} className={saved && errors.mortalityYear && `has-error`}>
               <Form.Label column sm="12">
-                E.1 Most recent year of mortality follow up<span style={{ color: "red" }}>*</span>
+                E.1 Most recent year of mortality follow up<span className="error-text">*</span>
               </Form.Label>
               <Col sm="2">
                 <Reminder message={errors.mortalityYear} disabled={!(saved && errors.mortalityYear)} placement="right">
@@ -388,7 +388,7 @@ const MortalityForm = ({ ...props }) => {
                     name="mortalityYear"
                     type="number"
                     min="1900"
-                    style={saved && errors.mortalityYear ? { border: "1px solid red" } : {}}
+                    style={saved && errors.mortalityYear ? { border: "1px solid #b91c1c" } : {}}
                     value={mortality.mortalityYear}
                     readOnly={isReadOnly}
                     onChange={(e) => {
@@ -403,7 +403,7 @@ const MortalityForm = ({ ...props }) => {
 
             <Form.Group as={Row} className={saved && errors.otherDeathSpecify && "has-error"}>
               <Form.Label column sm="12">
-                E.2 How did your cohort confirm death?<span style={{ color: "red" }}>*</span>
+                E.2 How did your cohort confirm death?<span className="error-text">*</span>
                 <span style={{ fontWeight: "normal" }}> (Select all that apply)</span>
                 {saved && errors.deathConfirm && (
                   <span className="font-weight-normal text-danger ml-3">Required Field</span>
@@ -411,7 +411,7 @@ const MortalityForm = ({ ...props }) => {
               </Form.Label>
               <Col sm="12">
                 <div key="checkbox" className="mb-3">
-                  <Form.Check className="pl-0" name="deathIndex">
+                  <Form.Check className="pl-0" id="deathIndex-checkbox" name="deathIndex">
                     <Form.Check.Input
                       bsPrefix
                       type="checkbox"
@@ -425,12 +425,12 @@ const MortalityForm = ({ ...props }) => {
                       }}
                     />
 
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>
+                    <Form.Check.Label htmlFor="deathIndex-checkbox" style={{ fontWeight: "normal" }}>
                       U.S. National Death Index (NDI) linkage
                     </Form.Check.Label>
                   </Form.Check>
 
-                  <Form.Check className="pl-0" name="deathCertificate">
+                  <Form.Check className="pl-0" id="deathCertificate-checkbox" name="deathCertificate">
                     <Form.Check.Input
                       bsPrefix
                       type="checkbox"
@@ -446,10 +446,10 @@ const MortalityForm = ({ ...props }) => {
                       }}
                     />
 
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Death Certificates</Form.Check.Label>
+                    <Form.Check.Label htmlFor="deathCertificate-checkbox" style={{ fontWeight: "normal" }}>Death Certificates</Form.Check.Label>
                   </Form.Check>
 
-                  <Form.Check className="pl-0" name="otherDeath">
+                  <Form.Check className="pl-0" id="otherDeath-checkbox" name="otherDeath">
                     <Form.Check.Input
                       bsPrefix
                       type="checkbox"
@@ -464,7 +464,7 @@ const MortalityForm = ({ ...props }) => {
                       }}
                     />
 
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Other</Form.Check.Label>
+                    <Form.Check.Label htmlFor="otherDeath-checkbox" style={{ fontWeight: "normal" }}>Other</Form.Check.Label>
                   </Form.Check>
                 </div>
 
@@ -491,15 +491,16 @@ const MortalityForm = ({ ...props }) => {
 
             <Form.Group as={Row}>
               <Form.Label column sm="12">
-                E.3 Do you have date of death for most subjects<span style={{ color: "red" }}>*</span>
+                E.3 Do you have date of death for most subjects<span className="error-text">*</span>
                 {saved && errors.haveDeathDate && (
                   <span className="font-weight-normal text-danger ml-3">Required Field</span>
                 )}
               </Form.Label>
               <Col sm="6" className="align-self-center">
-                <Form.Check type="radio" name="haveDeathDate" inline>
+                <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
+                  <legend className="sr-only">Do you have date of death for most subjects?</legend>
+                <Form.Check type="radio" id="haveDeathDate-no" name="haveDeathDate" inline>
                   <Form.Check.Input
-                    type="radio"
                     type="radio"
                     className="mr-2"
                     checked={mortality.haveDeathDate === 0}
@@ -510,10 +511,10 @@ const MortalityForm = ({ ...props }) => {
                       }
                     }}
                   />
-                  <Form.Check.Label style={{ fontWeight: "normal" }}>No</Form.Check.Label>
+                  <Form.Check.Label htmlFor="haveDeathDate-no" style={{ fontWeight: "normal" }}>No</Form.Check.Label>
                 </Form.Check>
 
-                <Form.Check type="radio" name="haveDeathDate" inline>
+                <Form.Check type="radio" id="haveDeathDate-yes" name="haveDeathDate" inline>
                   <Form.Check.Input
                     type="radio"
                     className="mr-2"
@@ -525,22 +526,24 @@ const MortalityForm = ({ ...props }) => {
                       }
                     }}
                   />
-                  <Form.Check.Label style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
+                  <Form.Check.Label htmlFor="haveDeathDate-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                 </Form.Check>
+                </fieldset>
               </Col>
             </Form.Group>
 
             <Form as={Row}>
               <Form.Label column sm="12">
-                E.4 Do you have cause of death for most subjects<span style={{ color: "red" }}>*</span>
+                E.4 Do you have cause of death for most subjects<span className="error-text">*</span>
                 {saved && errors.haveDeathCause && (
                   <span className="font-weight-normal text-danger ml-3">Required Field</span>
                 )}
               </Form.Label>
               <Col sm="6" className="align-self-center">
-                <Form.Check type="radio" name="haveDeathCause" inline>
+                <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
+                  <legend className="sr-only">Do you have cause of death for most subjects?</legend>
+                <Form.Check type="radio" id="haveDeathCause-no" name="haveDeathCause" inline>
                   <Form.Check.Input
-                    type="radio"
                     type="radio"
                     className="mr-2"
                     checked={mortality.haveDeathCause === 0}
@@ -555,12 +558,11 @@ const MortalityForm = ({ ...props }) => {
                       }
                     }}
                   />
-                  <Form.Check.Label style={{ fontWeight: "normal" }}>No</Form.Check.Label>
+                  <Form.Check.Label htmlFor="haveDeathCause-no" style={{ fontWeight: "normal" }}>No</Form.Check.Label>
                 </Form.Check>
 
-                <Form.Check type="radio" name="haveDeathCause" inline>
+                <Form.Check type="radio" id="haveDeathCause-yes" name="haveDeathCause" inline>
                   <Form.Check.Input
-                    type="radio"
                     type="radio"
                     className="mr-2"
                     checked={mortality.haveDeathCause === 1}
@@ -571,8 +573,9 @@ const MortalityForm = ({ ...props }) => {
                       }
                     }}
                   />
-                  <Form.Check.Label style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
+                  <Form.Check.Label htmlFor="haveDeathCause-yes" style={{ fontWeight: "normal" }}>Yes</Form.Check.Label>
                 </Form.Check>
+                </fieldset>
               </Col>
             </Form>
 
@@ -583,7 +586,7 @@ const MortalityForm = ({ ...props }) => {
               </Form.Label>
               <Col sm="12">
                 <div key="checkbox" className="mb-3">
-                  <Form.Check className="pl-0" name="icd9">
+                  <Form.Check className="pl-0" id="icd9-checkbox" name="icd9">
                     <Form.Check.Input
                       bsPrefix
                       type="checkbox"
@@ -597,10 +600,10 @@ const MortalityForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>ICD-9</Form.Check.Label>
+                    <Form.Check.Label htmlFor="icd9-checkbox" style={{ fontWeight: "normal" }}>ICD-9</Form.Check.Label>
                   </Form.Check>
 
-                  <Form.Check className="pl-0" name="icd10">
+                  <Form.Check className="pl-0" id="icd10-checkbox" name="icd10">
                     <Form.Check.Input
                       bsPrefix
                       type="checkbox"
@@ -614,10 +617,10 @@ const MortalityForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>ICD-10</Form.Check.Label>
+                    <Form.Check.Label htmlFor="icd10-checkbox" style={{ fontWeight: "normal" }}>ICD-10</Form.Check.Label>
                   </Form.Check>
 
-                  <Form.Check className="pl-0" name="notCoded">
+                  <Form.Check className="pl-0" id="notCoded-checkbox" name="notCoded">
                     <Form.Check.Input
                       bsPrefix
                       type="checkbox"
@@ -631,10 +634,10 @@ const MortalityForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Not Coded</Form.Check.Label>
+                    <Form.Check.Label htmlFor="notCoded-checkbox" style={{ fontWeight: "normal" }}>Not Coded</Form.Check.Label>
                   </Form.Check>
 
-                  <Form.Check className="pl-0" name="otherCode">
+                  <Form.Check className="pl-0" id="otherCode-checkbox" name="otherCode">
                     <Form.Check.Input
                       bsPrefix
                       type="checkbox"
@@ -649,7 +652,7 @@ const MortalityForm = ({ ...props }) => {
                         }
                       }}
                     />
-                    <Form.Check.Label style={{ fontWeight: "normal" }}>Other Code</Form.Check.Label>
+                    <Form.Check.Label htmlFor="otherCode-checkbox" style={{ fontWeight: "normal" }}>Other Code</Form.Check.Label>
                   </Form.Check>
                 </div>
                 <Reminder
@@ -676,7 +679,7 @@ const MortalityForm = ({ ...props }) => {
             <Form.Group as={Row} className={saved && errors.deathNumbers && "has-error"}>
               <Form.Label column sm="12">
                 E.5 What is the number of deaths in your cohort as of most recent mortality follow-up?
-                <span style={{ color: "red" }}>*</span>
+                <span className="error-text">*</span>
               </Form.Label>
 
               <Col sm="2">
@@ -685,6 +688,7 @@ const MortalityForm = ({ ...props }) => {
                     type="number"
                     min="0"
                     name="deathNumbers"
+                    aria-label="Number of deaths in cohort as of most recent mortality follow-up"
                     value={mortality.deathNumbers}
                     readOnly={isReadOnly}
                     onChange={(e) => {
