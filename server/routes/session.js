@@ -101,7 +101,8 @@ export async function getDestLink(request) {
     destination = "/unauthorized";
   } else {
     const loginDomain = (request.user.preferred_username || "").split("@").pop();
-    const accountType = loginDomain.endsWith("login.gov") ? "Login.gov" : "NIH";
+    const isLoginGov = loginDomain === "login.gov" || loginDomain.endsWith(".login.gov");
+    const accountType = isLoginGov ? "Login.gov" : "NIH";
     const { userManager } = request.app.locals;
     let userobj = await userManager.getUserForLogin(request.user.email, accountType);
     if (userobj && userobj.role) {
