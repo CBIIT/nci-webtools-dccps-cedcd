@@ -114,12 +114,11 @@ jobs:
           context: .
           file: docker/backend.dockerfile
           pull: true
+          no-cache: true
           push: true
           tags: |
             ${{ env.BACKEND_IMAGE }}
             ${{ env.BACKEND_IMAGE_LATEST }}
-          cache-from: type=registry,ref=${{ env.BACKEND_IMAGE_LATEST }}
-          cache-to: type=inline
 
       - name: Build frontend image ${{ env.FRONTEND_IMAGE }}
         uses: docker/build-push-action@v7.0.0
@@ -127,14 +126,13 @@ jobs:
           context: .
           file: docker/frontend.dockerfile
           pull: true
+          no-cache: true
           push: true
           tags: |
             ${{ env.FRONTEND_IMAGE }}
             ${{ env.FRONTEND_IMAGE_LATEST }}
           build-args: |
             REACT_APP_VERSION=${{ github.ref_name }}
-          cache-from: type=registry,ref=${{ env.FRONTEND_IMAGE_LATEST }}
-          cache-to: type=inline
 
       - name: Build data import image ${{ env.DATA_IMPORT_IMAGE }}
         uses: docker/build-push-action@v7.0.0
@@ -142,12 +140,11 @@ jobs:
           context: .
           file: docker/data-import.dockerfile
           pull: true
+          no-cache: true
           push: true
           tags: |
             ${{ env.DATA_IMPORT_IMAGE }}
             ${{ env.DATA_IMPORT_IMAGE_LATEST }}
-          cache-from: type=registry,ref=${{ env.DATA_IMPORT_IMAGE_LATEST }}
-          cache-to: type=inline
 
       - name: Substitute web task definition variables
         id: substitute-web-task-definition

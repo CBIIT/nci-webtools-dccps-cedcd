@@ -2,7 +2,7 @@ FROM public.ecr.aws/amazonlinux/amazonlinux:2023
 
 RUN dnf -y upgrade --refresh \
     && dnf -y install \
-    nodejs24 \
+    "nodejs24 >= 1:24.22.1" \
     tar \
     gzip \
     && dnf -y upgrade \
