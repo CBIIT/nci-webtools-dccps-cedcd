@@ -5,7 +5,7 @@ FROM public.ecr.aws/amazonlinux/amazonlinux:2023 AS builder
 
 RUN dnf -y upgrade --refresh \
     && dnf -y install \
-    nodejs24 \
+    "nodejs24 >= 1:24.22.1" \
     && dnf clean all
 
 RUN npm install -g npm@latest \
